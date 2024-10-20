@@ -30,8 +30,12 @@ namespace IngameScript
             public static Color DEFAULT_TEXT_COLOR = new Color(179, 237, 255);
             public static Color DEFAULT_BACKGROUND_COLOR = new Color(0, 88, 151);
             private IMyTextSurface _drawingSurface;
+            public IMyTextSurface DrawingSurface
+            {
+                get { return _drawingSurface; }
+            }
             private RectangleF _viewport;
-            private List<ScreenSprite> _sprites = new List<ScreenSprite>();
+            private List<List<ScreenSprite>> _sprites = new List<List<ScreenSprite>>();
             public float bottomPadding = 0f;
             public float topPadding = 0f;
             public float leftPadding = 0f;
@@ -103,43 +107,60 @@ namespace IngameScript
             {
                 //GridInfo.Echo("Screen: DrawSprites: "+_sprites.Count.ToString());
                 // draw all the sprites
-                foreach (ScreenSprite sprite in _sprites)
+                foreach (List<ScreenSprite> spriteList in _sprites)
                 {
-                    //GridInfo.Echo("Screen: DrawSprites: sprite: viewport: "+_viewport.ToString());
-                    //if(sprite != null) GridInfo.Echo("Screen: DrawSprites: sprite: position: "+sprite.GetPosition(_viewport).ToString());
-                    //else GridInfo.Echo("Screen: DrawSprites: sprite: null");
-                    if (sprite != null && sprite.Visible) frame.Add(sprite.ToMySprite(_viewport));
+
+                    foreach (ScreenSprite sprite in spriteList)
+                    {
+                        //GridInfo.Echo("Screen: DrawSprites: sprite: viewport: "+_viewport.ToString());
+                        //if(sprite != null) GridInfo.Echo("Screen: DrawSprites: sprite: position: "+sprite.GetPosition(_viewport).ToString());
+                        //else GridInfo.Echo("Screen: DrawSprites: sprite: null");
+                        if (sprite != null && sprite.Visible) frame.Add(sprite.ToMySprite(_viewport));
+                    }
                 }
             }
             // add a text sprite
-            public ScreenSprite AddTextSprite(ScreenSprite.ScreenSpriteAnchor anchor, Vector2 position, float rotationOrScale, Color color, string fontId, string data, TextAlignment alignment)
+            public ScreenSprite AddTextSprite(ScreenSprite.ScreenSpriteAnchor anchor, Vector2 position, float rotationOrScale, Color color, string fontId, string data, TextAlignment alignment, int layer = 0)
             {
                 ScreenSprite sprite = new ScreenSprite(anchor, position, rotationOrScale, new Vector2(0, 0), color, fontId, data, alignment, SpriteType.TEXT);
-                _sprites.Add(sprite);
+                while (layer >= _sprites.Count)
+                {
+                    _sprites.Add(new List<ScreenSprite>());
+                }
+                _sprites[layer].Add(sprite);
                 return sprite;
             }
             // add a texture sprite
-            public ScreenSprite AddTextureSprite(ScreenSprite.ScreenSpriteAnchor anchor, Vector2 position, float rotationOrScale, Vector2 size, Color color, string data)
+            public ScreenSprite AddTextureSprite(ScreenSprite.ScreenSpriteAnchor anchor, Vector2 position, float rotationOrScale, Vector2 size, Color color, string data, int layer = 0)
             {
                 ScreenSprite sprite = new ScreenSprite(anchor, position, rotationOrScale, size, color, "", data, TextAlignment.CENTER, SpriteType.TEXTURE);
-                _sprites.Add(sprite);
+                while(layer >= _sprites.Count)
+                {
+                    _sprites.Add(new List<ScreenSprite>());
+                }
+                _sprites[layer].Add(sprite);
                 return sprite;
             }
-            public void AddSprite(ScreenSprite sprite)
+            public void AddSprite(ScreenSprite sprite,int layer = 0)
             {
-                _sprites.Add(sprite);
+                while (layer >= _sprites.Count)
+                {
+                    _sprites.Add(new List<ScreenSprite>());
+                }
+                _sprites[layer].Add(sprite);
             }
-            public void AddSprite(IScreenSpriteProvider spriteProvider)
+            public void AddSprite(IScreenSpriteProvider spriteProvider, int layer = 0)
             {
                 spriteProvider.AddToScreen(this);
             }
-            public void RemoveSprite(ScreenSprite sprite)
+            public void RemoveSprite(ScreenSprite sprite,int layer = 0)
             {
-                if (_sprites.Contains(sprite)) _sprites.Remove(sprite);
+                if (_sprites.Count > layer && _sprites[layer].Contains(sprite)) _sprites[layer].Remove(sprite);
+                //if (_sprites.Contains(sprite)) _sprites.Remove(sprite);
             }
-            public void RemoveSprite(IScreenSpriteProvider spriteProvider)
+            public void RemoveSprite(ILayoutItem spriteProvider)
             {
-                spriteProvider.RemoveToScreen(this);
+                spriteProvider.RemoveFromScreen(this);
             }
         }
         //----------------------------------------------------------------------
@@ -264,8 +285,8 @@ namespace IngameScript
         //----------------------------------------------------------------------
         public interface IScreenSpriteProvider
         {
-            void AddToScreen(Screen screen);
-            void RemoveToScreen(Screen screen);
+            void AddToScreen(Screen screen, int layer = 0);
+            void RemoveFromScreen(Screen screen);
             bool Visible { get; set; }
         }
         //----------------------------------------------------------------------
@@ -785,15 +806,15 @@ namespace IngameScript
                     }
                 }
             }
-            public void AddToScreen(Screen screen)
+            public void AddToScreen(Screen screen, int layer = 0)
             {
                 this.screen = screen;
                 foreach (RasterSprite sprite in sprites)
                 {
-                    screen.AddSprite(sprite);
+                    screen.AddSprite(sprite,layer);
                 }
             }
-            public void RemoveToScreen(Screen screen)
+            public void RemoveFromScreen(Screen screen)
             {
                 foreach (RasterSprite sprite in sprites)
                 {
