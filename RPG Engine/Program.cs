@@ -29,17 +29,17 @@ namespace IngameScript
         //TileSet tileSet;
         public Program()
         {
-            Echo("RPG Engine\nbooting...");
-            GridInfo.Init("RPG Engine", this);
-            Echo("GridInfo\ninitialized!");
+            Echo("RPG Engine: booting...");
+            GridInfo.Init("RPG Engine", GridTerminalSystem, IGC, Me, Echo);
+            Echo("GridInfo: initialized!");
             GridBlocks.Init();
-            Echo("GridBlocks\ninitialized!");
+            Echo("GridBlocks: initialized!");
             GridDB.Init();
-            Echo("GridDB\ninitialized!");
+            Echo("GridDB: initialized!");
             gameSeats.Add(MapEditor.FindMainEditor());
-            Echo("GameSeat\ninitialized!");
+            Echo("GameSeat: initialized!");
             Runtime.UpdateFrequency = UpdateFrequency.Update1;
-            Echo("RPG Engine\nbooted!");
+            Echo("RPG Engine: booted!");
         }
 
         public void Save()

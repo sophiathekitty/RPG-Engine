@@ -33,6 +33,7 @@ namespace IngameScript
             ScreenSprite right;
             Vector2 size = new Vector2(1, 1);
             float lineThickness = 2f;
+            public string Text { get; set; }
             public LayoutBorder(Vector2 size, float lineThickness)
             {
                 this.lineThickness = lineThickness;
@@ -99,6 +100,20 @@ namespace IngameScript
                     bottom.Visible = value;
                     left.Visible = value;
                     right.Visible = value;
+                }
+            }
+            public Color Color
+            {
+                get
+                {
+                    return top.Color;
+                }
+                set
+                {
+                    top.Color = value;
+                    bottom.Color = value;
+                    left.Color = value;
+                    right.Color = value;
                 }
             }
 

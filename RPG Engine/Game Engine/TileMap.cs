@@ -56,6 +56,8 @@ namespace IngameScript
             // properties
             //-----------------------------------------------------------------------
             public TileSet tilesSet;
+            string tileSetAddress;
+            int tileSetIndex = 0;
             string[] map;
             int mapHeight { get { return map.Length; } }
             int mapWidth { get { return map[0].Length; } }
@@ -77,12 +79,28 @@ namespace IngameScript
                 if (x < 0 || y < 0 || x >= map[0].Length || y >= map.Length) return ' ';
                 return map[y][x];
             }
-            public void SetTile(int x, int y, char tile) 
+            public char GetCeilingTile(int x, int y)
+            {
+                x += (int)MapPosition.X;
+                y += (int)MapPosition.Y;
+                if (x < 0 || y < 0 || x >= map[0].Length || y >= map.Length) return ' ';
+                return ceilingMap[y][x];
+            }
+            public void SetTile(int x, int y, char tile)
             {
                 // fit x,y into the map range
                 x %= map[0].Length;
                 y %= map.Length;
-                map[y] = map[y].Substring(0, x) + tile + map[y].Substring(x + 1); ApplyViewportTiles(); 
+                map[y] = map[y].Substring(0, x) + tile + map[y].Substring(x + 1); 
+                ApplyViewportTiles(); 
+            }
+            public void SetCeilingTile(int x, int y, char tile)
+            {
+                x %= map[0].Length;
+                y %= map.Length;
+                if (tile == (char)ceilingMap[y][x]) tile = ' ';
+                ceilingMap[y] = ceilingMap[y].Substring(0, x) + tile + ceilingMap[y].Substring(x + 1); 
+                ApplyViewportTiles();
             }
             public Vector2 TilePosition(int x, int y) 
             {
@@ -98,7 +116,7 @@ namespace IngameScript
             //-----------------------------------------------------------------------
             // Create Map
             //-----------------------------------------------------------------------
-            public void CreateMap(int width, int height)
+            public void CreateMap(int width, int height, int tileSetIndex = 0)
             {
                 // fill the tile map with the default tile '\uE100'
                 map = new string[height];
@@ -109,12 +127,14 @@ namespace IngameScript
                     ceilingMap[i] = new string(' ', width);
                 }
                 MapPosition = new Vector2(0, 0);
+                this.tileSetIndex = tileSetIndex;
+                tilesSet = new TileSet(TileSet.GetTileSetFromGridDB(game, tileSetIndex));
                 ApplyViewportTiles();
                 index = GetMapCount(game);
             }
-            public void SaveMap()
+            public void Save()
             {
-                string data = "";
+                string data = tileSetIndex.ToString() + '║';
                 // map data
                 bool first = true;
                 foreach (string line in map)
@@ -133,6 +153,18 @@ namespace IngameScript
                     data += line;
                 }
                 SetMapDB(game, index, data);
+            }
+            public void Load(int index)
+            {
+                this.index = index;
+                string data = GetMapDB(game, index);
+                string[] parts = data.Split('║');
+                //tileSetAddress = parts[0];
+                tileSetIndex = int.Parse(parts[0]);
+                tilesSet = new TileSet(TileSet.GetTileSetFromGridDB(game, tileSetIndex));
+                map = parts[1].Split('\n');
+                ceilingMap = parts[2].Split('\n');
+                ApplyViewportTiles();
             }
             //-----------------------------------------------------------------------
             // Tile Map Viewport (visible area)
@@ -172,6 +204,9 @@ namespace IngameScript
                         else if (tilesSet.layers.ContainsKey('g') && tilesSet.layers.ContainsKey('G') && tilesSet.layers['g'].Contains(tile)) overlay[i].Data = tilesSet.tiles[tilesSet.layers['G'].First()]; // secret overlay 2
                         else if (tilesSet.layers.ContainsKey('h') && tilesSet.layers.ContainsKey('H') && tilesSet.layers['h'].Contains(tile)) overlay[i].Data = tilesSet.tiles[tilesSet.layers['H'].First()]; // secret overlay 3
                         else overlay[i].Data = "";
+                        tile = GetCeilingTile(x, y);
+                        if (tilesSet.tiles.ContainsKey(tile)) ceiling[i].Data = tilesSet.tiles[tile];
+                        else ceiling[i].Data = "";
                         i++;
                     }
                 }
@@ -300,7 +335,8 @@ namespace IngameScript
                 this.game = game;
                 this.index = index;
                 // load the tile set
-                tilesSet = new TileSet(GridDB.Get(game + ".TileSet.0.CustomData"));
+                //tileSetAddress = game + ".TileSet.0.CustomData";
+                tilesSet = new TileSet(TileSet.GetTileSetFromGridDB(game, 0));
             }
             public TileMap(Vector2 viewportPosition, Vector2 viewportSize, string game, int index = 0) : this(viewportPosition, game, index)
             {

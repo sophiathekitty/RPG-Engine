@@ -22,12 +22,14 @@ namespace IngameScript
 {
     partial class Program
     {
-        //-----------------------------------------------------------------------
-        // a  status effect that can be applied to a combatant
-        //-----------------------------------------------------------------------
-        public class StatusEffect
+        //----------------------------------------------------------------------
+        // LayoutInteractable interface
+        //----------------------------------------------------------------------
+        public interface ILayoutInteractable
         {
-            Dictionary<string, double> Stats = new Dictionary<string, double>();
+            string ButtonPrompt { get; set; }
+            string Run();
         }
+        //----------------------------------------------------------------------
     }
 }

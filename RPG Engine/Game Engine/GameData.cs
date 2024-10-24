@@ -29,9 +29,10 @@ namespace IngameScript
         {
             public int saveIndex = 0;
             public Dictionary<string, bool> Bools = new Dictionary<string, bool>();
-            public Dictionary<string, int> Ints = new Dictionary<string, int>();
+            public Dictionary<string, double> Numbers = new Dictionary<string, double>();
             public Dictionary<string, int> Inventory = new Dictionary<string, int>();
             public List<PlayerCharacter> CharacterList = new List<PlayerCharacter>();
+            public List<EnemyCombatant> EnemyList = new List<EnemyCombatant>();
         }
         //-----------------------------------------------------------------------
     }

@@ -25,11 +25,12 @@ namespace IngameScript
         //----------------------------------------------------------------------
         // LayoutMenu extends LayoutArea
         //----------------------------------------------------------------------
-        public class LayoutMenu : LayoutArea
+        public class LayoutMenu : LayoutArea, ILayoutInteractable
         {
             //----------------------------------------------------------------------
             // properties
             //----------------------------------------------------------------------
+            public string ButtonPrompt { get; set; } = "W/S: move, Space: select";
             GameInput input;
             int _selectedIndex = -1;
             public int SelectedIndex 
@@ -43,8 +44,7 @@ namespace IngameScript
                     _selectedIndex = value;
                     for (int i = 0; i < Items.Count; i++)
                     {
-                        LayoutText item = (LayoutText)Items[i];
-                        item.Color = i == SelectedIndex ? SelectedColor : Color;
+                        Items[i].Color = i == SelectedIndex ? SelectedColor : Color;
                     }
                 } 
             }
@@ -55,6 +55,10 @@ namespace IngameScript
             // constructor
             //----------------------------------------------------------------------
             public LayoutMenu(Vector2 position, Vector2 size, Vector2 padding, GameInput input) : base(position, size, padding)
+            {
+                this.input = input;
+            }
+            public LayoutMenu(Vector2 position, Vector2 size, Vector2 padding, GameInput input, Color backGroundColor, Color borderColor, float borderWidth) : base(position, size, padding, backGroundColor, borderColor, borderWidth)
             {
                 this.input = input;
             }
@@ -69,7 +73,7 @@ namespace IngameScript
             //----------------------------------------------------------------------
             // run menu
             //----------------------------------------------------------------------
-            public string Run()
+            public virtual string Run()
             {
                 if (input.WPressed)
                 {
@@ -81,17 +85,24 @@ namespace IngameScript
                     SelectedIndex++;
                     if (SelectedIndex >= Items.Count) SelectedIndex = 0;
                 }
-                else if (input.SpacePressed) return ((LayoutText)Items[SelectedIndex]).Text;
+                else if (input.SpacePressed)
+                {
+                    if(SelectedIndex >= 0 && SelectedIndex < Items.Count) return Items[SelectedIndex].Text;
+
+                }
+                else if(input.QPressed)
+                {
+                    return "cancel";
+                }
                 for (int i = 0; i < Items.Count; i++)
                 {
-                    LayoutText item = (LayoutText)Items[i];
-                    item.Color = i == SelectedIndex ? SelectedColor : Color;
+                    Items[i].Color = i == SelectedIndex ? SelectedColor : Color;
                 }
                 return "";
             }
-            public void AddToScreen(Screen screen)
+            public override void AddToScreen(Screen screen, int layer = 2)
             {
-                base.AddToScreen(screen);
+                base.AddToScreen(screen, layer);
             }
         }
         //----------------------------------------------------------------------

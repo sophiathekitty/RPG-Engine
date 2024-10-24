@@ -151,14 +151,16 @@ namespace IngameScript
             }
             public void AddSprite(IScreenSpriteProvider spriteProvider, int layer = 0)
             {
-                spriteProvider.AddToScreen(this);
+                spriteProvider.AddToScreen(this,layer);
             }
-            public void RemoveSprite(ScreenSprite sprite,int layer = 0)
+            public void RemoveSprite(ScreenSprite sprite)
             {
-                if (_sprites.Count > layer && _sprites[layer].Contains(sprite)) _sprites[layer].Remove(sprite);
-                //if (_sprites.Contains(sprite)) _sprites.Remove(sprite);
+                foreach (List<ScreenSprite> spriteList in _sprites)
+                {
+                    if (spriteList.Remove(sprite)) break;
+                }
             }
-            public void RemoveSprite(ILayoutItem spriteProvider)
+            public void RemoveSprite(IScreenSpriteProvider spriteProvider)
             {
                 spriteProvider.RemoveFromScreen(this);
             }

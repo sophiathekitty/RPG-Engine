@@ -31,6 +31,8 @@ namespace IngameScript
             Vector2 Size { get; set; }
             Vector2 Padding { get; set; }
             Vector2 ContentSize { get; }
+            Color Color { get; set; }
+            string Text { get; set; }
             bool GetSizeFromParent { get; set; }
             void ApplyLayout();
         }

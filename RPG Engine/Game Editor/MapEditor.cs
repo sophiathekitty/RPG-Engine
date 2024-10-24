@@ -73,20 +73,25 @@ namespace IngameScript
             TileMap tileMap;
             ScreenSprite tilePreview;
             ScreenSprite tileLayer;
+            ScreenSprite inputPrompt;
             MapCursor cursor;
             Vector2 cursorPosition = Vector2.Zero;
             int tileIndex = 0;
             char currentTile = '0';
             LayoutArea mapInfoDisplay;
+            LayoutText mapSavedStatus;
             LayoutText mapIndex;
             LayoutText mapInfoSize;
             LayoutText mapInfoCursorPosition;
-            LayoutMenu mainMenu;
+            MapEditorMainMenu mainMenu;
+            LoadMapSelecter loadMapSelecter;
+            CreateMapForm createMapForm;
             string focused = "menu";
+            string game = "FinalFantasy";
             public MapEditor(IMyTextSurface drawingSurface, GameInput gameInput, IMySoundBlock musicBlock, IMySoundBlock fxBlock) : base(drawingSurface, gameInput, musicBlock, fxBlock)
             {
                 BackgroundColor = new Color(0, 10, 20);
-                tileMap = new TileMap(new Vector2(60,30), new Vector2(24,24), "FinalFantasy");
+                tileMap = new TileMap(new Vector2(60,30), new Vector2(24,24), game);
                 tilePreview = new ScreenSprite(ScreenSprite.ScreenSpriteAnchor.TopLeft, new Vector2(10, 10), 0.1f, Vector2.Zero, Color.White, "Monospace", "",TextAlignment.LEFT, SpriteType.TEXT);
                 tileLayer = new ScreenSprite(ScreenSprite.ScreenSpriteAnchor.TopLeft, new Vector2(56, 58), 0.5f, Vector2.Zero, Color.White, "Monospace", "", TextAlignment.RIGHT, SpriteType.TEXT);
                 currentTile = tileMap.tilesSet.tiles.Keys.ToArray()[tileIndex];
@@ -100,12 +105,14 @@ namespace IngameScript
                 cursor.Size = tileMap.TileSize;
                 cursor.Position = tileMap.ViewportPosition;
                 cursor.Visible = false;
-                AddSprite(cursor);
+                AddSprite(cursor,2);
                 // mape info
                 mapInfoDisplay = new LayoutArea(new Vector2(0, 200), new Vector2(60, 30), new Vector2(5, 5));
                 mapInfoSize = new LayoutText("Map: 32x24", Color.White, 0.25f);
                 mapInfoCursorPosition = new LayoutText("Cur: 0,0", Color.White, 0.25f);
                 mapIndex = new LayoutText("Id: "+tileMap.index, Color.White, 0.25f);
+                mapSavedStatus = new LayoutText("New", Color.Green, 0.25f);
+                mapInfoDisplay.Items.Add(mapSavedStatus);
                 mapInfoDisplay.Items.Add(mapIndex);
                 mapInfoDisplay.Items.Add(mapInfoSize);
                 mapInfoDisplay.Items.Add(mapInfoCursorPosition);
@@ -113,19 +120,19 @@ namespace IngameScript
                 mapInfoDisplay.ApplyLayout();
                 AddSprite(mapInfoDisplay);
                 // map menu
-                mainMenu = new LayoutMenu(new Vector2(0, 80), new Vector2(60, 120), new Vector2(5, 5), input);
-                mainMenu.FontSize = 0.32f;
-                mainMenu.Add("Save");
-                mainMenu.Add("Load");
-                mainMenu.Add("New");
-                mainMenu.Add("Map");
-                mainMenu.Add("Ceiling");
-                mainMenu.Add("NPCs");
-                mainMenu.Add("Doors");
-                mainMenu.Add("Options");
+                mainMenu = new MapEditorMainMenu(new Vector2(0, 80), new Vector2(60, 120), new Vector2(5, 5), input);
                 mainMenu.ApplyLayout();
                 mainMenu.SelectedIndex = 0;
                 AddSprite(mainMenu);
+                // input prompt
+                inputPrompt = new ScreenSprite(ScreenSprite.ScreenSpriteAnchor.TopRight, new Vector2(-5, 5), 0.45f, new Vector2(60, 30), Color.White, "Monospace", mainMenu.ButtonPrompt, TextAlignment.RIGHT, SpriteType.TEXT);
+                AddSprite(inputPrompt);
+                // load map selecter
+                loadMapSelecter = new LoadMapSelecter(new Vector2(100, 100), new Vector2(100, 120), new Vector2(5, 5), input, 10);
+                loadMapSelecter.ApplyLayout();
+                // create map form
+                createMapForm = new CreateMapForm(input, game);
+                createMapForm.ApplyLayout();
             }
             //-----------------------------------------------------------------------
             // main loop
@@ -140,6 +147,18 @@ namespace IngameScript
                 {
                     MapEditing();
                 }
+                else if (focused == "ceiling")
+                {
+                    MapEditing(true);
+                }
+                else if (focused == "load")
+                {
+                    LoadingMap();
+                }
+                else if (focused == "create")
+                {
+                    CreatingMap();
+                }
                 base.Main(argument);
             }
             //-----------------------------------------------------------------------
@@ -153,12 +172,79 @@ namespace IngameScript
                     focused = "map";
                     mainMenu.SelectedIndex = -1;
                     cursor.Visible = true;
+                    inputPrompt.Data = "(M) E/C: tile, W/A/S/D: move, Space: set, Q: back";
                 }
+                else if(result == "Ceiling")
+                {
+                    focused = "ceiling";
+                    mainMenu.SelectedIndex = -1;
+                    cursor.Visible = true;
+                    inputPrompt.Data = "(C) E/C: tile, W/A/S/D: move, Space: set, Q: back";
+                }
+                else if (result == "Save")
+                {
+                    tileMap.Save();
+                    mapSavedStatus.Text = "Saved";
+                }
+                else if (result == "Load")
+                {
+                    focused = "load";
+                    mainMenu.SelectedIndex = -1;
+                    inputPrompt.Data = loadMapSelecter.ButtonPrompt;
+                    loadMapSelecter.MaxMapIndex = TileMap.GetMapCount(game) - 1;
+                    loadMapSelecter.Reset();
+                    AddSprite(loadMapSelecter,3);
+                }
+                else if (result == "New")
+                {
+                    focused = "create";
+                    mainMenu.SelectedIndex = -1;
+                    inputPrompt.Data = createMapForm.ButtonPrompt;
+                    AddSprite(createMapForm, 3);
+                }
+            }
+            void LoadingMap()
+            {
+                string result = loadMapSelecter.Run();
+                if (result == "done")
+                {
+                    tileMap.Load(loadMapSelecter.MapIndex);
+                    mapIndex.Text = "Id: " + tileMap.index;
+                    mapInfoSize.Text = "Map: " + tileMap.Size.X + "x" + tileMap.Size.Y;
+                    mapSavedStatus.Text = "Loaded";
+                    tileIndex = 0;
+                    currentTile = tileMap.tilesSet.tiles.Keys.ToArray()[tileIndex];
+                    tilePreview.Data = tileMap.tilesSet.tiles[currentTile];
+                }
+                else if (result == "") return;
+                focused = "menu";
+                mainMenu.SelectedIndex = 1;
+                inputPrompt.Data = mainMenu.ButtonPrompt;
+                RemoveSprite(loadMapSelecter);
+            }
+            void CreatingMap()
+            {
+                string result = createMapForm.Run();
+                if (result == "Create")
+                {
+                    tileMap.CreateMap((int)createMapForm.MapSize.X,(int)createMapForm.MapSize.Y, createMapForm.TileSetIndex);
+                    mapIndex.Text = "Id: " + tileMap.index;
+                    mapInfoSize.Text = "Map: " + tileMap.Size.X + "x" + tileMap.Size.Y;
+                    mapSavedStatus.Text = "New";
+                    tileIndex = 0;
+                    currentTile = tileMap.tilesSet.tiles.Keys.ToArray()[tileIndex];
+                    tilePreview.Data = tileMap.tilesSet.tiles[currentTile];
+                }
+                else if (result == "") return;
+                focused = "menu";
+                mainMenu.SelectedIndex = 2;
+                inputPrompt.Data = mainMenu.ButtonPrompt;
+                RemoveSprite(createMapForm);
             }
             //-----------------------------------------------------------------------
             // map editing
             //-----------------------------------------------------------------------
-            void MapEditing()
+            void MapEditing(bool ceiling = false)
             {
                 if (input.EPressed)
                 {
@@ -179,18 +265,21 @@ namespace IngameScript
                 else if (input.WPressed)
                 {
                     cursorPosition += new Vector2(0, -1);
+                    if (cursorPosition.Y < 0) cursorPosition.Y = 0;
                     tileMap.CenterOn(cursorPosition);
                     cursor.Position = tileMap.TilePosition((int)cursorPosition.X, (int)cursorPosition.Y);
                 }
                 else if (input.APressed)
                 {
                     cursorPosition += new Vector2(-1, 0);
+                    if (cursorPosition.X < 0) cursorPosition.X = 0;
                     tileMap.CenterOn(cursorPosition);
                     cursor.Position = tileMap.TilePosition((int)cursorPosition.X, (int)cursorPosition.Y);
                 }
                 else if (input.SPressed)
                 {
                     cursorPosition += new Vector2(0, 1);
+                    if (cursorPosition.Y >= tileMap.Size.Y) cursorPosition.Y = tileMap.Size.Y - 1;
                     tileMap.CenterOn(cursorPosition);
                     cursor.Position = tileMap.TilePosition((int)cursorPosition.X, (int)cursorPosition.Y);
 
@@ -198,18 +287,22 @@ namespace IngameScript
                 else if (input.DPressed)
                 {
                     cursorPosition += new Vector2(1, 0);
+                    if (cursorPosition.X >= tileMap.Size.X) cursorPosition.X = tileMap.Size.X - 1;
                     tileMap.CenterOn(cursorPosition);
                     cursor.Position = tileMap.TilePosition((int)cursorPosition.X, (int)cursorPosition.Y);
                 }
                 else if (input.SpacePressed)
                 {
-                    tileMap.SetTile((int)cursorPosition.X, (int)cursorPosition.Y, currentTile);
+                    if (ceiling) tileMap.SetCeilingTile((int)cursorPosition.X, (int)cursorPosition.Y, currentTile);
+                    else tileMap.SetTile((int)cursorPosition.X, (int)cursorPosition.Y, currentTile);
+                    mapSavedStatus.Text = "Unsaved";
                 }
                 else if (input.QPressed)
                 {
                     focused = "menu";
                     mainMenu.SelectedIndex = 3;
                     cursor.Visible = false;
+                    inputPrompt.Data = mainMenu.ButtonPrompt;
                 }
                 mapInfoCursorPosition.Text = "Cur: " + cursorPosition.X + "," + cursorPosition.Y;
 

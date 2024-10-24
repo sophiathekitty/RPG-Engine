@@ -34,6 +34,23 @@ namespace IngameScript
             public Vector2 Size { get; set; }
             public Vector2 Padding { get; set; } = new Vector2(5, 5);
             public bool GetSizeFromParent { get; set; } = false;
+            public virtual Color Color 
+            { 
+                get 
+                { 
+                    if(extras.Count > 0) return extras[0].Color;
+                    return Color.White; 
+                }
+                set
+                {
+                    GridInfo.Echo("Setting color: " + value);
+                    foreach (ILayoutItem sprite in extras)
+                    {
+                        sprite.Color = value;
+                    }
+                }
+            }
+            public virtual string Text { get; set; }
             public Vector2 ContentSize 
             { 
                 get
@@ -76,7 +93,7 @@ namespace IngameScript
                     foreach (ILayoutItem item in Items) item.Visible = value;
                 }
             }
-            public void AddToScreen(Screen screen, int layer = 0)
+            public virtual void AddToScreen(Screen screen, int layer = 0)
             {
                 if(background != null) screen.AddSprite(background,layer);
                 foreach (ILayoutItem sprite in extras)
@@ -153,7 +170,7 @@ namespace IngameScript
             //----------------------------------------------------------------------
             public List<ILayoutItem> Items { get; set; } = new List<ILayoutItem>();
             ScreenSprite background;
-            List<ILayoutItem> extras = new List<ILayoutItem>();
+            public List<ILayoutItem> extras = new List<ILayoutItem>();
             public bool Vertical { get; set; } = true;
             public bool Justify { get; set; } = false;
             public float Spacing { get; set; } = 5;
@@ -183,6 +200,7 @@ namespace IngameScript
                 LayoutBorder border = new LayoutBorder(position, size, borderThickness, borderColor);
                 extras.Add(border);
             }
+
         }
         //----------------------------------------------------------------------
     }

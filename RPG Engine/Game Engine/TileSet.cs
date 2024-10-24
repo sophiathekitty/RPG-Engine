@@ -27,6 +27,26 @@ namespace IngameScript
         //-----------------------------------------------------------------------
         public class TileSet : RasterSprite
         {
+            //-----------------------------------------------------------------------
+            // static
+            //-----------------------------------------------------------------------
+            public static string GetTileSetFromGridDB(string game, int index)
+            {
+                // 0: game.Map.0.CustomData
+                // 1: game.Map.0.Text
+                int i = index / 2;
+                bool isData = index % 2 == 0;
+                return GridDB.Get(game + ".TileSet." + i + "." + (isData ? "CustomData" : "Text"));
+            }
+            public static int GetTileSetCount(string game)
+            {
+                int i = 0;
+                while (GetTileSetFromGridDB(game, i) != "") i++;
+                return i;
+            }
+            //-----------------------------------------------------------------------
+            // properties
+            //-----------------------------------------------------------------------
             public static Vector2 tileSize = new Vector2(16, 16);
             public Dictionary<char,string> tiles {get; private set; } = new Dictionary<char, string>();
             public Dictionary<char,string> layers { get; private set; } = new Dictionary<char, string>();

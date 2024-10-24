@@ -22,13 +22,9 @@ namespace IngameScript
 {
     partial class Program
     {
-        //-----------------------------------------------------------------------
-        // one of the player's characters
-        //-----------------------------------------------------------------------
-        public class PlayerCharacter : Combatant
+        public class EnemyCombatant : Combatant
         {
-            public Dictionary<string,string> Gear = new Dictionary<string, string>();
+            public List<string> Actions = new List<string>();
         }
-        //-----------------------------------------------------------------------
     }
 }

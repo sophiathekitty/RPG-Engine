@@ -27,8 +27,9 @@ namespace IngameScript
         //-----------------------------------------------------------------------
         public class Combatant
         {
+            public string Name = "";
             public Dictionary<string,double> Stats = new Dictionary<string, double>();
-            public List<StatusEffect> Status = new List<StatusEffect>();
+            public List<string> Status = new List<string>();
             public Dictionary<string, int> MaxStats = new Dictionary<string, int>();
         }
         //-----------------------------------------------------------------------
