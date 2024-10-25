@@ -47,10 +47,12 @@
     <Compile Include="Game Editor\MapCursor.cs" />
     <Compile Include="Game Editor\MapEditor.cs" />
     <Compile Include="Game Editor\MapEditorMainMenu.cs" />
+    <Compile Include="Game Editor\MapOptionsForm.cs" />
     <Compile Include="Game Engine\Combatant.cs" />
     <Compile Include="Game Engine\EnemyCombatant.cs" />
     <Compile Include="Game Engine\GameData.cs" />
     <Compile Include="Game Engine\GameSeat.cs" />
+    <Compile Include="Game Engine\MapExit.cs" />
     <Compile Include="Game Engine\PlayerCharacter.cs" />
     <Compile Include="Game Engine\TileMap.cs" />
     <Compile Include="Game Engine\TileSet.cs" />

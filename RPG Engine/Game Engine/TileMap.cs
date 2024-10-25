@@ -56,15 +56,17 @@ namespace IngameScript
             // properties
             //-----------------------------------------------------------------------
             public TileSet tilesSet;
-            string tileSetAddress;
-            int tileSetIndex = 0;
+            public MapExit DefaultExit = new MapExit();
+            public List<MapExit> Exits = new List<MapExit>();
+            //string tileSetAddress;
+            public int tileSetIndex = 0;
             string[] map;
             int mapHeight { get { return map.Length; } }
             int mapWidth { get { return map[0].Length; } }
             string[] ceilingMap; // overlay that switches visible area when you're under it
-            public bool IsWall(int x, int y) { return tilesSet.layers['w'].Contains(map[y][x]); }
-            public bool IsShip(int x, int y) { return tilesSet.layers['B'].Contains(map[y][x]); }
-            public bool IsBoat(int x, int y) { return tilesSet.layers['b'].Contains(map[y][x]); }
+            public bool IsWall(int x, int y) { return tilesSet.layers.ContainsKey('w') && tilesSet.layers['w'].Contains(map[y][x]); }
+            //public bool IsShip(int x, int y) { return tilesSet.layers.ContainsKey('B') && tilesSet.layers['B'].Contains(map[y][x]); }
+            //public bool IsBoat(int x, int y) { return tilesSet.layers.ContainsKey('b') && tilesSet.layers['b'].Contains(map[y][x]); }
             bool underCeiling = false;
             public string GetTileData(int x, int y) 
             { 
@@ -199,6 +201,7 @@ namespace IngameScript
                     {
                         char tile = GetTile(x, y);
                         if(tilesSet.tiles.ContainsKey(tile)) ground[i].Data = tilesSet.tiles[tile];
+                        else ground[i].Data = "";
                         if (tilesSet.layers.ContainsKey('1') && tilesSet.layers['1'].Contains(tile) && tilesSet.tiles.ContainsKey(tile)) overlay[i].Data = tilesSet.tiles[tile]; // secrets
                         else if (tilesSet.layers.ContainsKey('f') && tilesSet.layers.ContainsKey('F') && tilesSet.layers['f'].Contains(tile)) overlay[i].Data = tilesSet.tiles[tilesSet.layers['F'].First()]; // secret overlay 1
                         else if (tilesSet.layers.ContainsKey('g') && tilesSet.layers.ContainsKey('G') && tilesSet.layers['g'].Contains(tile)) overlay[i].Data = tilesSet.tiles[tilesSet.layers['G'].First()]; // secret overlay 2
@@ -225,6 +228,36 @@ namespace IngameScript
             public void CenterOn(Vector2 position)
             {
                 CenterOn((int)position.X, (int)position.Y);
+            }
+            public void ResizeMap(Vector2 newSize)
+            {
+                string[] newMap = new string[(int)newSize.Y];
+                string[] newCeilingMap = new string[(int)newSize.Y];
+                for (int i = 0; i < newMap.Length; i++)
+                {
+                    // crop the map if it's too big (or fill with empty tiles if it's too small)
+                    if (map.Length > i)
+                    {
+                        if (map[i].Length < newSize.X)
+                        {
+                            newMap[i] = map[i].PadRight((int)newSize.X, '\uE100');
+                            newCeilingMap[i] = ceilingMap[i].PadRight((int)newSize.X, ' ');
+                        }
+                        else
+                        {
+                            newMap[i] = map[i].Substring(0, (int)newSize.X);
+                            newCeilingMap[i] = ceilingMap[i].Substring(0, (int)newSize.X);
+                        }
+                    }
+                    else
+                    {
+                        newMap[i] = new string('\uE100', (int)newSize.X);
+                        newCeilingMap[i] = new string(' ', (int)newSize.X);
+                    }
+                }
+                map = newMap;
+                ceilingMap = newCeilingMap;
+                ApplyViewportTiles();
             }
             //-----------------------------------------------------------------------
             // IScreenSpriteProvider

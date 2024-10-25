@@ -86,6 +86,7 @@ namespace IngameScript
             MapEditorMainMenu mainMenu;
             LoadMapSelecter loadMapSelecter;
             CreateMapForm createMapForm;
+            MapOptionsForm mapOptionsForm;
             string focused = "menu";
             string game = "FinalFantasy";
             public MapEditor(IMyTextSurface drawingSurface, GameInput gameInput, IMySoundBlock musicBlock, IMySoundBlock fxBlock) : base(drawingSurface, gameInput, musicBlock, fxBlock)
@@ -133,6 +134,9 @@ namespace IngameScript
                 // create map form
                 createMapForm = new CreateMapForm(input, game);
                 createMapForm.ApplyLayout();
+                // map options form
+                mapOptionsForm = new MapOptionsForm(input, game);
+                mapOptionsForm.ApplyLayout();
             }
             //-----------------------------------------------------------------------
             // main loop
@@ -158,6 +162,10 @@ namespace IngameScript
                 else if (focused == "create")
                 {
                     CreatingMap();
+                }
+                else if (focused == "options")
+                {
+                    MapOptions();
                 }
                 base.Main(argument);
             }
@@ -199,10 +207,21 @@ namespace IngameScript
                 {
                     focused = "create";
                     mainMenu.SelectedIndex = -1;
-                    inputPrompt.Data = createMapForm.ButtonPrompt;
                     AddSprite(createMapForm, 3);
                 }
+                else if (result == "Options")
+                {
+                    focused = "options";
+                    mainMenu.SelectedIndex = -1;
+                    mapOptionsForm.MapSize = tileMap.Size;
+                    mapOptionsForm.TileSetIndex = tileMap.tileSetIndex;
+                    mapOptionsForm.Exit = tileMap.DefaultExit;
+                    AddSprite(mapOptionsForm, 3);
+                }
             }
+            //-----------------------------------------------------------------------
+            // map loading
+            //-----------------------------------------------------------------------
             void LoadingMap()
             {
                 string result = loadMapSelecter.Run();
@@ -222,9 +241,13 @@ namespace IngameScript
                 inputPrompt.Data = mainMenu.ButtonPrompt;
                 RemoveSprite(loadMapSelecter);
             }
+            //-----------------------------------------------------------------------
+            // map creation
+            //-----------------------------------------------------------------------
             void CreatingMap()
             {
                 string result = createMapForm.Run();
+                inputPrompt.Data = createMapForm.ButtonPrompt;
                 if (result == "Create")
                 {
                     tileMap.CreateMap((int)createMapForm.MapSize.X,(int)createMapForm.MapSize.Y, createMapForm.TileSetIndex);
@@ -237,9 +260,28 @@ namespace IngameScript
                 }
                 else if (result == "") return;
                 focused = "menu";
-                mainMenu.SelectedIndex = 2;
+                mainMenu.SelectedIndex = 3;
                 inputPrompt.Data = mainMenu.ButtonPrompt;
                 RemoveSprite(createMapForm);
+            }
+            void MapOptions()
+            {
+                string result = mapOptionsForm.Run();
+                inputPrompt.Data = mapOptionsForm.ButtonPrompt;
+                if (result == "Apply")
+                {
+                    tileMap.ResizeMap(mapOptionsForm.MapSize);
+                    tileMap.tileSetIndex = mapOptionsForm.TileSetIndex;
+                    tileMap.DefaultExit = mapOptionsForm.Exit;
+                    mapIndex.Text = "Id: " + tileMap.index;
+                    mapInfoSize.Text = "Map: " + tileMap.Size.X + "x" + tileMap.Size.Y;
+                    mapSavedStatus.Text = "Unsaved";
+                }
+                else if (result == "") return;
+                focused = "menu";
+                mainMenu.SelectedIndex = 3;
+                inputPrompt.Data = mainMenu.ButtonPrompt;
+                RemoveSprite(mapOptionsForm);
             }
             //-----------------------------------------------------------------------
             // map editing

@@ -30,7 +30,8 @@ namespace IngameScript
             //----------------------------------------------------------------------
             // properties
             //----------------------------------------------------------------------
-            public string ButtonPrompt { get; set; } = "W/S: move, Space: select";
+            string defualtPrompt = "W/S: move, Space: select";
+            public string ButtonPrompt { get; set; }
             GameInput input;
             int _selectedIndex = -1;
             public int SelectedIndex 
@@ -57,10 +58,12 @@ namespace IngameScript
             public LayoutMenu(Vector2 position, Vector2 size, Vector2 padding, GameInput input) : base(position, size, padding)
             {
                 this.input = input;
+                ButtonPrompt = defualtPrompt;
             }
             public LayoutMenu(Vector2 position, Vector2 size, Vector2 padding, GameInput input, Color backGroundColor, Color borderColor, float borderWidth) : base(position, size, padding, backGroundColor, borderColor, borderWidth)
             {
                 this.input = input;
+                ButtonPrompt = defualtPrompt;
             }
             public void Add(string text)
             {
@@ -73,8 +76,22 @@ namespace IngameScript
             //----------------------------------------------------------------------
             // run menu
             //----------------------------------------------------------------------
+            int editingIndex = -1;
             public virtual string Run()
             {
+                if(editingIndex != -1)
+                {
+                    LayoutNumberSelect item = (LayoutNumberSelect)Items[editingIndex];
+                    if (item == null) return "error";
+                    string cmd = item.Run();
+                    if (cmd == "done" || cmd == "reset")
+                    {
+                        item.ValueColor = Color;
+                        editingIndex = -1;
+                        ButtonPrompt = defualtPrompt;
+                    }
+                    return "";
+                }
                 if (input.WPressed)
                 {
                     SelectedIndex--;
@@ -87,7 +104,21 @@ namespace IngameScript
                 }
                 else if (input.SpacePressed)
                 {
-                    if(SelectedIndex >= 0 && SelectedIndex < Items.Count) return Items[SelectedIndex].Text;
+                    if (SelectedIndex >= 0 && SelectedIndex < Items.Count)
+                    {
+                        // see if it's a number
+                        if (Items[SelectedIndex] is LayoutNumberSelect)
+                        {
+                            editingIndex = SelectedIndex;
+                            ((LayoutNumberSelect)Items[editingIndex]).ValueColor = SelectedColor;
+                            ButtonPrompt = ((LayoutNumberSelect )Items[editingIndex]).ButtonPrompt;
+                        }
+                        else
+                        {
+                            return Items[SelectedIndex].Text;
+                        }
+                        //return Items[SelectedIndex].Text;
+                    }
 
                 }
                 else if(input.QPressed)

@@ -49,6 +49,7 @@ namespace IngameScript
             //---------------------------------------------------------------------------
             // ILayoutInteractable
             //---------------------------------------------------------------------------
+            /*
             int editingIndex = -1;
             public override string Run()
             {
@@ -79,13 +80,13 @@ namespace IngameScript
                     string cmd = item.Run();
                     if (cmd == "done" || cmd == "reset")
                     {
-                        ((LayoutNumberSelect)Items[editingIndex]).ValueColor = Color;
+                        item.ValueColor = Color;
                         editingIndex = -1;
                     }
                 }
                 return "";
             }
-            
+            */
             //---------------------------------------------------------------------------
         }
         //---------------------------------------------------------------------------
