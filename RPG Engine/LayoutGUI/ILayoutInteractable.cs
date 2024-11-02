@@ -28,6 +28,7 @@ namespace IngameScript
         public interface ILayoutInteractable
         {
             string ButtonPrompt { get; set; }
+            Color ValueColor { get; set; }
             string Run();
         }
         //----------------------------------------------------------------------

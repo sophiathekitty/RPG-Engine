@@ -87,6 +87,20 @@ namespace IngameScript
                     right.Visible = value;
                 }
             }
+            public Color Color
+            {
+                get
+                {
+                    return top.Color;
+                }
+                set
+                {
+                    top.Color = value;
+                    bottom.Color = value;
+                    left.Color = value;
+                    right.Color = value;
+                }
+            }
 
             public void AddToScreen(Screen screen, int layer = 2)
             {

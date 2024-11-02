@@ -53,6 +53,7 @@ namespace IngameScript
                     ((LayoutNumberSelect)Items[1]).MaxValue = value;
                 }
             }
+            public Color ValueColor { get; set; }
             //----------------------------------------------------------------------
             // constructor
             //----------------------------------------------------------------------

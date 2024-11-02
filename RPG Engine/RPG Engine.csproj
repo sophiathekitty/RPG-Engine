@@ -42,17 +42,24 @@
     <Compile Include="Common\GridBlocks.cs" />
     <Compile Include="Common\GridDB.cs" />
     <Compile Include="Common\GridInfo.cs" />
+    <Compile Include="Game Editor\CharacterSpriteSelector.cs" />
     <Compile Include="Game Editor\CreateMapForm.cs" />
+    <Compile Include="Game Editor\DoorInfoForm.cs" />
     <Compile Include="Game Editor\LoadMapSelecter.cs" />
     <Compile Include="Game Editor\MapCursor.cs" />
     <Compile Include="Game Editor\MapEditor.cs" />
     <Compile Include="Game Editor\MapEditorMainMenu.cs" />
     <Compile Include="Game Editor\MapOptionsForm.cs" />
+    <Compile Include="Game Editor\NPCOptions.cs" />
+    <Compile Include="Game Engine\CharacterSpriteLoader.cs" />
     <Compile Include="Game Engine\Combatant.cs" />
     <Compile Include="Game Engine\EnemyCombatant.cs" />
+    <Compile Include="Game Engine\GameAction.cs" />
     <Compile Include="Game Engine\GameData.cs" />
     <Compile Include="Game Engine\GameSeat.cs" />
+    <Compile Include="Game Engine\MapDoor.cs" />
     <Compile Include="Game Engine\MapExit.cs" />
+    <Compile Include="Game Engine\NPC.cs" />
     <Compile Include="Game Engine\PlayerCharacter.cs" />
     <Compile Include="Game Engine\TileMap.cs" />
     <Compile Include="Game Engine\TileSet.cs" />
@@ -63,6 +70,7 @@
     <Compile Include="LayoutGUI\LayoutMenu.cs" />
     <Compile Include="LayoutGUI\LayoutNumberSelect.cs" />
     <Compile Include="LayoutGUI\LayoutText.cs" />
+    <Compile Include="LayoutGUI\LayoutToggle.cs" />
     <Compile Include="MDK\Bootstrapper.cs" />
     <AdditionalFiles Include="MDK\MDK.options.props">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

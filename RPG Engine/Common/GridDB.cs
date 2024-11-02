@@ -169,9 +169,15 @@ namespace IngameScript
                 }
                 return count;
             }
-            public static List<string> GetShows()
+            public static List<string> GetGames()
             {
-                return new List<string>(Database.Keys);
+                List<string> games = new List<string>();
+                foreach (string show in Database.Keys)
+                {
+                    // check that the show has the scene "GameData"
+                    if (Database[show].ContainsKey("GameData")) games.Add(show);
+                }
+                return games;
             }
             //-----------------------------------------------------------------------
             // GetBlockUsage

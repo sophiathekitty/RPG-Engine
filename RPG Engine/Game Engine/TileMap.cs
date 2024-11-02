@@ -1,4 +1,5 @@
-﻿using Sandbox.Game.EntityComponents;
+﻿using Sandbox.Game.Entities;
+using Sandbox.Game.EntityComponents;
 using Sandbox.ModAPI.Ingame;
 using Sandbox.ModAPI.Interfaces;
 using SpaceEngineers.Game.ModAPI.Ingame;
@@ -57,7 +58,10 @@ namespace IngameScript
             //-----------------------------------------------------------------------
             public TileSet tilesSet;
             public MapExit DefaultExit = new MapExit();
-            public List<MapExit> Exits = new List<MapExit>();
+            public List<MapDoor> Doors = new List<MapDoor>();
+            public CharacterSpriteLoader spriteSheet;
+            public GameData gameData;
+            public List<NPC> NPCs = new List<NPC>();
             //string tileSetAddress;
             public int tileSetIndex = 0;
             string[] map;
@@ -65,16 +69,63 @@ namespace IngameScript
             int mapWidth { get { return map[0].Length; } }
             string[] ceilingMap; // overlay that switches visible area when you're under it
             public bool IsWall(int x, int y) { return tilesSet.layers.ContainsKey('w') && tilesSet.layers['w'].Contains(map[y][x]); }
-            //public bool IsShip(int x, int y) { return tilesSet.layers.ContainsKey('B') && tilesSet.layers['B'].Contains(map[y][x]); }
-            //public bool IsBoat(int x, int y) { return tilesSet.layers.ContainsKey('b') && tilesSet.layers['b'].Contains(map[y][x]); }
+            public MapDoor IsDoor(int x, int y)
+            {
+                foreach (MapDoor door in Doors)
+                {
+                    if (door.X == x && door.Y == y) return door;
+                }
+                return null;
+            }
+            public NPC GetNPC(int x, int y)
+            {
+                foreach (NPC npc in NPCs)
+                {
+                    if (npc.MapPosition.X == x && npc.MapPosition.Y == y) return npc;
+                }
+                return null;
+            }
+            public void SetNPC(NPC npc)
+            {
+                // see if it exists
+                npc.RotationOrScale = ground[0].RotationOrScale;
+                for (int i = 0; i < NPCs.Count; i++)
+                {
+                    if (NPCs[i].MapPosition == npc.MapPosition)
+                    {
+                        NPCs[i] = npc;
+                        return;
+                    }
+                }
+                NPCs.Add(npc);
+                _Screen.AddSprite(npc);
+                ApplyViewportTiles();   
+            }
+            public void RemoveNPC(int x, int y)
+            {
+                for (int i = 0; i < NPCs.Count; i++)
+                {
+                    if (NPCs[i].MapPosition.X == x && NPCs[i].MapPosition.Y == y)
+                    {
+                        _Screen.RemoveSprite(NPCs[i]);
+                        NPCs.RemoveAt(i);
+                        return;
+                    }
+                }
+            }
+            public bool IsWithinViewport(int x, int y)
+            {
+                return x >= MapPosition.X && x < MapPosition.X + ViewportSize.X && y >= MapPosition.Y && y < MapPosition.Y + ViewportSize.Y;
+            }
+            public bool IsUnderCeiling(int x, int y) { return ceilingMap[y][x] != ' '; }
             bool underCeiling = false;
-            public string GetTileData(int x, int y) 
+            public string GetViewportTileData(int x, int y) 
             { 
-                char tile = GetTile(x, y);
+                char tile = GetViewportTile(x, y);
                 if(tile != ' ') return tilesSet.tiles[tile];
                 return "";
             }
-            public char GetTile(int x, int y)
+            public char GetViewportTile(int x, int y)
             { 
                 x += (int)MapPosition.X;
                 y += (int)MapPosition.Y;
@@ -154,10 +205,30 @@ namespace IngameScript
                     else data += '\n';
                     data += line;
                 }
+                data += '║';
+                first = true;
+                foreach (MapDoor door in Doors)
+                {
+                    if(first) first = false;
+                    else data += '\n';
+                    data += door.ToString();
+                }
+                data += '║';
+                data += DefaultExit.ToString();
+                data += '║';
+                first = true;
+                foreach (NPC npc in NPCs)
+                {
+                    if (first) first = false;
+                    else data += '\n';
+                    data += npc.ToSaveString();
+                }
                 SetMapDB(game, index, data);
+
             }
             public void Load(int index)
             {
+                GridInfo.Echo("TileMap.Load: " + index);
                 this.index = index;
                 string data = GetMapDB(game, index);
                 string[] parts = data.Split('║');
@@ -166,7 +237,35 @@ namespace IngameScript
                 tilesSet = new TileSet(TileSet.GetTileSetFromGridDB(game, tileSetIndex));
                 map = parts[1].Split('\n');
                 ceilingMap = parts[2].Split('\n');
+                GridInfo.Echo("TileMap.Load: Doors?");
+                Doors.Clear();
+                if (parts.Length > 3)
+                {
+                    GridInfo.Echo("TileMap.Load: Doors");
+                    foreach (string door in parts[3].Split('\n'))
+                    {
+                        if(door != "") Doors.Add(new MapDoor(door));
+                    }
+                }
+                GridInfo.Echo("TileMap.Load: DefaultExit?");
+                if (parts.Length > 4) DefaultExit = parts[4] != "" ? new MapExit(parts[4]) : new MapExit();
+                GridInfo.Echo("TileMap.Load: NPCs?");
+                foreach (NPC npc in NPCs) _Screen.RemoveSprite(npc);
+                NPCs.Clear();
+                if (parts.Length > 5)
+                {
+                    GridInfo.Echo("TileMap.Load: NPCs");
+                    foreach (string npc in parts[5].Split('\n'))
+                    {
+                        if(npc != "") NPCs.Add(new NPC(npc, ref spriteSheet, ref gameData));
+                    }
+                }
+                foreach (NPC npc in NPCs){ _Screen.AddSprite(npc); npc.RotationOrScale = ground[0].RotationOrScale; }
                 ApplyViewportTiles();
+            }
+            public void Load(MapExit exit)
+            {
+                Load(exit.Id);
             }
             //-----------------------------------------------------------------------
             // Tile Map Viewport (visible area)
@@ -199,7 +298,7 @@ namespace IngameScript
                 {
                     for (int x = 0; x < ViewportSize.X; x++)
                     {
-                        char tile = GetTile(x, y);
+                        char tile = GetViewportTile(x, y);
                         if(tilesSet.tiles.ContainsKey(tile)) ground[i].Data = tilesSet.tiles[tile];
                         else ground[i].Data = "";
                         if (tilesSet.layers.ContainsKey('1') && tilesSet.layers['1'].Contains(tile) && tilesSet.tiles.ContainsKey(tile)) overlay[i].Data = tilesSet.tiles[tile]; // secrets
@@ -212,6 +311,11 @@ namespace IngameScript
                         else ceiling[i].Data = "";
                         i++;
                     }
+                }
+                foreach (NPC npc in NPCs)
+                {
+                    npc.Visible = IsWithinViewport((int)npc.MapPosition.X, (int)npc.MapPosition.Y);
+                    npc.Position = TilePosition((int)npc.MapPosition.X, (int)npc.MapPosition.Y);
                 }
             }
             // center the viewport on point x,y
@@ -259,6 +363,7 @@ namespace IngameScript
                 ceilingMap = newCeilingMap;
                 ApplyViewportTiles();
             }
+            //float fontSize { get { return TileSize.X / (RasterSprite.PIXEL_TO_SCREEN_RATIO * TileSet.tileSize.X); } }
             //-----------------------------------------------------------------------
             // IScreenSpriteProvider
             //-----------------------------------------------------------------------
@@ -306,6 +411,12 @@ namespace IngameScript
                     map += '\n';
                 }
                 this.map = map.Trim().Split('\n');
+                foreach (NPC npc in NPCs)
+                {
+                    npc.Visible = IsWithinViewport((int)npc.MapPosition.X, (int)npc.MapPosition.Y);
+                    npc.Position = TilePosition((int)npc.MapPosition.X, (int)npc.MapPosition.Y);
+                    screen.AddSprite(npc);
+                }
             }
             public void AddOveralyToScreen(Screen screen)
             {
@@ -361,17 +472,18 @@ namespace IngameScript
             //-----------------------------------------------------------------------
             // constructor
             //-----------------------------------------------------------------------
-            public TileMap(string game, int index = 0) : this(Vector2.Zero, game, index) { }
-            public TileMap(Vector2 viewportPosition, string game, int index = 0)
+            public TileMap(string game, ref CharacterSpriteLoader spriteSheet, ref GameData gameData, int index = 0) : this(Vector2.Zero, game, ref spriteSheet, ref gameData, index) { }
+            public TileMap(Vector2 viewportPosition, string game, ref CharacterSpriteLoader spriteSheet, ref GameData gameData, int index = 0)
             {
                 ViewportPosition = viewportPosition;
                 this.game = game;
                 this.index = index;
+                this.spriteSheet = spriteSheet;
                 // load the tile set
                 //tileSetAddress = game + ".TileSet.0.CustomData";
                 tilesSet = new TileSet(TileSet.GetTileSetFromGridDB(game, 0));
             }
-            public TileMap(Vector2 viewportPosition, Vector2 viewportSize, string game, int index = 0) : this(viewportPosition, game, index)
+            public TileMap(Vector2 viewportPosition, Vector2 viewportSize, string game, ref CharacterSpriteLoader spriteSheet, ref GameData gameData, int index = 0) : this(viewportPosition, game, ref spriteSheet, ref gameData, index)
             {
                 ViewportSize = viewportSize;
             }

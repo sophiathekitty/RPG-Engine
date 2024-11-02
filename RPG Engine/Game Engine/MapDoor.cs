@@ -23,45 +23,38 @@ namespace IngameScript
     partial class Program
     {
         //----------------------------------------------------------------------
-        // MapExit
+        // MapDoor
         //----------------------------------------------------------------------
-        public class MapExit
+        public class MapDoor
         {
             //----------------------------------------------------------------------
             // Fields
             //----------------------------------------------------------------------
-            public int Id { get; set; }
-            public int X { get; set; }
-            public int Y { get; set; }
-            public bool IsValid { get { return Id != -1; } }
+            public int X;
+            public int Y;
+            public MapExit exit;
             //----------------------------------------------------------------------
             // Constructor
             //----------------------------------------------------------------------
-            public MapExit(int id, int x, int y)
+            public MapDoor(int x, int y, MapExit exit)
             {
-                Id = id;
                 X = x;
                 Y = y;
+                this.exit = exit;
             }
-            public MapExit()
-            {
-                Id = -1;
-                X = 0;
-                Y = 0;
-            }
-            public MapExit(string data)
+            public MapDoor(string data)
             {
                 string[] parts = data.Split(',');
-                Id = int.Parse(parts[0]);
-                X = int.Parse(parts[1]);
-                Y = int.Parse(parts[2]);
+                X = int.Parse(parts[0]);
+                Y = int.Parse(parts[1]);
+                exit = new MapExit(parts[2] + "," + parts[3] + "," + parts[4]);
             }
             //----------------------------------------------------------------------
             // Methods
             //----------------------------------------------------------------------
             public override string ToString()
             {
-                return Id + "," + X + "," + Y;
+                return X + "," + Y + "," + exit;
             }
         }
         //----------------------------------------------------------------------

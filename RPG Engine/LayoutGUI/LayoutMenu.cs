@@ -50,8 +50,10 @@ namespace IngameScript
                 } 
             }
             public float FontSize { get; set; } = 0.5f;
-            public Color Color { get; set; } = Color.White;
+            //public Color Color { get; set; } = Color.White;
+            public Color ValueColor { get; set; } = Color.White;
             public Color SelectedColor { get; set; } = Color.Yellow;
+            public Color EditingColor { get; set; } = Color.Green;
             //----------------------------------------------------------------------
             // constructor
             //----------------------------------------------------------------------
@@ -81,12 +83,13 @@ namespace IngameScript
             {
                 if(editingIndex != -1)
                 {
-                    LayoutNumberSelect item = (LayoutNumberSelect)Items[editingIndex];
+                    ILayoutInteractable item = (ILayoutInteractable)Items[editingIndex];
                     if (item == null) return "error";
                     string cmd = item.Run();
                     if (cmd == "done" || cmd == "reset")
                     {
                         item.ValueColor = Color;
+                        Items[editingIndex].Color = SelectedColor;
                         editingIndex = -1;
                         ButtonPrompt = defualtPrompt;
                     }
@@ -110,8 +113,15 @@ namespace IngameScript
                         if (Items[SelectedIndex] is LayoutNumberSelect)
                         {
                             editingIndex = SelectedIndex;
-                            ((LayoutNumberSelect)Items[editingIndex]).ValueColor = SelectedColor;
+                            ((LayoutNumberSelect)Items[editingIndex]).ValueColor = EditingColor;
                             ButtonPrompt = ((LayoutNumberSelect )Items[editingIndex]).ButtonPrompt;
+                        }
+                        else if (Items[SelectedIndex] is ILayoutInteractable)
+                        {
+                            GridInfo.Echo("run menu: interactable");
+                            editingIndex = SelectedIndex;
+                            ButtonPrompt = ((ILayoutInteractable)Items[editingIndex]).ButtonPrompt;
+                            Items[SelectedIndex].Color = EditingColor;
                         }
                         else
                         {
