@@ -43,6 +43,7 @@ namespace IngameScript
                 Items.Add(spriteSelector);
                 // random walk (layout toggle)
                 Items.Add(new LayoutToggle("Random Walk",true, ref input));
+                Items.Add(new LayoutToggle("Guarded Space", false, ref input));
                 //---------------------------------------------------------------------------
                 // TODO - stuff like EnabledBool and GameAction stuff
                 //---------------------------------------------------------------------------
@@ -56,12 +57,14 @@ namespace IngameScript
                 spriteSelector.SpriteID = npc.SpriteID;
                 spriteSelector.Direction = npc.Direction;
                 ((LayoutToggle)Items[1]).Value = npc.randomWalk;
+                ((LayoutToggle)Items[2]).Value = npc.guardedSpace;
             }
             public NPC GetNPC()
             {
                 npc.SetSpriteID(spriteSelector.SpriteID,spriteSheet);
                 npc.Direction = spriteSelector.Direction;
                 npc.randomWalk = ((LayoutToggle)Items[1]).Value;
+                npc.guardedSpace = ((LayoutToggle)Items[2]).Value;
                 return npc;
             }
         }

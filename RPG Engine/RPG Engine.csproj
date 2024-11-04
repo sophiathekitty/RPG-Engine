@@ -61,6 +61,8 @@
     <Compile Include="Game Engine\MapExit.cs" />
     <Compile Include="Game Engine\NPC.cs" />
     <Compile Include="Game Engine\PlayerCharacter.cs" />
+    <Compile Include="Game Engine\PlayerSprite.cs" />
+    <Compile Include="Game Engine\PlayMode.cs" />
     <Compile Include="Game Engine\TileMap.cs" />
     <Compile Include="Game Engine\TileSet.cs" />
     <Compile Include="LayoutGUI\ILayoutInteractable.cs" />

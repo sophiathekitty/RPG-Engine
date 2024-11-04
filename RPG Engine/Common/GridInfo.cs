@@ -341,6 +341,18 @@ namespace IngameScript
             {
                 Command += handler;
             }
+            //---------------------------------------------------------------//
+            // random number generator                                       //
+            //---------------------------------------------------------------//
+            public static Random Random = new Random();
+            static int randomStep = 0;
+            public static int RandomInt(int min, int max)
+            {
+                int rnd = Random.Next(min, max) + randomStep;
+                rnd = rnd % (max - min);
+                randomStep = (randomStep + Random.Next(1, 10)) % (max - min); // add random step increment
+                return rnd + min;
+            }
         }
         //---------------------------------------------------------------//
         // GridInfo End                                                  //

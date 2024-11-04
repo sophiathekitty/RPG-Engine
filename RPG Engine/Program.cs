@@ -25,8 +25,11 @@ namespace IngameScript
         //=======================================================================
         // RPG Engine
         //=======================================================================
-        List<GameSeat> gameSeats = new List<GameSeat>();
+        //List<GameSeat> gameSeats = new List<GameSeat>();
+        MapEditor mapEditor;
+        PlayMode playMode;
         //TileSet tileSet;
+        bool playModeActive = false;
         public Program()
         {
             Echo("RPG Engine: booting...");
@@ -36,7 +39,9 @@ namespace IngameScript
             Echo("GridBlocks: initialized!");
             GridDB.Init();
             Echo("GridDB: initialized!");
-            gameSeats.Add(MapEditor.FindMainEditor());
+            //gameSeats.Add(MapEditor.FindMainEditor());
+            mapEditor = MapEditor.FindMainEditor();
+            playMode = PlayMode.FindMainPlayer();
             Echo("GameSeat: initialized!");
             Runtime.UpdateFrequency = UpdateFrequency.Update1;
             Echo("RPG Engine: booted!");
@@ -50,9 +55,32 @@ namespace IngameScript
         public void Main(string argument, UpdateType updateSource)
         {
             //Echo("RPG Engine\nrunning... "+GridInfo.RunCount++);
+            /*
             foreach (GameSeat seat in gameSeats)
             {
                 seat.Main(argument);
+            }
+            */
+            if(argument == "PlayMode")
+            {
+                if(playModeActive)
+                {
+                    playModeActive = false;
+                }
+                else
+                {
+                    playModeActive = true;
+                    // reset game....
+                    playMode.LoadGame("FinalFantasy");
+                }
+            }
+            if(playModeActive)
+            {
+                playMode.Main(argument);
+            }
+            else
+            {
+                mapEditor.Main(argument);
             }
         }
     }

@@ -47,9 +47,9 @@ namespace IngameScript
                 Items.Add(new LayoutNumberSelect("Width", 24, 12, 100, 1, 5, input));
                 Items.Add(new LayoutNumberSelect("Height", 24, 12, 100, 1, 5, input));
                 Items.Add(new LayoutNumberSelect("TileSet", 0, 0, TileSet.GetTileSetCount(game) - 1, 1, 5, input));
+                Items.Add(new LayoutNumberSelect("Exit ID", -1, -1, 100, 1, 5, input));
                 Items.Add(new LayoutNumberSelect("Exit X", 0, 0, 200, 1, 10, input));
                 Items.Add(new LayoutNumberSelect("Exit Y", 0, 0, 200, 1, 10, input));
-                Items.Add(new LayoutNumberSelect("Exit ID", -1, -1, 100, 1, 5, input));
                 Add("Apply");
             }
             //---------------------------------------------------------------------------

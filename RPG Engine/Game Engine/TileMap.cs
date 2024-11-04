@@ -68,7 +68,11 @@ namespace IngameScript
             int mapHeight { get { return map.Length; } }
             int mapWidth { get { return map[0].Length; } }
             string[] ceilingMap; // overlay that switches visible area when you're under it
-            public bool IsWall(int x, int y) { return tilesSet.layers.ContainsKey('w') && tilesSet.layers['w'].Contains(map[y][x]); }
+            public bool IsOnMap(int x, int y) { return x >= 0 && y >= 0 && x < mapWidth && y < mapHeight; }
+            public bool IsWall(int x, int y) { return IsOnMap(x, y) && tilesSet.layers.ContainsKey('w') && tilesSet.layers['w'].Contains(map[y][x]); }
+            public bool IsBoat(int x, int y) { return IsOnMap(x, y) && tilesSet.layers.ContainsKey('b') && tilesSet.layers['b'].Contains(map[y][x]); }
+            public bool IsShip(int x, int y) { return IsOnMap(x, y) && tilesSet.layers.ContainsKey('B') && tilesSet.layers['B'].Contains(map[y][x]); }
+            public bool IsGround(int x, int y) { return !IsWall(x, y) && !IsBoat(x, y) && !IsShip(x, y); }
             public MapDoor IsDoor(int x, int y)
             {
                 foreach (MapDoor door in Doors)
@@ -85,6 +89,7 @@ namespace IngameScript
                 }
                 return null;
             }
+            public float TileScale { get { return TileSize.X / (RasterSprite.PIXEL_TO_SCREEN_RATIO * TileSet.tileSize.X); } }
             public void SetNPC(NPC npc)
             {
                 // see if it exists
@@ -400,9 +405,9 @@ namespace IngameScript
                         ceiling.Add(ceilingSprite);
                         darknessSprite.Visible = false;
                         screen.AddSprite(sprite);
-                        screen.AddSprite(overlaySprite, 1);
-                        screen.AddSprite(ceilingSprite, 1);
-                        screen.AddSprite(darknessSprite, 1);
+                        screen.AddSprite(overlaySprite, 2);
+                        screen.AddSprite(ceilingSprite, 2);
+                        screen.AddSprite(darknessSprite, 2);
                         tilePos.X += tileSize.X;
                         map += '\uE100';
                     }

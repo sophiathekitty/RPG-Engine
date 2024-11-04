@@ -37,6 +37,7 @@ namespace IngameScript
             bool isEnabled = true;
             public string EnabledBool = ""; // name of bool to store if npc is enabled
             public bool randomWalk = false;
+            public bool guardedSpace = false; // if true, player cannot walk through this npc (but it will do the NPCs action)
             public bool Enabled { get { return isEnabled; } set { Visible = isEnabled = value; } }
             //---------------------------------------------------------------------------
             // constructor
@@ -60,7 +61,8 @@ namespace IngameScript
                 Direction = pos[2][0];
                 GridInfo.Echo("Direction: " + Direction);
                 randomWalk = bool.Parse(parts[2]);
-                EnabledBool = parts[3];
+                guardedSpace = bool.Parse(parts[3]);
+                EnabledBool = parts[4];
                 GridInfo.Echo("EnabledBool: " + EnabledBool);
                 if (EnabledBool != "" && gd.Bools.ContainsKey(EnabledBool))
                 {
@@ -120,6 +122,7 @@ namespace IngameScript
                 sb.Append(spriteID).Append(';');
                 sb.Append(MapPosition.X).Append(',').Append(MapPosition.Y).Append(',').Append(Direction).Append(';');
                 sb.Append(randomWalk).Append(';');
+                sb.Append(guardedSpace).Append(';');
                 sb.Append(EnabledBool).Append(';');
                 sb.Append("ActionsPlaceHolder");
                 return sb.ToString();

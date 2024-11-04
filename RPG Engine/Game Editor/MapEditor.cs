@@ -115,7 +115,7 @@ namespace IngameScript
                 cursor.Size = tileMap.TileSize;
                 cursor.Position = tileMap.ViewportPosition;
                 cursor.Visible = false;
-                AddSprite(cursor,2);
+                AddSprite(cursor,4);
                 // mape info
                 GridInfo.Echo("Creating Map Info");
                 mapInfoDisplay = new LayoutArea(new Vector2(0, 200), new Vector2(60, 30), new Vector2(5, 5));
@@ -241,13 +241,13 @@ namespace IngameScript
                     inputPrompt.Data = loadMapSelecter.ButtonPrompt;
                     loadMapSelecter.MaxMapIndex = TileMap.GetMapCount(game) - 1;
                     loadMapSelecter.Reset();
-                    AddSprite(loadMapSelecter,3);
+                    AddSprite(loadMapSelecter,4);
                 }
                 else if (result == "New")
                 {
                     focused = "create";
                     mainMenu.SelectedIndex = -1;
-                    AddSprite(createMapForm, 3);
+                    AddSprite(createMapForm, 4);
                 }
                 else if (result == "Options")
                 {
@@ -256,7 +256,7 @@ namespace IngameScript
                     mapOptionsForm.MapSize = tileMap.Size;
                     mapOptionsForm.TileSetIndex = tileMap.tileSetIndex;
                     mapOptionsForm.Exit = tileMap.DefaultExit;
-                    AddSprite(mapOptionsForm, 3);
+                    AddSprite(mapOptionsForm, 4);
                 }
                 else if (result == "Doors")
                 {
@@ -299,7 +299,7 @@ namespace IngameScript
                         cursor.Color = Color.Red;
                         cursor.Visible = false;
                         doors.Add(cursor);
-                        AddSprite(cursor, 2);
+                        AddSprite(cursor, 3);
                     }
                 }
                 else if (result == "") return;
@@ -385,7 +385,7 @@ namespace IngameScript
                         doorInfoForm.Exit = door.exit;
                     }
                     focused = "doorOptions";
-                    AddSprite(doorInfoForm, 3);
+                    AddSprite(doorInfoForm, 4);
                     inputPrompt.Data = doorInfoForm.ButtonPrompt;
                 }
             }
@@ -410,7 +410,7 @@ namespace IngameScript
                         cursor.Color = Color.Red;
                         cursor.Visible = true;
                         doors.Add(cursor);
-                        AddSprite(cursor, 2);
+                        AddSprite(cursor, 3);
                     }
                 }
                 else if (result == "Remove")
@@ -454,7 +454,7 @@ namespace IngameScript
                         npcOptions.SetNPC(ref npc);
                     }
                     focused = "npcOptions";
-                    AddSprite(npcOptions, 3);
+                    AddSprite(npcOptions, 4);
                     inputPrompt.Data = npcOptions.ButtonPrompt;
                 }
             }

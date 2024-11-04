@@ -32,6 +32,8 @@ namespace IngameScript
             //-----------------------------------------------------------------------
             // game settings (some also used for save data)
             public string gameName;
+            public Vector2 playerPos = Vector2.Zero;
+            public int mapIndex = 0;
             public bool actionMenu = false; // dragon warrior style action menu for all interactions with NPCs
             public int maxPartySize = 4; // max number of characters in the party
             public Dictionary<string, bool> Bools = new Dictionary<string, bool>();
@@ -50,8 +52,13 @@ namespace IngameScript
                 gameName = game;
                 string Data = GridDB.Get(gameName + ".GameData.0.CustomData");
                 string[] parts = Data.Split('║');
+                string[] playerStart = parts[0].Split(',');
+                if(playerStart.Length < 3) return;
+                playerPos = new Vector2(float.Parse(playerStart[0]), float.Parse(playerStart[1]));
+                mapIndex = int.Parse(playerStart[2]);
                 // bools
-                string[] bools = parts[0].Split('\n');
+                if (parts.Length < 2) return;
+                string[] bools = parts[1].Split('\n');
                 foreach (string b in bools)
                 {
                     if(!b.Contains(":")) continue;
@@ -61,9 +68,9 @@ namespace IngameScript
                         Bools.Add(bParts[0].Trim(), bool.Parse(bParts[1].Trim()));
                     }
                 }
-                if(parts.Length < 2) return;
+                if(parts.Length < 3) return;
                 // numbers
-                string[] numbers = parts[1].Split('\n');
+                string[] numbers = parts[2].Split('\n');
                 foreach (string n in numbers)
                 {
                     if (!n.Contains(":")) continue;
@@ -73,9 +80,9 @@ namespace IngameScript
                         Numbers.Add(nParts[0].Trim(), double.Parse(nParts[1].Trim()));
                     }
                 }
-                if (parts.Length < 3) return;
+                if (parts.Length < 4) return;
                 // actions
-                string[] actions = parts[2].Split('\n');
+                string[] actions = parts[3].Split('\n');
                 foreach (string a in actions)
                 {
                     if (!a.Contains("═")) continue;
