@@ -111,6 +111,7 @@ namespace IngameScript
                 AddSprite(tileLayer);
                 AddSprite(tileMap);
                 tileMap.CreateMap(32, 24);
+                tileMap.IsEditorMode = true;
                 cursor = new MapCursor();
                 cursor.Size = tileMap.TileSize;
                 cursor.Position = tileMap.ViewportPosition;

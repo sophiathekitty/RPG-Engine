@@ -183,8 +183,9 @@ namespace IngameScript
                             if (map.DefaultExit != null && map.DefaultExit.IsValid)
                             {
                                 //GridInfo.Echo("Player out of bounds, loading default exit");
-                                map.Load(map.DefaultExit);
-                                player.MapPosition = new Vector2(map.DefaultExit.X, map.DefaultExit.Y);
+                                MapExit exit = map.DefaultExit;
+                                map.Load(exit);
+                                player.MapPosition = new Vector2(exit.X, exit.Y);
                             }
                         }
                         else
