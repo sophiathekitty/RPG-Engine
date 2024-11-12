@@ -30,7 +30,7 @@ namespace IngameScript
             CharacterSpriteLoader spriteSheet;
             NPC npc;
             CharacterSpriteSelector spriteSelector;
-            public NPCOptions(GameInput input, ref CharacterSpriteLoader spriteSheet) : base(new Vector2(100, 100), new Vector2(200, 200), new Vector2(5, 5), input, Color.Black, Color.White, 1f)
+            public NPCOptions(GameInput input, CharacterSpriteLoader spriteSheet, GameData gameData) : base(new Vector2(100, 100), new Vector2(300, 200), new Vector2(5, 5), input, Color.Black, Color.White, 1f)
             {
                 this.spriteSheet = spriteSheet;
                 // title
@@ -39,11 +39,13 @@ namespace IngameScript
                 title.Padding = new Vector2(0, -15);
                 extras.Add(title);
                 // sprite selector
-                spriteSelector = new CharacterSpriteSelector(Position, 0.1f, Vector2.Zero, ref spriteSheet, ref input);
+                spriteSelector = new CharacterSpriteSelector(Position, 0.1f, Vector2.Zero, spriteSheet, input);
                 Items.Add(spriteSelector);
                 // random walk (layout toggle)
                 Items.Add(new LayoutToggle("Random Walk",true, ref input));
                 Items.Add(new LayoutToggle("Guarded Space", false, ref input));
+                Items.Add(new LayoutGameDataKeySelector("Enabled Bool", LayoutGameDataKeySelector.KeyType.Bool, input, gameData));
+                Items.Add(new LayoutGameDataKeySelector("Game Action", LayoutGameDataKeySelector.KeyType.Action, input, gameData));
                 //---------------------------------------------------------------------------
                 // TODO - stuff like EnabledBool and GameAction stuff
                 //---------------------------------------------------------------------------
@@ -58,6 +60,8 @@ namespace IngameScript
                 spriteSelector.Direction = npc.Direction;
                 ((LayoutToggle)Items[1]).Value = npc.randomWalk;
                 ((LayoutToggle)Items[2]).Value = npc.guardedSpace;
+                ((LayoutGameDataKeySelector)Items[3]).ValueString = npc.EnabledBool;
+                ((LayoutGameDataKeySelector)Items[4]).ValueString = npc.InteractAction;
             }
             public NPC GetNPC()
             {
@@ -65,6 +69,8 @@ namespace IngameScript
                 npc.Direction = spriteSelector.Direction;
                 npc.randomWalk = ((LayoutToggle)Items[1]).Value;
                 npc.guardedSpace = ((LayoutToggle)Items[2]).Value;
+                npc.EnabledBool = ((LayoutGameDataKeySelector)Items[3]).ValueString;
+                npc.InteractAction = ((LayoutGameDataKeySelector)Items[4]).ValueString;
                 return npc;
             }
         }

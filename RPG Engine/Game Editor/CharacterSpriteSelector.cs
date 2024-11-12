@@ -107,7 +107,7 @@ namespace IngameScript
             //---------------------------------------------------------------------------
             // constructor
             //---------------------------------------------------------------------------
-            public CharacterSpriteSelector(Vector2 position, float scale, Vector2 size, ref CharacterSpriteLoader spriteLoader, ref GameInput input)
+            public CharacterSpriteSelector(Vector2 position, float scale, Vector2 size, CharacterSpriteLoader spriteLoader, GameInput input)
             {
                 GridInfo.Echo("CharacterSpriteSelector");
                 this.spriteLoader = spriteLoader;
@@ -128,12 +128,12 @@ namespace IngameScript
                 bool changed = false;
                 if(input.WPressed)
                 {
-                    spriteID++;
+                    spriteID--;
                     changed = true;
                 }
                 else if (input.SPressed)
                 {
-                    spriteID--;
+                    spriteID++;
                     changed = true;
                 }
                 else if (input.APressed)
@@ -171,7 +171,7 @@ namespace IngameScript
                 screen.AddSprite(border, layer);
             }
 
-            void IScreenSpriteProvider.RemoveFromScreen(Screen screen)
+            public void RemoveFromScreen(Screen screen)
             {
                 screen.RemoveSprite(sprite);
                 screen.RemoveSprite(border);

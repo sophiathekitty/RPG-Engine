@@ -30,6 +30,7 @@ namespace IngameScript
             string ButtonPrompt { get; set; }
             Color ValueColor { get; set; }
             string Run();
+            void RemoveFromScreen(Screen screen);
         }
         //----------------------------------------------------------------------
     }

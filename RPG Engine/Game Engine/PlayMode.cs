@@ -76,94 +76,150 @@ namespace IngameScript
             TileMap map;
             GameData gameData;
             CharacterSpriteLoader spriteSheet;
-            GameInput input;
+            //GameInput input;
             PlayerSprite player;
             string game = "FinalFantasy";
+            GameUILayoutBuilder uiBuilder;
+            //Stack<MapExit> mapExits = new Stack<MapExit>();
+            Vector2 InteractPos 
+            { 
+                get 
+                { 
+                    switch(player.Direction)
+                    {
+                        case 'u': return player.MapPosition + new Vector2(0, -1);
+                        case 'd': return player.MapPosition + new Vector2(0, 1);
+                        case 'l': return player.MapPosition + new Vector2(-1, 0);
+                        case 'r': return player.MapPosition + new Vector2(1, 0);
+                        default: return player.MapPosition;
+                    }
+                }
+            }
+            Vector2 CounterInteractPos // one extra step away
+            {
+                get
+                {
+                    switch (player.Direction)
+                    {
+                        case 'u': return player.MapPosition + new Vector2(0, -2);
+                        case 'd': return player.MapPosition + new Vector2(0, 2);
+                        case 'l': return player.MapPosition + new Vector2(-2, 0);
+                        case 'r': return player.MapPosition + new Vector2(2, 0);
+                        default: return player.MapPosition;
+                    }
+                }
+            }
             //---------------------------------------------------------------------------
             // constructor
             //---------------------------------------------------------------------------
             public PlayMode(IMyTextSurface drawingSurface, GameInput gameInput, IMySoundBlock musicBlock, IMySoundBlock fxBlock) : base(drawingSurface, gameInput, musicBlock, fxBlock)
             {
-                GridInfo.Echo("Play Mode");
                 BackgroundColor = new Color(0, 10, 20);
                 spriteSheet = new CharacterSpriteLoader(GridDB.Get(game + ".Sprites.0.CustomData"));
-                gameData = new GameData(game);
-                GridInfo.Echo("Creating TileMap");
-                map = new TileMap(game, ref spriteSheet, ref gameData);
+                uiBuilder = new GameUILayoutBuilder(gameInput);
+                
+                gameData = new GameData(game, uiBuilder);
+                map = new TileMap(game, spriteSheet, gameData);
                 AddSprite(map);
-                input = gameInput;
-                player = new PlayerSprite(Vector2.Zero, map.TileScale, spriteSheet.LoadSpriteSet(0));
+                player = new PlayerSprite(Vector2.Zero, map.TileScale, spriteSheet.LoadSpriteSet(0), spriteSheet);
                 AddSprite(player,1);
+                AddSprite(uiBuilder);
             }
             public void LoadGame(string game)
             {
                 RemoveSprite(map);
                 RemoveSprite(player);
+                RemoveSprite(uiBuilder);
+
                 this.game = game;
                 spriteSheet = new CharacterSpriteLoader(GridDB.Get(game + ".Sprites.0.CustomData"));
-                gameData = new GameData(game);
-                map = new TileMap(game, ref spriteSheet, ref gameData);
+                gameData = new GameData(game,uiBuilder);
+                map = new TileMap(game, spriteSheet, gameData);
                 AddSprite(map);
-                player = new PlayerSprite(Vector2.Zero, map.TileScale, spriteSheet.LoadSpriteSet(0));
+                player = new PlayerSprite(Vector2.Zero, map.TileScale, spriteSheet.LoadSpriteSet(0),spriteSheet);
                 player.MapPosition = gameData.playerPos;
                 map.Load(gameData.mapIndex);
                 map.CenterOn(player.MapPosition);
                 player.Position = map.TilePosition((int)player.MapPosition.X, (int)player.MapPosition.Y);
                 AddSprite(player, 1);
+                gameData.playerSprite = player;
+                gameData.map = map;
             }
             //---------------------------------------------------------------------------
             // main loop
             //---------------------------------------------------------------------------
             public override void Main(string argument)
             {
-                Vector2 move = Vector2.Zero;
-                if (input.WPressed)
+                string cmd = uiBuilder.Run();
+                if(cmd == "go")
                 {
-                    if(map.IsGround((int)player.MapPosition.X, (int)player.MapPosition.Y - 1)) move.Y = -1;
-                    player.Direction = 'u';
-                }
-                else if (input.SPressed)
-                {
-                    if (map.IsGround((int)player.MapPosition.X, (int)player.MapPosition.Y + 1)) move.Y = 1;
-                    player.Direction = 'd';
-                }
-                else if (input.APressed)
-                {
-                    if (map.IsGround((int)player.MapPosition.X - 1, (int)player.MapPosition.Y)) move.X = -1;
-                    player.Direction = 'l';
-                }
-                else if (input.DPressed)
-                {
-                    if (map.IsGround((int)player.MapPosition.X + 1, (int)player.MapPosition.Y)) move.X = 1;
-                    player.Direction = 'r';
-                }
-                if (move != Vector2.Zero)
-                {
-                    player.MapPosition += move;
-                    GridInfo.Echo("Player Position: " + player.MapPosition + ", Map Size: " + map.Size);
-                    if (player.MapPosition.X < 0 || player.MapPosition.X >= map.Size.X || player.MapPosition.Y < 0 || player.MapPosition.Y >= map.Size.Y)
+                    Vector2 move = Vector2.Zero;
+                    if (input.WPressed)
                     {
-                        if (map.DefaultExit != null && map.DefaultExit.IsValid)
+                        move.Y = -1;
+                        player.Direction = 'u';
+                    }
+                    else if (input.SPressed)
+                    {
+                        move.Y = 1;
+                        player.Direction = 'd';
+                    }
+                    else if (input.APressed)
+                    {
+                        move.X = -1;
+                        player.Direction = 'l';
+                    }
+                    else if (input.DPressed)
+                    {
+                        move.X = 1;
+                        player.Direction = 'r';
+                    }
+                    if (map.IsGround(player.MapPosition + move))
+                    {
+                        player.MapPosition += move;
+                        //GridInfo.Echo("Player Position: " + player.MapPosition + ", Map Size: " + map.Size);
+                        if (player.MapPosition.X < 0 || player.MapPosition.X >= map.Size.X || player.MapPosition.Y < 0 || player.MapPosition.Y >= map.Size.Y)
                         {
-                            GridInfo.Echo("Player out of bounds, loading default exit");
-                            map.Load(map.DefaultExit);
-                            player.MapPosition = new Vector2(map.DefaultExit.X, map.DefaultExit.Y);
+                            if (map.DefaultExit != null && map.DefaultExit.IsValid)
+                            {
+                                //GridInfo.Echo("Player out of bounds, loading default exit");
+                                map.Load(map.DefaultExit);
+                                player.MapPosition = new Vector2(map.DefaultExit.X, map.DefaultExit.Y);
+                            }
+                        }
+                        else
+                        {
+                            //GridInfo.Echo("Checking for door");
+                            MapDoor door = map.IsDoor((int)player.MapPosition.X, (int)player.MapPosition.Y);
+                            if (door != null)
+                            {
+                                //GridInfo.Echo("Player at door, loading exit");
+                                map.Load(door.exit);
+                                player.MapPosition = new Vector2(door.exit.X, door.exit.Y);
+                            }
+                        }
+                        //GridInfo.Echo("Centering on player");
+                        map.CenterOn(player.MapPosition);
+                        player.Position = map.TilePosition((int)player.MapPosition.X, (int)player.MapPosition.Y);
+                    }
+                    // interact
+                    if (input.SpacePressed)
+                    {
+                        NPC npc = map.GetNPC(InteractPos);
+                        if (npc != null)
+                        {
+                            if (gameData.Actions.ContainsKey(npc.InteractAction)) gameData.Actions[npc.InteractAction].Execute();
+                        }
+                        else if (map.IsCounter(InteractPos))
+                        {
+                            NPC counter = map.GetNPC(CounterInteractPos);
+                            if (counter != null)
+                            {
+                                if (gameData.Actions.ContainsKey(counter.InteractAction)) gameData.Actions[counter.InteractAction].Execute();
+                            }
                         }
                     }
-                    else
-                    {
-                        GridInfo.Echo("Checking for door");
-                        MapDoor door = map.IsDoor((int)player.MapPosition.X, (int)player.MapPosition.Y);
-                        if (door != null)
-                        {
-                            GridInfo.Echo("Player at door, loading exit");
-                            map.Load(door.exit);
-                            player.MapPosition = new Vector2(door.exit.X, door.exit.Y);
-                        }
-                    }
-                    GridInfo.Echo("Centering on player");
-                    map.CenterOn(player.MapPosition);
-                    player.Position = map.TilePosition((int)player.MapPosition.X, (int)player.MapPosition.Y);
+
                 }
                 base.Main(argument);
             }

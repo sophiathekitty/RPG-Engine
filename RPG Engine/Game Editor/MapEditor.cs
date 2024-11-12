@@ -99,9 +99,9 @@ namespace IngameScript
                 GridInfo.Echo("Map Editor");
                 BackgroundColor = new Color(0, 10, 20);
                 spriteSheet = new CharacterSpriteLoader(GridDB.Get(game + ".Sprites.0.CustomData"));
-                gameData = new GameData(game);
+                gameData = new GameData(game, null);
                 GridInfo.Echo("Creating TileMap");
-                tileMap = new TileMap(new Vector2(60,30), new Vector2(24,24), game, ref spriteSheet, ref gameData);
+                tileMap = new TileMap(new Vector2(60,30), new Vector2(24,24), game, spriteSheet, gameData);
                 tilePreview = new ScreenSprite(ScreenSprite.ScreenSpriteAnchor.TopLeft, new Vector2(10, 10), 0.1f, Vector2.Zero, Color.White, "Monospace", "",TextAlignment.LEFT, SpriteType.TEXT);
                 tileLayer = new ScreenSprite(ScreenSprite.ScreenSpriteAnchor.TopLeft, new Vector2(56, 58), 0.5f, Vector2.Zero, Color.White, "Monospace", "", TextAlignment.RIGHT, SpriteType.TEXT);
                 currentTile = tileMap.tilesSet.tiles.Keys.ToArray()[tileIndex];
@@ -159,7 +159,7 @@ namespace IngameScript
                 // npc info form
                 GridInfo.Echo("Creating NPC Sprite Sheet");
                 GridInfo.Echo("Creating NPC Options");
-                npcOptions = new NPCOptions(input, ref spriteSheet);
+                npcOptions = new NPCOptions(input, spriteSheet, gameData);
                 npcOptions.ApplyLayout();
             }
             //-----------------------------------------------------------------------
@@ -241,6 +241,8 @@ namespace IngameScript
                     inputPrompt.Data = loadMapSelecter.ButtonPrompt;
                     loadMapSelecter.MaxMapIndex = TileMap.GetMapCount(game) - 1;
                     loadMapSelecter.Reset();
+                    loadMapSelecter = new LoadMapSelecter(new Vector2(100, 100), new Vector2(100, 120), new Vector2(5, 5), input, TileMap.GetMapCount(game) - 1);
+                    loadMapSelecter.ApplyLayout();
                     AddSprite(loadMapSelecter,4);
                 }
                 else if (result == "New")
@@ -378,6 +380,8 @@ namespace IngameScript
                 if (MoveCursor()) ApplyDoorsOverlay();
                 if (input.SpacePressed)
                 {
+                    doorInfoForm = new DoorInfoForm(input, game);
+                    doorInfoForm.ApplyLayout();
                     MapDoor door = tileMap.IsDoor((int)cursorPosition.X, (int)cursorPosition.Y);
                     if (door != null)
                     {

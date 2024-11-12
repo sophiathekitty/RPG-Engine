@@ -36,27 +36,40 @@ namespace IngameScript
             public int mapIndex = 0;
             public bool actionMenu = false; // dragon warrior style action menu for all interactions with NPCs
             public int maxPartySize = 4; // max number of characters in the party
-            public Dictionary<string, bool> Bools = new Dictionary<string, bool>();
-            public Dictionary<string, double> Numbers = new Dictionary<string, double>();
+            public Dictionary<string, bool> Bools = new Dictionary<string, bool>(); // also save data
+            public Dictionary<string, int> Ints = new Dictionary<string, int>(); // also save data
+            public Dictionary<string, string> Strings = new Dictionary<string, string>();
             public Dictionary<string, GameAction> Actions = new Dictionary<string, GameAction>();
+            public Dictionary<string,List<string>> Lists = new Dictionary<string, List<string>>();
+            //string actionsTemp = "";
             // save data
             public int saveIndex = 0;
             public Dictionary<string, int> Inventory = new Dictionary<string, int>();
             public List<PlayerCharacter> CharacterList = new List<PlayerCharacter>();
             public List<EnemyCombatant> EnemyList = new List<EnemyCombatant>();
+            // game objects
+            public PlayerSprite playerSprite;
+            public NPC npc;
+            public TileMap map;
+            public Stack<MapExit> ExitStack = new Stack<MapExit>();
             //-----------------------------------------------------------------------
             // constructor
             //-----------------------------------------------------------------------
-            public GameData(string game)
+            public GameData(string game, GameUILayoutBuilder uiBuilder)
             {
                 gameName = game;
                 string Data = GridDB.Get(gameName + ".GameData.0.CustomData");
                 string[] parts = Data.Split('║');
+                //
+                // player start
+                //
                 string[] playerStart = parts[0].Split(',');
                 if(playerStart.Length < 3) return;
                 playerPos = new Vector2(float.Parse(playerStart[0]), float.Parse(playerStart[1]));
                 mapIndex = int.Parse(playerStart[2]);
+                //
                 // bools
+                //
                 if (parts.Length < 2) return;
                 string[] bools = parts[1].Split('\n');
                 foreach (string b in bools)
@@ -69,7 +82,9 @@ namespace IngameScript
                     }
                 }
                 if(parts.Length < 3) return;
-                // numbers
+                //
+                // ints
+                //
                 string[] numbers = parts[2].Split('\n');
                 foreach (string n in numbers)
                 {
@@ -77,19 +92,36 @@ namespace IngameScript
                     string[] nParts = n.Split(':');
                     if (nParts.Length == 2)
                     {
-                        Numbers.Add(nParts[0].Trim(), double.Parse(nParts[1].Trim()));
+                        Ints.Add(nParts[0].Trim(), int.Parse(nParts[1].Trim()));
                     }
                 }
                 if (parts.Length < 4) return;
+                //
+                // strings
+                //
+                string[] strings = parts[3].Split('═');
+                foreach (string s in strings)
+                {
+                    if (!s.Contains("╗")) continue;
+                    string[] sParts = s.Split('╗');
+                    if (sParts.Length == 2)
+                    {
+                        GridInfo.Echo("Adding string: " + sParts[0].Trim() + " = " + sParts[1].Trim().Replace("\r\n","\n").Replace("\r", "\n"));
+                        Strings.Add(sParts[0].Trim(), sParts[1].Trim());
+                    }
+                }
+                if (parts.Length < 5) return;
+                //
                 // actions
-                string[] actions = parts[3].Split('\n');
+                //
+                string[] actions = parts[4].Split('═');
                 foreach (string a in actions)
                 {
-                    if (!a.Contains("═")) continue;
-                    string[] aParts = a.Split('═');
+                    if (!a.Contains("╗")) continue;
+                    string[] aParts = a.Split('╗');
                     if (aParts.Length == 2)
                     {
-                        Actions.Add(aParts[0].Trim(), new GameAction(aParts[1].Trim()));
+                        Actions.Add(aParts[0].Trim(), new GameAction(aParts[1].Trim(),this,uiBuilder));
                     }
                 }
             }

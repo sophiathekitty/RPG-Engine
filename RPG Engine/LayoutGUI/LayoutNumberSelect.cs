@@ -32,11 +32,11 @@ namespace IngameScript
             //----------------------------------------------------------------------
             public string ButtonPrompt { get; set; } = "A/D: change, W/S: change more, Q: reset, Space: done";
             public float MinValue { get; set; } = 0;
-            public float MaxValue { get; set; } = 100;
+            public virtual float MaxValue { get; set; } = 100;
             public float Step { get; set; } = 1;
             public float BigStep { get; set; } = 10;
             float _value;
-            float previousValue;
+            public float previousValue;
             public float StartValue
             {
                 get
@@ -45,11 +45,12 @@ namespace IngameScript
                 }
                 set
                 {
-                    _value = value;
+                    //_value = value;
                     previousValue = value;
+                    Value = value;
                 }
             }
-            public float Value
+            public virtual float Value
             {
                 get
                 {

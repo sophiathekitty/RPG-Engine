@@ -41,8 +41,8 @@ namespace IngameScript
                 title.Padding = new Vector2(0, -15);
                 extras.Add(title);
                 Items.Add(new LayoutNumberSelect("Map", 0, 0, TileMap.GetMapCount(game) - 1, 1, 5, input));
-                Items.Add(new LayoutNumberSelect("X", 24, 12, 100, 1, 5, input));
-                Items.Add(new LayoutNumberSelect("Y", 24, 12, 100, 1, 5, input));
+                Items.Add(new LayoutNumberSelect("X", 24, 0, 256, 1, 5, input));
+                Items.Add(new LayoutNumberSelect("Y", 24, 0, 256, 1, 5, input));
                 Add("Save");
                 Add("Remove");
             }

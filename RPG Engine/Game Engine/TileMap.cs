@@ -72,7 +72,10 @@ namespace IngameScript
             public bool IsWall(int x, int y) { return IsOnMap(x, y) && tilesSet.layers.ContainsKey('w') && tilesSet.layers['w'].Contains(map[y][x]); }
             public bool IsBoat(int x, int y) { return IsOnMap(x, y) && tilesSet.layers.ContainsKey('b') && tilesSet.layers['b'].Contains(map[y][x]); }
             public bool IsShip(int x, int y) { return IsOnMap(x, y) && tilesSet.layers.ContainsKey('B') && tilesSet.layers['B'].Contains(map[y][x]); }
-            public bool IsGround(int x, int y) { return !IsWall(x, y) && !IsBoat(x, y) && !IsShip(x, y); }
+            public bool IsCounter(int x, int y) { return IsOnMap(x, y) && tilesSet.layers.ContainsKey('c') && tilesSet.layers['c'].Contains(map[y][x]); }
+            public bool IsCounter(Vector2 position) { return IsCounter((int)position.X, (int)position.Y); }
+            public bool IsGround(int x, int y) { return !IsWall(x, y) && !IsBoat(x, y) && !IsShip(x, y) && !IsCounter(x, y) && !NPCBlocksSpot(x, y); }
+            public bool IsGround(Vector2 position) { return IsGround((int)position.X, (int)position.Y); }
             public MapDoor IsDoor(int x, int y)
             {
                 foreach (MapDoor door in Doors)
@@ -88,6 +91,16 @@ namespace IngameScript
                     if (npc.MapPosition.X == x && npc.MapPosition.Y == y) return npc;
                 }
                 return null;
+            }
+            public NPC GetNPC(Vector2 position)
+            {
+                return GetNPC((int)position.X, (int)position.Y);
+            }
+            public bool NPCBlocksSpot(int x, int y)
+            {
+                NPC npc = GetNPC(x, y);
+                if (npc == null) return false;
+                return npc.Enabled && !npc.guardedSpace;
             }
             public float TileScale { get { return TileSize.X / (RasterSprite.PIXEL_TO_SCREEN_RATIO * TileSet.tileSize.X); } }
             public void SetNPC(NPC npc)
@@ -162,7 +175,7 @@ namespace IngameScript
             }
             public Vector2 TilePosition(int x, int y) 
             {
-                GridInfo.Echo("TileMap.TilePosition: "+x+","+y);
+                //GridInfo.Echo("TileMap.TilePosition: "+x+","+y);
                 // fit x,y into the map range
                 x %= map[0].Length;
                 y %= map.Length;
@@ -233,7 +246,7 @@ namespace IngameScript
             }
             public void Load(int index)
             {
-                GridInfo.Echo("TileMap.Load: " + index);
+                //GridInfo.Echo("TileMap.Load: " + index);
                 this.index = index;
                 string data = GetMapDB(game, index);
                 string[] parts = data.Split('║');
@@ -242,27 +255,27 @@ namespace IngameScript
                 tilesSet = new TileSet(TileSet.GetTileSetFromGridDB(game, tileSetIndex));
                 map = parts[1].Split('\n');
                 ceilingMap = parts[2].Split('\n');
-                GridInfo.Echo("TileMap.Load: Doors?");
+                //GridInfo.Echo("TileMap.Load: Doors?");
                 Doors.Clear();
                 if (parts.Length > 3)
                 {
-                    GridInfo.Echo("TileMap.Load: Doors");
+                    //GridInfo.Echo("TileMap.Load: Doors");
                     foreach (string door in parts[3].Split('\n'))
                     {
                         if(door != "") Doors.Add(new MapDoor(door));
                     }
                 }
-                GridInfo.Echo("TileMap.Load: DefaultExit?");
+                //GridInfo.Echo("TileMap.Load: DefaultExit?");
                 if (parts.Length > 4) DefaultExit = parts[4] != "" ? new MapExit(parts[4]) : new MapExit();
-                GridInfo.Echo("TileMap.Load: NPCs?");
+                //GridInfo.Echo("TileMap.Load: NPCs?");
                 foreach (NPC npc in NPCs) _Screen.RemoveSprite(npc);
                 NPCs.Clear();
                 if (parts.Length > 5)
                 {
-                    GridInfo.Echo("TileMap.Load: NPCs");
+                    //GridInfo.Echo("TileMap.Load: NPCs");
                     foreach (string npc in parts[5].Split('\n'))
                     {
-                        if(npc != "") NPCs.Add(new NPC(npc, ref spriteSheet, ref gameData));
+                        if(npc != "") NPCs.Add(new NPC(npc, spriteSheet, gameData));
                     }
                 }
                 foreach (NPC npc in NPCs){ _Screen.AddSprite(npc); npc.RotationOrScale = ground[0].RotationOrScale; }
@@ -332,6 +345,13 @@ namespace IngameScript
                 if (MapPosition.Y < 0) MapPosition.Y = 0;
                 if (MapPosition.X + ViewportSize.X >= map[0].Length) MapPosition.X = map[0].Length - ViewportSize.X;
                 if (MapPosition.Y + ViewportSize.Y >= map.Length) MapPosition.Y = map.Length - ViewportSize.Y;
+                // check if player is under ceiling
+                if(IsUnderCeiling((int)MapPosition.X, (int)MapPosition.Y) != underCeiling)
+                {
+                    underCeiling = !underCeiling;
+                    if (underCeiling) HideCeiling(Color.Gray);
+                    else ShowCeiling();
+                }
                 ApplyViewportTiles();
             }
             public void CenterOn(Vector2 position)
@@ -368,13 +388,56 @@ namespace IngameScript
                 ceilingMap = newCeilingMap;
                 ApplyViewportTiles();
             }
+            public void DimCeiling()
+            {
+                foreach (ScreenSprite sprite in ceiling)
+                {
+                    sprite.Visible = true;
+                    sprite.Color = new Color(Color.White, 0.5f);
+                }
+            }
+            public void UnDimCeiling()
+            {
+                foreach (ScreenSprite sprite in ceiling)
+                {
+                    sprite.Visible = true;
+                    sprite.Color = Color.White;
+                }
+            }
+            bool playerUnderCeiling = false;
+            public void HideCeiling(Color NotUnderCeilingTileColor)
+            {
+                for(int i = 0; i < ceiling.Count; i++)
+                {
+                    if (ceiling[i].Data == "")
+                    {
+                        ground[i].Color = NotUnderCeilingTileColor;
+                        overlay[i].Color = NotUnderCeilingTileColor;
+                    }
+                    else
+                    {
+                        ground[i].Color = Color.White;
+                        overlay[i].Color = Color.White;
+                    }
+                    ceiling[i].Visible = false;
+                }
+            }
+            public void ShowCeiling()
+            {
+                for (int i = 0; i < ceiling.Count; i++)
+                {
+                    ground[i].Color = Color.White;
+                    overlay[i].Color = Color.White;
+                    ceiling[i].Visible = true;
+                }
+            }
             //float fontSize { get { return TileSize.X / (RasterSprite.PIXEL_TO_SCREEN_RATIO * TileSet.tileSize.X); } }
             //-----------------------------------------------------------------------
             // IScreenSpriteProvider
             //-----------------------------------------------------------------------
             public void AddToScreen(Screen screen, int layer = 0)
             {
-                GridInfo.Echo("TileMap.AddToScreen");
+                //GridInfo.Echo("TileMap.AddToScreen");
                 if (_Screen != screen) _Screen = screen;
                 else RemoveFromScreen(screen); // clear the tilemap from the screen if it's already there
                 ground.Clear();
@@ -477,8 +540,8 @@ namespace IngameScript
             //-----------------------------------------------------------------------
             // constructor
             //-----------------------------------------------------------------------
-            public TileMap(string game, ref CharacterSpriteLoader spriteSheet, ref GameData gameData, int index = 0) : this(Vector2.Zero, game, ref spriteSheet, ref gameData, index) { }
-            public TileMap(Vector2 viewportPosition, string game, ref CharacterSpriteLoader spriteSheet, ref GameData gameData, int index = 0)
+            public TileMap(string game, CharacterSpriteLoader spriteSheet, GameData gameData, int index = 0) : this(Vector2.Zero, game, spriteSheet, gameData, index) { }
+            public TileMap(Vector2 viewportPosition, string game, CharacterSpriteLoader spriteSheet, GameData gameData, int index = 0)
             {
                 ViewportPosition = viewportPosition;
                 this.game = game;
@@ -487,8 +550,9 @@ namespace IngameScript
                 // load the tile set
                 //tileSetAddress = game + ".TileSet.0.CustomData";
                 tilesSet = new TileSet(TileSet.GetTileSetFromGridDB(game, 0));
+                this.gameData = gameData;
             }
-            public TileMap(Vector2 viewportPosition, Vector2 viewportSize, string game, ref CharacterSpriteLoader spriteSheet, ref GameData gameData, int index = 0) : this(viewportPosition, game, ref spriteSheet, ref gameData, index)
+            public TileMap(Vector2 viewportPosition, Vector2 viewportSize, string game, CharacterSpriteLoader spriteSheet, GameData gameData, int index = 0) : this(viewportPosition, game, spriteSheet, gameData, index)
             {
                 ViewportSize = viewportSize;
             }

@@ -29,7 +29,7 @@ namespace IngameScript
         MapEditor mapEditor;
         PlayMode playMode;
         //TileSet tileSet;
-        bool playModeActive = false;
+        bool playModeActive = true;
         public Program()
         {
             Echo("RPG Engine: booting...");
@@ -42,6 +42,7 @@ namespace IngameScript
             //gameSeats.Add(MapEditor.FindMainEditor());
             mapEditor = MapEditor.FindMainEditor();
             playMode = PlayMode.FindMainPlayer();
+            playMode.LoadGame("FinalFantasy");
             Echo("GameSeat: initialized!");
             Runtime.UpdateFrequency = UpdateFrequency.Update1;
             Echo("RPG Engine: booted!");

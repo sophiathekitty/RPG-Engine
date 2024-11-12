@@ -27,6 +27,7 @@ namespace IngameScript
         //---------------------------------------------------------------------------
         public class NPC : RasterSprite
         {
+            CharacterSpriteLoader spriteLoader;
             Dictionary<char, List<string>> sprites;
             public Vector2 MapPosition;
             char direction = 'd'; // default direction is down
@@ -39,6 +40,10 @@ namespace IngameScript
             public bool randomWalk = false;
             public bool guardedSpace = false; // if true, player cannot walk through this npc (but it will do the NPCs action)
             public bool Enabled { get { return isEnabled; } set { Visible = isEnabled = value; } }
+            public string InteractAction;
+            public int X { get { return (int)MapPosition.X; } set { MapPosition.X = value; } }
+            public int Y { get { return (int)MapPosition.Y; } set { MapPosition.Y = value; } }
+            public int SpriteIndex { get { return spriteID; } set { spriteID = value; sprites = spriteLoader.LoadSpriteSet(spriteID); Data = sprites[direction][frame].Replace(IGNORE.ToString(), INVISIBLE); } }
             //---------------------------------------------------------------------------
             // constructor
             //---------------------------------------------------------------------------
@@ -46,7 +51,7 @@ namespace IngameScript
             {
                 this.sprites = sprites;
             }
-            public NPC(string data, ref CharacterSpriteLoader spriteSheet, ref GameData gd) : base(Vector2.Zero, 1, Vector2.Zero, "")
+            public NPC(string data, CharacterSpriteLoader spriteSheet, GameData gd) : base(Vector2.Zero, 1, Vector2.Zero, "")
             {
                 GridInfo.Echo("Loading NPC: " + data);
                 string[] parts = data.Split(';');
@@ -55,6 +60,7 @@ namespace IngameScript
                 spriteID = int.Parse(parts[0]);
                 GridInfo.Echo("spriteID: " + spriteID);
                 sprites = spriteSheet.LoadSpriteSet(spriteID);
+                spriteLoader = spriteSheet;
                 GridInfo.Echo("sprites: " + sprites.Count);
                 MapPosition = new Vector2(float.Parse(pos[0]), float.Parse(pos[1]));
                 GridInfo.Echo("MapPosition: " + MapPosition);
@@ -64,20 +70,15 @@ namespace IngameScript
                 guardedSpace = bool.Parse(parts[3]);
                 EnabledBool = parts[4];
                 GridInfo.Echo("EnabledBool: " + EnabledBool);
+                if(gd == null) GridInfo.Echo("GameData is null");
                 if (EnabledBool != "" && gd.Bools.ContainsKey(EnabledBool))
                 {
+                    GridInfo.Echo("Setting Enabled?");
                     Enabled = gd.Bools[EnabledBool];
                 }
-                else Enabled = true;
+                //else Enabled = true;
                 GridInfo.Echo("Enabled: " + Enabled);
-                //---------------------------------------------------------------------------
-                //
-                //
-                // TODO: load actions
-                //
-                //
-                //
-                //---------------------------------------------------------------------------
+                InteractAction = parts[5];
             }
             //---------------------------------------------------------------------------
             // methods
@@ -124,7 +125,7 @@ namespace IngameScript
                 sb.Append(randomWalk).Append(';');
                 sb.Append(guardedSpace).Append(';');
                 sb.Append(EnabledBool).Append(';');
-                sb.Append("ActionsPlaceHolder");
+                sb.Append(InteractAction);
                 return sb.ToString();
             }
         }

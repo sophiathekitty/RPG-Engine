@@ -23,27 +23,12 @@ namespace IngameScript
     partial class Program
     {
         //-----------------------------------------------------------------------
-        // parses a simple script
-        // ActionName@Script
-        // commands:
-        //      set:[object.]property=value
-        //      if:[object.]property=value
-        //      ifnot:[object.]property=value
-        //      else
-        //      endif
-        //      add:[object.]property=value
-        //      sub:[object.]property=value
-        //      mul:[object.]property=value
-        //      div:[object.]property=value
-        //      say:some string of text to say
-        //      savegame
+        // a player class
         //-----------------------------------------------------------------------
-        public class GameAction
+        public class PlayerClass
         {
-            public GameAction(string data)
-            {
-
-            }
+            public string Name = "";
+            public Dictionary<string, int> Stats = new Dictionary<string, int>();
         }
         //-----------------------------------------------------------------------
     }

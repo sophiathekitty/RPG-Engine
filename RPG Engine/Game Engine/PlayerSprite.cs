@@ -30,6 +30,8 @@ namespace IngameScript
             //-----------------------------------------------------------------------
             // fields
             //-----------------------------------------------------------------------
+            CharacterSpriteLoader spriteLoader;
+            int spriteIndex = 0;
             Dictionary<char, List<string>> sprites;
             Vector2 mapPosition;
             char direction = 'd'; // default direction is down
@@ -55,12 +57,16 @@ namespace IngameScript
                     animationLoop = 3;
                 } 
             }
+            public int X { get { return (int)mapPosition.X; } set { mapPosition.X = value; } }
+            public int Y { get { return (int)mapPosition.Y; } set { mapPosition.Y = value; } }
+            public int SpriteIndex { get { return spriteIndex; } set { spriteIndex = value; sprites = spriteLoader.LoadSpriteSet(spriteIndex); Data = sprites[direction][frame].Replace(IGNORE.ToString(), INVISIBLE); } }
             //-----------------------------------------------------------------------
             // constructor
             //-----------------------------------------------------------------------
-            public PlayerSprite(Vector2 position, float scale, Dictionary<char, List<string>> sprites) : base(position, scale, Vector2.Zero, sprites['d'][0])
+            public PlayerSprite(Vector2 position, float scale, Dictionary<char, List<string>> sprites, CharacterSpriteLoader spriteLoader) : base(position, scale, Vector2.Zero, sprites['d'][0].Replace(IGNORE.ToString(), INVISIBLE))
             {
                 this.sprites = sprites;
+                this.spriteLoader = spriteLoader;
             }
             //-----------------------------------------------------------------------
             // render the sprite
