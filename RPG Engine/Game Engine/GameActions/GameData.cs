@@ -41,6 +41,7 @@ namespace IngameScript
             public Dictionary<string, string> Strings = new Dictionary<string, string>();
             public Dictionary<string, GameAction> Actions = new Dictionary<string, GameAction>();
             public Dictionary<string,List<string>> Lists = new Dictionary<string, List<string>>();
+            public Dictionary<string, Dictionary<string, string>> Items = new Dictionary<string, Dictionary<string, string>>();
             //string actionsTemp = "";
             // save data
             public int saveIndex = 0;
@@ -49,7 +50,7 @@ namespace IngameScript
             public List<EnemyCombatant> EnemyList = new List<EnemyCombatant>();
             // game objects
             public PlayerSprite playerSprite;
-            public NPC npc;
+            //public NPC npc;
             public TileMap map;
             public Stack<MapExit> ExitStack = new Stack<MapExit>();
             //-----------------------------------------------------------------------
@@ -124,6 +125,8 @@ namespace IngameScript
                         Actions.Add(aParts[0].Trim(), new GameAction(aParts[1].Trim(),this,uiBuilder));
                     }
                 }
+                if(uiBuilder != null) uiBuilder._gameData = this;
+                GridInfo.Echo("GameData: " + gameName + " loaded");
             }
         }
         //-----------------------------------------------------------------------

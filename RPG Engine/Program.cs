@@ -41,9 +41,15 @@ namespace IngameScript
             Echo("GridDB: initialized!");
             //gameSeats.Add(MapEditor.FindMainEditor());
             mapEditor = MapEditor.FindMainEditor();
+            Echo("MapEditor: initialized!");
             playMode = PlayMode.FindMainPlayer();
+            Echo("PlayMode: initialized!");
+            if(playMode == null)
+            {
+                Echo("PlayMode: not found!");
+            }
             playMode.LoadGame("FinalFantasy");
-            Echo("GameSeat: initialized!");
+            Echo("PlayMode: loaded game!");
             Runtime.UpdateFrequency = UpdateFrequency.Update1;
             Echo("RPG Engine: booted!");
         }

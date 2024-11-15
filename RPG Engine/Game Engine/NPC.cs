@@ -27,6 +27,7 @@ namespace IngameScript
         //---------------------------------------------------------------------------
         public class NPC : RasterSprite
         {
+            GameData gameData;
             CharacterSpriteLoader spriteLoader;
             Dictionary<char, List<string>> sprites;
             public Vector2 MapPosition;
@@ -39,7 +40,18 @@ namespace IngameScript
             public string EnabledBool = ""; // name of bool to store if npc is enabled
             public bool randomWalk = false;
             public bool guardedSpace = false; // if true, player cannot walk through this npc (but it will do the NPCs action)
-            public bool Enabled { get { return isEnabled; } set { Visible = isEnabled = value; } }
+            public bool Enabled 
+            { 
+                get { return isEnabled; } 
+                set 
+                { 
+                    isEnabled = value;
+                    Visible = isEnabled;
+                    if(isEnabled) Color = Color.White;
+                    else Color = new Color(Color.Black,0f);
+                    if (!string.IsNullOrEmpty(EnabledBool)) gameData.Bools[EnabledBool] = isEnabled;
+                }
+            }
             public string InteractAction;
             public int X { get { return (int)MapPosition.X; } set { MapPosition.X = value; } }
             public int Y { get { return (int)MapPosition.Y; } set { MapPosition.Y = value; } }
@@ -53,6 +65,7 @@ namespace IngameScript
             }
             public NPC(string data, CharacterSpriteLoader spriteSheet, GameData gd) : base(Vector2.Zero, 1, Vector2.Zero, "")
             {
+                gameData = gd;
                 GridInfo.Echo("Loading NPC: " + data);
                 string[] parts = data.Split(';');
                 string[] pos = parts[1].Split(',');

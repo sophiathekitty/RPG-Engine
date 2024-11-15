@@ -71,11 +71,11 @@ namespace IngameScript
             string[] ceilingMap; // overlay that switches visible area when you're under it
             public bool IsOnMap(int x, int y) { return x >= 0 && y >= 0 && x < mapWidth && y < mapHeight; }
             public bool IsWall(int x, int y) { return IsOnMap(x, y) && tilesSet.layers.ContainsKey('w') && tilesSet.layers['w'].Contains(map[y][x]); }
-            //public bool IsBoat(int x, int y) { return IsOnMap(x, y) && tilesSet.layers.ContainsKey('b') && tilesSet.layers['b'].Contains(map[y][x]); }
-            //public bool IsShip(int x, int y) { return IsOnMap(x, y) && tilesSet.layers.ContainsKey('B') && tilesSet.layers['B'].Contains(map[y][x]); }
+            public bool IsBoat(int x, int y) { return IsOnMap(x, y) && tilesSet.layers.ContainsKey('b') && tilesSet.layers['b'].Contains(map[y][x]); }
+            public bool IsShip(int x, int y) { return IsOnMap(x, y) && tilesSet.layers.ContainsKey('B') && tilesSet.layers['B'].Contains(map[y][x]); }
             public bool IsCounter(int x, int y) { return IsOnMap(x, y) && tilesSet.layers.ContainsKey('c') && tilesSet.layers['c'].Contains(map[y][x]); }
             public bool IsCounter(Vector2 position) { return IsCounter((int)position.X, (int)position.Y); }
-            public bool IsGround(int x, int y) { return !IsWall(x, y) && /*!IsBoat(x, y) && !IsShip(x, y) &&*/ !IsCounter(x, y) && !NPCBlocksSpot(x, y); }
+            public bool IsGround(int x, int y) { return !IsWall(x, y) && !IsBoat(x, y) && !IsShip(x, y) && !IsCounter(x, y) && !NPCBlocksSpot(x, y); }
             public bool IsGround(Vector2 position) { return IsGround((int)position.X, (int)position.Y); }
             public MapDoor IsDoor(int x, int y)
             {
@@ -251,8 +251,8 @@ namespace IngameScript
             }
             public void Load(int index)
             {
-                GridInfo.Echo("TileMap.Load: " + index);
-                NotUnderCeilingTileColor = Color.DarkGray;
+                //GridInfo.Echo("TileMap.Load: " + index);
+                NotUnderCeilingTileColor = new Color(Color.DarkGray, 0.5f);
                 this.index = index;
                 string data = GetMapDB(game, index);
                 string[] parts = data.Split('║');
@@ -353,7 +353,7 @@ namespace IngameScript
                 if (MapPosition.Y + ViewportSize.Y >= map.Length) MapPosition.Y = map.Length - ViewportSize.Y;
                 // check if player is under ceiling
                 //GridInfo.Echo("Is under ceiling: " + IsUnderCeiling(x,y) + " " + underCeiling);
-                GridInfo.Echo("CenterOn: " + x + "," + y);
+                //GridInfo.Echo("CenterOn: " + x + "," + y);
                 if (IsUnderCeiling(x,y) != underCeiling)
                 {
                     //GridInfo.Echo("Toggling ceiling");
@@ -413,7 +413,7 @@ namespace IngameScript
                     sprite.Color = Color.White;
                 }
             }
-            bool playerUnderCeiling = false;
+            //bool playerUnderCeiling = false;
             public Color NotUnderCeilingTileColor = Color.Black;
             public void HideCeiling()
             {

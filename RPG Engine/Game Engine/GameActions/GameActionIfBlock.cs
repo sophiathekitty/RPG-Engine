@@ -33,9 +33,10 @@ namespace IngameScript
             public List<GameActionCommand> actions = new List<GameActionCommand>();
             public List<GameActionCommand> elseActions = new List<GameActionCommand>();
             public bool AddingElseActions = false;
+            NPC npc;
 
             // if:Numbers.Var1>Numbers.Var2; (we're just getting the if condition here... then the parser that created this will add the actions)
-            public GameActionIfBlock(string command, GameData gameData, GameUILayoutBuilder uiBuilder) : base("",gameData,uiBuilder)
+            public GameActionIfBlock(string command, GameData gameData, GameUILayoutBuilder uiBuilder, GameAction action) : base("",gameData,uiBuilder,action)
             {
                 GridInfo.Echo("GameActionIfBlock: " + command);
                 string[] parts = command.Split(':');
@@ -49,8 +50,8 @@ namespace IngameScript
                 string[] vars = parts[1].Split(Operator.ToCharArray());
                 GridInfo.Echo("vars length: "+ vars.Length);
                 GridInfo.Echo("Vars: " + vars[0] + " " + Operator + " " + vars[vars.Length-1]);
-                VarA = new GameActionVariable(vars[0].Trim(), gameData);
-                VarB = new GameActionVariable(vars[vars.Length-1].Trim(), gameData);
+                VarA = new GameActionVariable(vars[0].Trim(), gameData,action);
+                VarB = new GameActionVariable(vars[vars.Length-1].Trim(), gameData,action);
             }
             public override void Execute()
             {
@@ -99,5 +100,6 @@ namespace IngameScript
                 }
             }
         }
+        //-----------------------------------------------------------------------
     }
 }

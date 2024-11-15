@@ -114,23 +114,28 @@ namespace IngameScript
             //---------------------------------------------------------------------------
             public PlayMode(IMyTextSurface drawingSurface, GameInput gameInput, IMySoundBlock musicBlock, IMySoundBlock fxBlock) : base(drawingSurface, gameInput, musicBlock, fxBlock)
             {
+                GridInfo.Echo("PlayMode Constructor");
                 BackgroundColor = new Color(0, 10, 20);
                 spriteSheet = new CharacterSpriteLoader(GridDB.Get(game + ".Sprites.0.CustomData"));
-                uiBuilder = new GameUILayoutBuilder(gameInput);
+                uiBuilder = new GameUILayoutBuilder(gameInput,game);
                 
-                gameData = new GameData(game, uiBuilder);
-                map = new TileMap(game, spriteSheet, gameData);
-                AddSprite(map);
-                player = new PlayerSprite(Vector2.Zero, map.TileScale, spriteSheet.LoadSpriteSet(0), spriteSheet);
-                AddSprite(player,1);
-                AddSprite(uiBuilder);
+                //gameData = new GameData(game, uiBuilder);
+                //map = new TileMap(game, spriteSheet, gameData);
+                //AddSprite(map);
+                //player = new PlayerSprite(Vector2.Zero, map.TileScale, spriteSheet.LoadSpriteSet(0), spriteSheet);
+                //AddSprite(player,1);
+                //AddSprite(uiBuilder);
+                GridInfo.Echo("PlayMode Constructor Done");
             }
             public void LoadGame(string game)
             {
-                RemoveSprite(map);
-                RemoveSprite(player);
-                RemoveSprite(uiBuilder);
-
+                GridInfo.Echo("Loading Game: " + game);
+                if (map != null)
+                {
+                    RemoveSprite(map);
+                    RemoveSprite(player);
+                    RemoveSprite(uiBuilder);
+                }
                 this.game = game;
                 spriteSheet = new CharacterSpriteLoader(GridDB.Get(game + ".Sprites.0.CustomData"));
                 gameData = new GameData(game,uiBuilder);
@@ -144,6 +149,8 @@ namespace IngameScript
                 AddSprite(player, 1);
                 gameData.playerSprite = player;
                 gameData.map = map;
+                AddSprite(uiBuilder);
+                GridInfo.Echo("Loading Game Done");
             }
             //---------------------------------------------------------------------------
             // main loop
@@ -174,7 +181,7 @@ namespace IngameScript
                         move.X = 1;
                         player.Direction = 'r';
                     }
-                    if (map.IsGround(player.MapPosition + move))
+                    if (move != Vector2.Zero && map.IsGround(player.MapPosition + move))
                     {
                         player.MapPosition += move;
                         //GridInfo.Echo("Player Position: " + player.MapPosition + ", Map Size: " + map.Size);
@@ -192,11 +199,21 @@ namespace IngameScript
                         {
                             //GridInfo.Echo("Checking for door");
                             MapDoor door = map.IsDoor((int)player.MapPosition.X, (int)player.MapPosition.Y);
+                            NPC guardedTile = map.GetNPC(player.MapPosition);
                             if (door != null)
                             {
                                 //GridInfo.Echo("Player at door, loading exit");
                                 map.Load(door.exit);
                                 player.MapPosition = new Vector2(door.exit.X, door.exit.Y);
+                            }
+                            else if (guardedTile != null && guardedTile.guardedSpace)
+                            {
+                                GridInfo.Echo("Player at guarded space");
+                                if (gameData.Actions.ContainsKey(guardedTile.InteractAction)) gameData.Actions[guardedTile.InteractAction].Execute(guardedTile);
+                            }
+                            else
+                            {
+                                if (gameData.Actions.ContainsKey("PlayerStep")) gameData.Actions["PlayerStep"].Execute();
                             }
                         }
                         //GridInfo.Echo("Centering on player");
@@ -209,14 +226,14 @@ namespace IngameScript
                         NPC npc = map.GetNPC(InteractPos);
                         if (npc != null)
                         {
-                            if (gameData.Actions.ContainsKey(npc.InteractAction)) gameData.Actions[npc.InteractAction].Execute();
+                            if (gameData.Actions.ContainsKey(npc.InteractAction)) gameData.Actions[npc.InteractAction].Execute(npc);
                         }
                         else if (map.IsCounter(InteractPos))
                         {
                             NPC counter = map.GetNPC(CounterInteractPos);
                             if (counter != null)
                             {
-                                if (gameData.Actions.ContainsKey(counter.InteractAction)) gameData.Actions[counter.InteractAction].Execute();
+                                if (gameData.Actions.ContainsKey(counter.InteractAction)) gameData.Actions[counter.InteractAction].Execute(counter);
                             }
                         }
                     }

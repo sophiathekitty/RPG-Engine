@@ -61,9 +61,12 @@
     <Compile Include="Game Engine\GameActions\GameActionIfBlock.cs" />
     <Compile Include="Game Engine\GameActions\GameActionVariable.cs" />
     <Compile Include="Game Engine\GameActions\GameData.cs" />
-    <Compile Include="Game Engine\GameActions\GameUILayoutBuilder.cs" />
+    <Compile Include="Game Engine\GameUI\GameUILayoutBuilder.cs" />
     <Compile Include="Game Engine\GameSeat.cs" />
     <Compile Include="Game Engine\GameActions\GameActionCommand.cs" />
+    <Compile Include="Game Engine\GameUI\GameUIMenu.cs" />
+    <Compile Include="Game Engine\GameUI\GameUIScene.cs" />
+    <Compile Include="Game Engine\GameUI\GameUISpriteLoader.cs" />
     <Compile Include="Game Engine\MapDoor.cs" />
     <Compile Include="Game Engine\MapExit.cs" />
     <Compile Include="Game Engine\NPC.cs" />

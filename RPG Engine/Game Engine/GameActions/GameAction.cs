@@ -41,8 +41,10 @@ namespace IngameScript
         public class GameAction
         {
             List<GameActionCommand> commands = new List<GameActionCommand>();
-            public GameAction(string data, GameData gameData, GameUILayoutBuilder uiBuilder)
+            public NPC npc;
+            public GameAction(string data, GameData gameData, GameUILayoutBuilder uiBuilder, NPC npc = null)
             {
+                this.npc = npc;
                 Stack<GameActionIfBlock> ifBlocks = new Stack<GameActionIfBlock>();
                 string[] cmds = data.Split(';');
                 //bool elseBlock = false;
@@ -52,7 +54,7 @@ namespace IngameScript
                     if (cmd.StartsWith("if:"))
                     {
                         GridInfo.Echo("Creating if block");
-                        GameActionIfBlock ifBlock = new GameActionIfBlock(cmd, gameData, uiBuilder);
+                        GameActionIfBlock ifBlock = new GameActionIfBlock(cmd, gameData, uiBuilder, this);
                         if (ifBlocks.Count > 0)
                         {
                             GridInfo.Echo("Adding if block to parent");
@@ -80,7 +82,7 @@ namespace IngameScript
                     else if (cmd.StartsWith("for:")) // for loop start
                     {
                         GridInfo.Echo("Creating for block");
-                        GameActionForLoop forBlock = new GameActionForLoop(cmd, gameData, uiBuilder);
+                        GameActionForLoop forBlock = new GameActionForLoop(cmd, gameData, uiBuilder, this);
                         if (ifBlocks.Count > 0)
                         {
                             GridInfo.Echo("Adding for block to parent");
@@ -100,10 +102,10 @@ namespace IngameScript
                     else if (ifBlocks.Count > 0)
                     {
                         GridInfo.Echo("2-Adding action to if block");
-                        if (ifBlocks.Peek().AddingElseActions) ifBlocks.Peek().elseActions.Add(new GameActionCommand(cmd, gameData, uiBuilder));
-                        else ifBlocks.Peek().actions.Add(new GameActionCommand(cmd, gameData, uiBuilder));
+                        if (ifBlocks.Peek().AddingElseActions) ifBlocks.Peek().elseActions.Add(new GameActionCommand(cmd, gameData, uiBuilder, this));
+                        else ifBlocks.Peek().actions.Add(new GameActionCommand(cmd, gameData, uiBuilder, this));
                     } 
-                    else commands.Add(new GameActionCommand(cmd, gameData, uiBuilder));
+                    else commands.Add(new GameActionCommand(cmd, gameData, uiBuilder, this));
                 }
             }
             public void Execute()
@@ -113,6 +115,11 @@ namespace IngameScript
                 {
                     cmd.Execute();
                 }
+            }
+            public void Execute(NPC npc)
+            {
+                this.npc = npc;
+                Execute();
             }
         }
         //-----------------------------------------------------------------------

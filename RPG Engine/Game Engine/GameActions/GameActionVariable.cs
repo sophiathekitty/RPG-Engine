@@ -27,22 +27,23 @@ namespace IngameScript
         //-----------------------------------------------------------------------
         public class GameActionVariable
         {
+            GameAction action; // the action that owns this variable
             GameData gameData; // where data is stored
             string address; // address of the variable
             string value; // value of the property
-            public GameActionVariable(string address, GameData gameData, string defaultValue = "")
+            public GameActionVariable(string address, GameData gameData, GameAction action, string defaultValue = "")
             {
+                this.action = action;
                 this.gameData = gameData;
-                if(address.Contains("."))
+                if(address.StartsWith("@"))
                 {
-                    this.address = address;
+                    this.address = address.Substring(1);
                     value = defaultValue;
                 }
                 else
                 {
                     value = address;
                     this.address = "";
-                    GridInfo.Echo("GameActionVariable: " + value);
                 }
             }
 
@@ -55,22 +56,45 @@ namespace IngameScript
                     string[] parts = address.Split('.');
                     if (parts[0] == "Bools" && gameData.Bools.ContainsKey(parts[1])) return gameData.Bools[parts[1]].ToString();
                     else if (parts[0] == "Ints" && gameData.Ints.ContainsKey(parts[1])) return gameData.Ints[parts[1]].ToString();
-                    else if (parts[0] == "Inventory" && gameData.Inventory.ContainsKey(parts[1])) return gameData.Inventory[parts[1]].ToString();
+                    else if (parts[0] == "Inventory")
+                    {
+                        if(gameData.Inventory.ContainsKey(parts[1])) return gameData.Inventory[parts[1]].ToString();
+                        else
+                        {
+                            if (parts[1] == "Count") return gameData.Inventory.Count.ToString();
+                            else if (parts[1] == "Keys")
+                            {
+                                if(parts.Length > 2)
+                                {
+                                    if (parts[2].StartsWith("#")) return gameData.Inventory.Keys.ToArray()[gameData.Ints[parts[2].Substring(1)]];
+                                    int index = 0;
+                                    if (int.TryParse(parts[2], out index))
+                                    {
+                                        return gameData.Inventory.Keys.ToArray()[index];
+                                    } 
+                                    else if (gameData.Ints.ContainsKey(parts[2])) return gameData.Inventory.Keys.ToArray()[gameData.Ints[parts[2]]];
+                                }
+                                return gameData.Inventory.Keys.ToString();
+                            }
+                        }
+                        return "0";
+                    }
                     else if (parts[0] == "Strings" && gameData.Strings.ContainsKey(parts[1])) return gameData.Strings[parts[1]];
                     else if (parts[0] == "Player")
                     {
                         if (parts[1] == "X") return gameData.playerSprite.X.ToString();
-                        if (parts[1] == "Y") return gameData.playerSprite.Y.ToString();
-                        if (parts[1] == "Direction") return gameData.playerSprite.Direction.ToString();
-                        if (parts[1] == "SpriteId") return gameData.playerSprite.SpriteIndex.ToString();
+                        else if (parts[1] == "Y") return gameData.playerSprite.Y.ToString();
+                        else if (parts[1] == "Direction") return gameData.playerSprite.Direction.ToString();
+                        else if (parts[1] == "SpriteId") return gameData.playerSprite.SpriteIndex.ToString();
                     }
-                    else if (parts[0] == "NPC")
+
+                    else if (parts[0] == "NPC" && action.npc != null)
                     {
-                        if (parts[1] == "X") return gameData.npc.X.ToString();
-                        if (parts[1] == "Y") return gameData.npc.Y.ToString();
-                        if (parts[1] == "Direction") return gameData.npc.Direction.ToString();
-                        if (parts[1] == "SpriteId") return gameData.npc.SpriteIndex.ToString();
-                        if (parts[1] == "Enabled") return gameData.npc.Enabled.ToString();
+                        if (parts[1] == "X") return action.npc.X.ToString();
+                        else if (parts[1] == "Y") return action.npc.Y.ToString();
+                        else if (parts[1] == "Direction") return action.npc.Direction.ToString();
+                        else if (parts[1] == "SpriteId") return action.npc.SpriteIndex.ToString();
+                        else if (parts[1] == "Enabled") return action.npc.Enabled.ToString();
                     }
                     return value;
                 }
@@ -93,7 +117,7 @@ namespace IngameScript
                         else if (parts[0] == "Inventory")
                         {
                             if (gameData.Inventory.ContainsKey(parts[1])) gameData.Inventory[parts[1]] = int.Parse(value);
-                            else gameData.Inventory.Add(parts[1], int.Parse(value));
+                            else if(parts[1] != "Count" && parts[1] != "Keys") gameData.Inventory.Add(parts[1], int.Parse(value));
                         }
                         else if (parts[0] == "Strings")
                         {
@@ -103,21 +127,33 @@ namespace IngameScript
                         else if (parts[0] == "Player")
                         {
                             if (parts[1] == "X") gameData.playerSprite.X = int.Parse(value);
-                            if (parts[1] == "Y") gameData.playerSprite.Y = int.Parse(value);
-                            if (parts[1] == "Direction") gameData.playerSprite.Direction = value[0];
-                            if (parts[1] == "SpriteId") gameData.playerSprite.SpriteIndex = int.Parse(value);
+                            else if (parts[1] == "Y") gameData.playerSprite.Y = int.Parse(value);
+                            else if (parts[1] == "Direction") gameData.playerSprite.Direction = value[0];
+                            else if (parts[1] == "SpriteId") gameData.playerSprite.SpriteIndex = int.Parse(value);
                         }
-                        else if (parts[0] == "NPC")
+                        else if (parts[0] == "NPC" && action.npc != null)
                         {
-                            if (parts[1] == "X") gameData.npc.X = int.Parse(value);
-                            if (parts[1] == "Y") gameData.npc.Y = int.Parse(value);
-                            if (parts[1] == "Direction") gameData.npc.Direction = value[0];
-                            if (parts[1] == "SpriteId") gameData.npc.SpriteIndex = int.Parse(value);
-                            if (parts[1] == "Enabled") gameData.npc.Enabled = bool.Parse(value);
+                            if (parts[1] == "X") action.npc.X = int.Parse(value);
+                            else if (parts[1] == "Y") action.npc.Y = int.Parse(value);
+                            else if (parts[1] == "Direction") action.npc.Direction = value[0];
+                            else if (parts[1] == "SpriteId") action.npc.SpriteIndex = int.Parse(value);
+                            else if (parts[1] == "Enabled") action.npc.Enabled = bool.Parse(value);
                         }
                     }
                 }
             }
+            /*
+            public T As<T>() where T : IConvertible
+            {
+                string val = Value;
+                if (string.IsNullOrEmpty(val)) return default(T);
+                return (T)Convert.ChangeType(val, typeof(T));
+            }
+            public void Set<T>(T value) where T : IConvertible
+            {
+                Value = value.ToString();
+            }
+            */
         }
         //-----------------------------------------------------------------------
     }

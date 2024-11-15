@@ -34,12 +34,13 @@ namespace IngameScript
             int startValue;
             int stepValue;
             GameActionVariable loopVar;
-            public GameActionForLoop(string command, GameData gameData, GameUILayoutBuilder uiBuilder) : base("", gameData, uiBuilder)
+            NPC npc;
+            public GameActionForLoop(string command, GameData gameData, GameUILayoutBuilder uiBuilder, GameAction action) : base("", gameData, uiBuilder,action)
             {
                 GridInfo.Echo("GameActionForLoop: " + command);
                 string[] parts = command.Split(':');
                 string[] vars = parts[1].Split(',');
-                loopVar = new GameActionVariable(vars[0].Trim(), gameData);
+                loopVar = new GameActionVariable(vars[0].Trim(), gameData, action);
                 startValue = int.Parse(vars[1].Trim());
                 endValue = int.Parse(vars[2].Trim());
                 stepValue = int.Parse(vars[3].Trim());

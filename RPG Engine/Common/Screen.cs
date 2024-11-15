@@ -304,11 +304,24 @@ namespace IngameScript
 
             public RasterSprite(Vector2 position, float scale, Vector2 size, string data) : base(ScreenSpriteAnchor.TopLeft, position, scale, size, Color.White, "Monospace", data, TextAlignment.LEFT, SpriteType.TEXT)
             {
+                /*
                 if (size == Vector2.Zero)
                 {
                     string[] lines = data.Split('\n');
                     Size = new Vector2(lines[0].Length, lines.Length);
                 }
+                // decompress the transparent data
+                Data = Data.Replace("", INVISIBLE + INVISIBLE); // double space
+                Data = Data.Replace("", INVISIBLE + INVISIBLE + INVISIBLE + INVISIBLE); // quad space
+                Data = Data.Replace("", INVISIBLE + INVISIBLE + INVISIBLE + INVISIBLE + INVISIBLE + INVISIBLE + INVISIBLE + INVISIBLE); // 8 space
+                */
+                LoadImage(data);
+            }
+            public void LoadImage(string data)
+            {
+                Data = data;
+                string[] lines = data.Split('\n');
+                Size = new Vector2(lines[0].Length, lines.Length);
                 // decompress the transparent data
                 Data = Data.Replace("", INVISIBLE + INVISIBLE); // double space
                 Data = Data.Replace("", INVISIBLE + INVISIBLE + INVISIBLE + INVISIBLE); // quad space
