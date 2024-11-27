@@ -39,6 +39,7 @@ namespace IngameScript
             List<ScreenSprite> sprites = new List<ScreenSprite>();
             List<IScreenSpriteProvider> _sprites = new List<IScreenSpriteProvider>();
             Stack<ILayoutInteractable> _interactables = new Stack<ILayoutInteractable>();
+            List<GameUIVarDisplay> _varDisplays = new List<GameUIVarDisplay>();
             public string ButtonPrompt { get; set; }
 
             public Color ValueColor { get; set; }
@@ -88,7 +89,7 @@ namespace IngameScript
                 }
             }
             //-----------------------------------------------------------------------
-            // add a sprite
+            // add an element
             //-----------------------------------------------------------------------
             public void Add(IScreenSpriteProvider sprite)
             {
@@ -96,6 +97,10 @@ namespace IngameScript
                 if (sprite is ILayoutInteractable)
                 {
                     _interactables.Push((ILayoutInteractable)sprite);
+                }
+                else if (sprite is GameUIVarDisplay)
+                {
+                    _varDisplays.Add((GameUIVarDisplay)sprite);
                 }
             }
             public void Add(ScreenSprite sprite)

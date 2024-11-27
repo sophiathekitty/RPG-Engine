@@ -38,7 +38,8 @@ namespace IngameScript
             // if:Numbers.Var1>Numbers.Var2; (we're just getting the if condition here... then the parser that created this will add the actions)
             public GameActionIfBlock(string command, GameData gameData, GameUILayoutBuilder uiBuilder, GameAction action) : base("",gameData,uiBuilder,action)
             {
-                GridInfo.Echo("GameActionIfBlock: " + command);
+                //GridInfo.Echo("GameActionIfBlock: " + command);
+                if (command == "") return;
                 string[] parts = command.Split(':');
                 if (parts[1].Contains(">=")) Operator = ">=";
                 else if (parts[1].Contains("<=")) Operator = "<=";
@@ -48,19 +49,19 @@ namespace IngameScript
                 else if (parts[1].Contains("<")) Operator = "<";
                 else throw new Exception("Invalid operator in if block: " + parts[1]);
                 string[] vars = parts[1].Split(Operator.ToCharArray());
-                GridInfo.Echo("vars length: "+ vars.Length);
-                GridInfo.Echo("Vars: " + vars[0] + " " + Operator + " " + vars[vars.Length-1]);
+                //GridInfo.Echo("vars length: "+ vars.Length);
+                //GridInfo.Echo("Vars: " + vars[0] + " " + Operator + " " + vars[vars.Length-1]);
                 VarA = new GameActionVariable(vars[0].Trim(), gameData,action);
                 VarB = new GameActionVariable(vars[vars.Length-1].Trim(), gameData,action);
             }
             public override void Execute()
             {
-                GridInfo.Echo("GameActionIfBlock.Execute");
+                //GridInfo.Echo("GameActionIfBlock.Execute");
                 // compare the variables
                 string a = VarA.Value;
                 string b = VarB.Value;
                 bool result = false;
-                GridInfo.Echo("Comparing: " + a + " " + Operator + " " + b);
+                //GridInfo.Echo("Comparing: " + a + " " + Operator + " " + b);
                 switch (Operator)
                 {
                     case ">=":
@@ -82,7 +83,7 @@ namespace IngameScript
                         result = Convert.ToDouble(a) < Convert.ToDouble(b);
                         break;
                 }
-                GridInfo.Echo("Result: " + result);
+                //GridInfo.Echo("Result: " + result);
                 // execute the actions
                 if (result)
                 {

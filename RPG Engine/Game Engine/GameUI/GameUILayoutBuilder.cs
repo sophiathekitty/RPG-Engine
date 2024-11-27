@@ -31,7 +31,6 @@ namespace IngameScript
             bool _visible = false;
             Screen _screen;
             GameInput _input;
-            List<LayoutArea> _items = new List<LayoutArea>();
             public GameData _gameData;
             // a stack of ILayoutInteractable
             Stack<ILayoutInteractable> _interactables = new Stack<ILayoutInteractable>();
@@ -39,6 +38,7 @@ namespace IngameScript
             GameUIScene _scene;
             GameUIMenu _menu;
             int _layoutLayer = 4;
+            Stack<LayoutArea> _areas = new Stack<LayoutArea>();
             //-----------------------------------------------------------------------
             // IScreenSpriteProvider
             //-----------------------------------------------------------------------
@@ -57,22 +57,11 @@ namespace IngameScript
             void IScreenSpriteProvider.AddToScreen(Screen screen, int layer)
             {
                 _screen = screen;
-                /*
-                foreach (ILayoutItem item in _items)
-                {
-                    item.AddToScreen(screen, layer);
-                }
-                */
                 _interactables.Clear();
-                _items.Clear();
                 Sprites.Clear();
             }
             void IScreenSpriteProvider.RemoveFromScreen(Screen screen)
             {
-                foreach (ILayoutItem item in _items)
-                {
-                    item.RemoveFromScreen(screen);
-                }
                 while (_interactables.Count > 0)
                 {
                     _interactables.Pop().RemoveFromScreen(screen);
@@ -91,7 +80,6 @@ namespace IngameScript
                 }
                 // clear stack
                 _interactables.Clear();
-                _items.Clear();
             }
             //-----------------------------------------------------------------------
             // constructor
@@ -171,7 +159,6 @@ namespace IngameScript
                     _scene.Add(_menu);
                 }
                 else _interactables.Push(_menu);
-                //_interactables.Push(_menu);
             }
             //-----------------------------------------------------------------------
             // add a sprite
@@ -217,6 +204,56 @@ namespace IngameScript
                 _scene = null;
                 _interactables.Pop();
                 Sprites.Clear();
+            }
+            //-----------------------------------------------------------------------
+            // add a layout area
+            //-----------------------------------------------------------------------
+            public void AddArea(int x, int y, int width, int height, bool vertical = true, bool background = true)
+            {
+                LayoutArea area;
+                if(background)
+                {
+                    area = new LayoutArea(new Vector2(x, y), new Vector2(width, height), new Vector2(5, 5), Color.Black, Color.White, 2);
+                }
+                else
+                {
+                    area = new LayoutArea(new Vector2(x, y), new Vector2(width, height), new Vector2(5, 5));
+                }
+                area.Vertical = vertical;
+                if(_areas.Count > 0)
+                {
+                    _areas.Peek().Items.Add(area);
+                }
+                _areas.Push(area);
+            }
+            public void AddAreaHeader(string text)
+            {
+                LayoutText header = new LayoutText(text, Color.White, 0.5f);
+                _areas.Peek().extras.Add(header);
+            }
+            public void AddText(string text, float fontSize, Color color)
+            {
+                LayoutText layoutText = new LayoutText(text, color, fontSize);
+                _areas.Peek().Items.Add(layoutText);
+            }
+            public void AddVarDisplay(string label, GameActionVariable variable, float fontSize = 0.5f, bool vertical = false)
+            {
+                GameUIVarDisplay varDisplay = new GameUIVarDisplay(label, variable, fontSize, vertical);
+                _areas.Peek().Items.Add(varDisplay);
+                if(_scene != null) _scene.Add(varDisplay);
+            }
+            public void ShowArea()
+            {
+                LayoutArea area = _areas.Pop();
+                if(_areas.Count == 0)
+                {
+                    area.ApplyLayout();
+                    if (_scene != null)
+                    {
+                        _scene.Add(area);
+                    }
+                    _screen.AddSprite(area, _layoutLayer);
+                }
             }
         }
         //-----------------------------------------------------------------------

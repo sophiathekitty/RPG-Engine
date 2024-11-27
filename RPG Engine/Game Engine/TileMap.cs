@@ -316,7 +316,7 @@ namespace IngameScript
             // apply tiles to the viewport
             public void ApplyViewportTiles()
             {
-                if(ground.Count == 0) return;
+                if(ground.Count == 0 || !Visible) return;
                 int i = 0;
                 for (int y = 0; y < ViewportSize.Y; y++)
                 {
@@ -338,7 +338,7 @@ namespace IngameScript
                 }
                 foreach (NPC npc in NPCs)
                 {
-                    npc.Visible = IsWithinViewport((int)npc.MapPosition.X, (int)npc.MapPosition.Y);
+                    npc.Visible = IsWithinViewport((int)npc.MapPosition.X, (int)npc.MapPosition.Y) && npc.Enabled;
                     npc.Position = TilePosition((int)npc.MapPosition.X, (int)npc.MapPosition.Y);
                 }
             }
@@ -360,8 +360,8 @@ namespace IngameScript
                     underCeiling = !underCeiling;
                     if (!underCeiling) ShowCeiling();
                 }
-                if (underCeiling) HideCeiling();
                 ApplyViewportTiles();
+                if (underCeiling) HideCeiling();
             }
             public void CenterOn(Vector2 position)
             {
@@ -506,6 +506,7 @@ namespace IngameScript
                     screen.AddSprite(npc);
                 }
             }
+            /*
             public void AddOveralyToScreen(Screen screen)
             {
                 for (int i = 0; i < overlay.Count; i++)
@@ -514,6 +515,7 @@ namespace IngameScript
                     screen.AddSprite(ceiling[i]);
                 }
             }
+            */
             public void RemoveFromScreen(Screen screen)
             {
                 // remove the ground from the screen
@@ -555,6 +557,10 @@ namespace IngameScript
                     {
                         sprite.Visible = value;
                     }
+                    foreach (NPC npc in NPCs)
+                    {
+                        npc.Visible = value && IsWithinViewport((int)npc.MapPosition.X, (int)npc.MapPosition.Y);
+                    }
                 }
             }
             //-----------------------------------------------------------------------
@@ -571,6 +577,7 @@ namespace IngameScript
                 //tileSetAddress = game + ".TileSet.0.CustomData";
                 tilesSet = new TileSet(TileSet.GetTileSetFromGridDB(game, 0));
                 this.gameData = gameData;
+                this.gameData.map = this;
             }
             public TileMap(Vector2 viewportPosition, Vector2 viewportSize, string game, CharacterSpriteLoader spriteSheet, GameData gameData, int index = 0) : this(viewportPosition, game, spriteSheet, gameData, index)
             {

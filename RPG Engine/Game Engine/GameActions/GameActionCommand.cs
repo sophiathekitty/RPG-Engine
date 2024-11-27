@@ -27,23 +27,26 @@ namespace IngameScript
         //-----------------------------------------------------------------------
         public class GameActionCommand
         {
-            string cmd;
+            public string cmd { get; private set; }
             GameActionVariable Destination;
             List<GameActionVariable> Source = new List<GameActionVariable>();
             GameUILayoutBuilder UIbuilder;
             NPC npc;
+            GameData gamedata;
 
             public GameActionCommand(string command, GameData gameData, GameUILayoutBuilder uiBuilder, GameAction action)
             {
+                this.gamedata = gameData;
                 this.npc = action.npc;
                 UIbuilder = uiBuilder;
-                string[] parts = command.Split(':');
-                cmd = parts[0].Trim();
+                // split the command on ':' limit to 2 parts
+                string[] parts = command.Split(new[] { ':' }, 2);
+                cmd = parts[0].Trim().ToLower();
                 if (parts.Length > 1)
                 {
                     if (parts[1].Contains("="))
                     {
-                        string[] props = parts[1].Split('=');
+                        string[] props = parts[1].Split(new[] { '=' }, 2);
                         if (props[0].Contains("~"))
                         {
                             string[] d = props[0].Split('~');
@@ -68,123 +71,135 @@ namespace IngameScript
             }
             public virtual void Execute() 
             {
-                GridInfo.Echo("cmd:"+cmd);
+                if(string.IsNullOrEmpty(cmd)) return;
+                //GridInfo.Echo("cmd:"+cmd);
+                if(cmd == "echo")
+                {
+                    string echo = Destination.Value;
+                    foreach(GameActionVariable v in Source)
+                    {
+                        echo += " " + v.Value;
+                    }
+                    GridInfo.Echo(echo);
+                }
                 // set command
-                if (cmd.ToLower() == "set")
+                else if (cmd == "set")
                 {
                     Destination.Value = Source[0].Value;
                 }
                 // add command
-                else if (cmd.ToLower() == "add")
+                else if (cmd == "add")
                 {
                     if(Source.Count > 1)
                     {
                         int total = 0;
                         foreach(GameActionVariable v in Source)
                         {
-                            total += Convert.ToInt32(v.Value);
+                            total += v.As<int>();
                         }
-                        Destination.Value = total.ToString();
+                        GridInfo.Echo("Adding: " + total);
+                        Destination.Set<int>(total);
                     }
                     else if (Source.Count == 1)
                     {
-                        Destination.Value = (Convert.ToInt32(Destination.Value) + Convert.ToInt32(Source[0].Value)).ToString();
+                        GridInfo.Echo("Adding: " + Destination.As<int>() + " + " + Source[0].As<int>());
+                        Destination.Set<int>(Destination.As<int>() + Source[0].As<int>());
                     }
                     else throw new Exception("Invalid add command");
                 }
                 // subtract command
-                else if (cmd.ToLower() == "sub")
+                else if (cmd == "sub")
                 {
                     if (Source.Count > 1)
                     {
-                        int total = Convert.ToInt32(Source[0].Value);
+                        int total = Source[0].As<int>();
                         for (int i = 1; i < Source.Count; i++)
                         {
-                            total -= Convert.ToInt32(Source[i].Value);
+                            total -= Source[i].As<int>();
                         }
-                        Destination.Value = total.ToString();
+                        Destination.Set<int>(total);
                     }
                     else if (Source.Count == 1)
                     {
-                        Destination.Value = (Convert.ToInt32(Destination.Value) - Convert.ToInt32(Source[0].Value)).ToString();
+                        Destination.Set<int>(Destination.As<int>() - Source[0].As<int>());
                     }
                     else throw new Exception("Invalid sub command");
                 }
                 // multiply command
-                else if (cmd.ToLower() == "mul")
+                else if (cmd == "mul")
                 {
                     if (Source.Count > 1)
                     {
-                        int total = Convert.ToInt32(Source[0].Value);
+                        int total = Source[0].As<int>();
                         for (int i = 1; i < Source.Count; i++)
                         {
-                            total *= Convert.ToInt32(Source[i].Value);
+                            total *= Source[i].As<int>();
                         }
-                        Destination.Value = total.ToString();
+                        Destination.Set<int>(total);
                     }
                     else if (Source.Count == 1)
                     {
-                        Destination.Value = (Convert.ToInt32(Destination.Value) * Convert.ToInt32(Source[0].Value)).ToString();
+                        Destination.Set<int>(Destination.As<int>() * Source[0].As<int>());
                     }
                     else throw new Exception("Invalid mul command");
                 }
                 // divide command
-                else if (cmd.ToLower() == "div")
+                else if (cmd == "div")
                 {
                     if (Source.Count > 1)
                     {
-                        int total = Convert.ToInt32(Source[0].Value);
+                        int total = Source[0].As<int>();
                         for (int i = 1; i < Source.Count; i++)
                         {
-                            total /= Convert.ToInt32(Source[i].Value);
+                            total /= Source[i].As<int>();
                         }
-                        Destination.Value = total.ToString();
+                        Destination.Set<int>(total);
                     }
                     else if (Source.Count == 1)
                     {
-                        Destination.Value = (Convert.ToInt32(Destination.Value) / Convert.ToInt32(Source[0].Value)).ToString();
+                        Destination.Set<int>(Destination.As<int>() / Source[0].As<int>());
                     }
                     else throw new Exception("Invalid div command");
                 }
                 // say command
-                else if (cmd.ToLower() == "say")
+                else if (cmd == "say")
                 {
                     float fontSize = 0.5f;
                     Vector2 size = new Vector2(200, 100);
                     if (Source.Count > 0)
                     {
                         // get dialog settings
-                        fontSize = Convert.ToSingle(Source[0].Value) / 100f;
+                        fontSize = Source[0].As<float>() / 100f;
                         if (Source.Count > 3)
                         {
-                            size.X = Convert.ToInt32(Source[1].Value);
-                            size.Y = Convert.ToInt32(Source[2].Value);
+                            size.X = Source[1].As<int>();
+                            size.Y = Source[2].As<int>();
                         }
                     }
                     if(UIbuilder == null) GridInfo.Echo("UIbuilder is null");
                     UIbuilder.ShowDialog(Destination.Value, fontSize,size);
                 }
                 // start a UI Scene
-                else if (cmd.ToLower() == "startscene")
+                else if (cmd == "startscene")
                 {
                     UIbuilder.StartScene(Destination.Value, npc);
                 }
                 // end a UI Scene
-                else if (cmd.ToLower() == "endscene")
+                else if (cmd == "endscene")
                 {
                     UIbuilder.EndScene();
                 }
                 // add a menu
-                else if (cmd.ToLower() == "addmenu")
+                else if (cmd == "addmenu")
                 {
                     if (Source.Count > 3)
                     {
-                        UIbuilder.AddMenu(Destination.Value,Convert.ToInt32(Source[0].Value), Convert.ToInt32(Source[1].Value), Convert.ToInt32(Source[2].Value), Convert.ToInt32(Source[3].Value), npc);
+                        UIbuilder.AddMenu(Destination.Value,Source[0].As<int>(), Source[1].As<int>(), Source[2].As<int>(), Source[3].As<int>(), npc);
                     }
                     else throw new Exception("Invalid addmenu command");
                 }
                 // add a menu item
-                else if (cmd.ToLower() == "addmenuitem")
+                else if (cmd == "addmenuitem")
                 {
                     if (Source.Count > 0)
                     {
@@ -198,41 +213,102 @@ namespace IngameScript
                     else throw new Exception("Invalid addMenuItem command");
                 }
                 // finalize the menu
-                else if (cmd.ToLower() == "showmenu")
+                else if (cmd == "showmenu")
                 {
                     UIbuilder.ShowMenu();
                 }
                 // add sprite
-                else if (cmd.ToLower() == "addsprite")
+                else if (cmd == "addsprite")
                 {
                     if (Source.Count > 6)
                     {
-                        UIbuilder.AddSprite(Destination.Value, Convert.ToInt32(Source[0].Value), Convert.ToInt32(Source[1].Value), Convert.ToInt32(Source[2].Value), Convert.ToInt32(Source[3].Value), Convert.ToInt32(Source[4].Value), Convert.ToInt32(Source[5].Value), Convert.ToInt32(Source[6].Value));
+                        UIbuilder.AddSprite(Destination.Value,Source[0].As<int>(),Source[1].As<int>(),Source[2].As<int>(),Source[3].As<int>(),Source[4].As<int>(),Source[5].As<int>(),Source[6].As<int>());
                     }
                     else throw new Exception("Invalid addsprite command");
                 }
                 // move sprite
-                else if (cmd.ToLower() == "movesprite")
+                else if (cmd == "movesprite")
                 {
                     if (Source.Count > 1)
                     {
-                        UIbuilder.MoveSprite(Destination.Value, Convert.ToInt32(Source[0].Value), Convert.ToInt32(Source[1].Value));
+                        UIbuilder.MoveSprite(Destination.Value, Source[0].As<int>(),Source[1].As<int>());
                     }
                     else throw new Exception("Invalid movesprite command");
                 }
                 // replace sprite
-                else if (cmd.ToLower() == "replacesprite")
+                else if (cmd == "replacesprite")
                 {
                     if (Source.Count > 4)
                     {
-                        UIbuilder.ReplaceSprite(Destination.Value, Convert.ToInt32(Source[0].Value), Convert.ToInt32(Source[1].Value), Convert.ToInt32(Source[2].Value), Convert.ToInt32(Source[3].Value), Convert.ToInt32(Source[4].Value));
+                        UIbuilder.ReplaceSprite(Destination.Value, Source[0].As<int>(), Source[1].As<int>(), Source[2].As<int>(), Source[3].As<int>(), Source[4].As<int>());
                     }
                     else throw new Exception("Invalid replacesprite command");
                 }
                 // remove sprite
-                else if (cmd.ToLower() == "removesprite")
+                else if (cmd == "removesprite")
                 {
                     UIbuilder.RemoveSprite(Destination.Value);
+                }
+                // add area
+                else if (cmd == "addarea")
+                {
+                    if(Source.Count > 5) UIbuilder.AddArea(Source[0].As<int>(), Source[1].As<int>(), Source[2].As<int>(), Source[3].As<int>(), Source[4].As<bool>(), Source[5].As<bool>());
+                    else if(Source.Count > 4) UIbuilder.AddArea(Source[0].As<int>(), Source[1].As<int>(), Source[2].As<int>(), Source[3].As<int>(), Source[4].As<bool>());
+                    else if (Source.Count > 3) UIbuilder.AddArea(Source[0].As<int>(), Source[1].As<int>(), Source[2].As<int>(), Source[3].As<int>());
+                    else throw new Exception("Invalid addarea command");
+                    if(!string.IsNullOrEmpty(Destination.Value))
+                    {
+                        UIbuilder.AddAreaHeader(Destination.Value);
+                    }
+                }
+                // add area text
+                else if (cmd == "addareatext")
+                {
+                    if(Source.Count > 0) UIbuilder.AddText(Destination.Value, Source[0].As<float>(), Color.White);
+                    else UIbuilder.AddText(Destination.Value, 0.5f, Color.White);
+                }
+                // add area variable
+                else if (cmd == "addareavar")
+                {
+                    if (Source.Count > 0) UIbuilder.AddVarDisplay(Destination.Value, Source[0]);
+                    else throw new Exception("Invalid addAreaVar command");
+                }
+                // show area
+                else if (cmd == "showarea" || cmd == "endarea")
+                {
+                    UIbuilder.ShowArea();
+                }
+                // clear party
+                else if (cmd == "clearparty")
+                {
+                    gamedata.CharacterList.Clear();
+                }
+                // add party member
+                else if (cmd == "addparty")
+                {
+                    if(Source.Count > 0)
+                    {
+                        if (gamedata.Jobs.ContainsKey(Source[0].Value)) gamedata.CharacterList.Add(new PlayerCharacter(Destination.Value, gamedata.Jobs[Source[0].Value]));
+                        else throw new Exception("Invalid job: " + Source[0].Value);
+                    }
+                    else throw new Exception("Invalid addparty command");
+                }
+                // remove last party member
+                else if (cmd == "removeparty")
+                {
+                    if (string.IsNullOrEmpty(Destination.Value))
+                    {
+                        if (gamedata.CharacterList.Count > 0) gamedata.CharacterList.RemoveAt(gamedata.CharacterList.Count - 1);
+                    }
+                    else
+                    {
+                        gamedata.CharacterList.RemoveAt(Destination.As<int>());
+                    }
+                }
+                // clear enemies
+                else if (cmd == "clearenemies")
+                {
+                    gamedata.EnemyList.Clear();
                 }
             }
         }

@@ -67,6 +67,7 @@
     <Compile Include="Game Engine\GameUI\GameUIMenu.cs" />
     <Compile Include="Game Engine\GameUI\GameUIScene.cs" />
     <Compile Include="Game Engine\GameUI\GameUISpriteLoader.cs" />
+    <Compile Include="Game Engine\GameUI\GameUIVarDisplay.cs" />
     <Compile Include="Game Engine\MapDoor.cs" />
     <Compile Include="Game Engine\MapExit.cs" />
     <Compile Include="Game Engine\NPC.cs" />

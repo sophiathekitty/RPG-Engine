@@ -31,6 +31,37 @@ namespace IngameScript
             public Dictionary<string,double> Stats = new Dictionary<string, double>();
             public List<string> Status = new List<string>();
             public Dictionary<string, int> MaxStats = new Dictionary<string, int>();
+            public List<string> Actions = new List<string>();
+            //-----------------------------------------------------------------------
+            // constructor
+            //-----------------------------------------------------------------------
+            public Combatant(string data)
+            {
+                string[] parts = data.Split('╔');
+                Name = parts[0];
+                GridInfo.Echo("Combatant: " + Name);
+                foreach (string part in parts)
+                {
+                    string[] subParts = part.Trim().Split(':');
+                    if (subParts[0] == "stat")
+                    {
+                        string[] statParts = subParts[1].Split('=');
+                        Stats.Add(statParts[0], double.Parse(statParts[1]));
+                        GridInfo.Echo("stat: " + statParts[0] + " = " + statParts[1]);
+                    }
+                    else if (subParts[0] == "maxstat")
+                    {
+                        string[] statParts = subParts[1].Split('=');
+                        MaxStats.Add(statParts[0], int.Parse(statParts[1]));
+                        GridInfo.Echo("maxstat: " + statParts[0] + " = " + statParts[1]);
+                    }
+                    else if (subParts[0] == "status")
+                    {
+                        Status.Add(subParts[1]);
+                        GridInfo.Echo("status: " + subParts[1]);
+                    }
+                }
+            }
         }
         //-----------------------------------------------------------------------
     }

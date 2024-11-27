@@ -47,8 +47,8 @@ namespace IngameScript
                 { 
                     isEnabled = value;
                     Visible = isEnabled;
-                    if(isEnabled) Color = Color.White;
-                    else Color = new Color(Color.Black,0f);
+                    //if(isEnabled) Color = Color.White;
+                    //else Color = new Color(Color.Black,0f);
                     if (!string.IsNullOrEmpty(EnabledBool)) gameData.Bools[EnabledBool] = isEnabled;
                 }
             }

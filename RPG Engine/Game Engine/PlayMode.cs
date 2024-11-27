@@ -115,7 +115,7 @@ namespace IngameScript
             public PlayMode(IMyTextSurface drawingSurface, GameInput gameInput, IMySoundBlock musicBlock, IMySoundBlock fxBlock) : base(drawingSurface, gameInput, musicBlock, fxBlock)
             {
                 GridInfo.Echo("PlayMode Constructor");
-                BackgroundColor = new Color(0, 10, 20);
+                BackgroundColor = Color.Black;
                 spriteSheet = new CharacterSpriteLoader(GridDB.Get(game + ".Sprites.0.CustomData"));
                 uiBuilder = new GameUILayoutBuilder(gameInput,game);
                 
@@ -151,6 +151,7 @@ namespace IngameScript
                 gameData.map = map;
                 AddSprite(uiBuilder);
                 GridInfo.Echo("Loading Game Done");
+                if(gameData.Actions.ContainsKey("GameStart")) gameData.Actions["GameStart"].Execute();
             }
             //---------------------------------------------------------------------------
             // main loop
@@ -209,6 +210,8 @@ namespace IngameScript
                             else if (guardedTile != null && guardedTile.guardedSpace)
                             {
                                 GridInfo.Echo("Player at guarded space");
+                                map.CenterOn(player.MapPosition);
+                                player.Position = map.TilePosition((int)player.MapPosition.X, (int)player.MapPosition.Y);
                                 if (gameData.Actions.ContainsKey(guardedTile.InteractAction)) gameData.Actions[guardedTile.InteractAction].Execute(guardedTile);
                             }
                             else

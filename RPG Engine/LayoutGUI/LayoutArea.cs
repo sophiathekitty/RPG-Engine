@@ -135,13 +135,8 @@ namespace IngameScript
                 Vector2 contentSize = ContentSize;
                 if (Justify)
                 {
-                    GridInfo.Echo("Justify");
-                    GridInfo.Echo("Size: " + Size);
-                    GridInfo.Echo("Spacing before: " + spacing); 
-                    GridInfo.Echo("ContentSize: " + contentSize);
                     if (Vertical) spacing.Y = (Size.Y - contentSize.Y) / (Items.Count - 1);
                     else spacing.X = (Size.X - contentSize.X) / (Items.Count - 1);
-                    GridInfo.Echo("Spacing after: " + spacing);
                 }
                 Vector2 contentsArea = Size - (Padding * 2);
                 foreach (ILayoutItem item in Items)

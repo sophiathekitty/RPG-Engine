@@ -29,6 +29,22 @@ namespace IngameScript
         {
             public string Name = "";
             public Dictionary<string, int> Stats = new Dictionary<string, int>();
+            public List<string> Skills = new List<string>();
+            //-----------------------------------------------------------------------
+            // constructor
+            //-----------------------------------------------------------------------
+            public PlayerClass(string data)
+            {
+                string[] parts = data.Split(',');
+                Name = parts[0].Trim();
+                //GridInfo.Echo("PlayerClass: " + Name);
+                for (int i = 1; i < parts.Length; i++)
+                {
+                    string[] stat = parts[i].Split(':');
+                    Stats.Add(stat[0].Trim(), int.Parse(stat[1].Trim()));
+                    //GridInfo.Echo("stat: " + stat[0] + " = " + stat[1]);
+                }
+            }
         }
         //-----------------------------------------------------------------------
     }

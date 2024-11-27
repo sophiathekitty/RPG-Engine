@@ -24,7 +24,7 @@ namespace IngameScript
     {
         //-----------------------------------------------------------------------
         // a game action for loop
-        // for:Ints.i,start,end,step;
+        // for:@Ints.i,start,end,step;
         // action1;action2;...;actionN;
         // endfor;
         //-----------------------------------------------------------------------
@@ -37,7 +37,7 @@ namespace IngameScript
             NPC npc;
             public GameActionForLoop(string command, GameData gameData, GameUILayoutBuilder uiBuilder, GameAction action) : base("", gameData, uiBuilder,action)
             {
-                GridInfo.Echo("GameActionForLoop: " + command);
+                //GridInfo.Echo("GameActionForLoop: " + command);
                 string[] parts = command.Split(':');
                 string[] vars = parts[1].Split(',');
                 loopVar = new GameActionVariable(vars[0].Trim(), gameData, action);
@@ -47,15 +47,19 @@ namespace IngameScript
             }
             public override void Execute()
             {
-                GridInfo.Echo("GameActionForLoop.Execute");
+                GridInfo.Echo("GameActionForLoop.Execute "+ startValue + " to " + endValue + " step " + stepValue);
                 // loop through the actions
                 for (int i = startValue; i <= endValue; i += stepValue)
                 {
-                    loopVar.Value = i.ToString();
+                    loopVar.Set(i);
+                    GridInfo.Echo("Looping: " + i + " - " + actions.Count + " actions");
                     foreach (GameActionCommand action in actions)
                     {
+                        GridInfo.Echo("Executing action: " + action.cmd);
                         action.Execute();
+                        GridInfo.Echo("Action executed");
                     }
+                    GridInfo.Echo("End loop");
                 }
             }
         }

@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using VRage;
 using VRage.Collections;
@@ -23,23 +24,21 @@ namespace IngameScript
     partial class Program
     {
         //-----------------------------------------------------------------------
-        // an enemy combatant (monster)
+        // a display for a game action variable (binding)
         //-----------------------------------------------------------------------
-        public class EnemyCombatant : Combatant
+        public class GameUIVarDisplay : LayoutArea
         {
-            public List<string> Drops = new List<string>();
-            //-----------------------------------------------------------------------
-            // constructor
-            //-----------------------------------------------------------------------
-            public EnemyCombatant(string data) : base(data)
+            GameActionVariable _variable;
+            public GameUIVarDisplay(string label, GameActionVariable variable, float fontSize = 0.5f, bool vertical = false)
             {
-                string[] parts = data.Split('╔');
-                foreach (string part in parts)
-                {
-                    string[] subParts = part.Trim().Split(':');
-                    if (subParts[0] == "action") Actions.Add(subParts[1]);
-                    else if (subParts[0] == "drop") Drops.Add(subParts[1]);
-                }
+                Vertical = vertical;
+                _variable = variable.ApplyAddressIndexes();
+                Items.Add(new LayoutText(label, Color.White, fontSize));
+                Items.Add(new LayoutText(variable.Value, Color.White, fontSize));
+            }
+            public void Update()
+            {
+                Items[1].Text = _variable.Value;
             }
         }
         //-----------------------------------------------------------------------
