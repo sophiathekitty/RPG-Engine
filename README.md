@@ -33,3 +33,14 @@ anwyays.... this is all massively under construction lol.... at time of writing 
  * `moveSprite`:`SpriteName`=`ScreenX`,`ScreenY` - move the sprite on the screen.
  * `replaceSprite`:`SpriteName`=`SpriteSheetIndex`,`SpriteSheetX`,`SpriteSheetY`,`SpriteWidth`,`SpriteHeight` - replace the sprite image
  * `removeSprite`:`SpriteName` - remove the sprite from the screen
+ * `addArea`:[`Header`]=`x`,`y`,`width`,`height`[,`virtical`[,`background`]] - starts adding a layout area (areas can be nested in other areas... in theory x,y doesn't matter for the nested areas)
+ * `addAreaText`:`text`[=`fontSize`] - adds a text element to the layout area.
+ * `addAreaVar`:`label`=`var` - lets you add a bound var to a layout area (within a scene)
+ * `endArea` and `showArea` - finalize the layout area. both do the same thing but it could make the code more readable if nested areas use endArea and the last one is showArea...
+
+### Party and Enemy
+
+ * `clearParty` - clear's the party list
+ * `addParty`:`name`=`job` - adds a party member with a job name to get their stats
+ * `removeParty`[:`index`] - removes the last party member (or at the optional index)
+ * `clearEnemies` - clear the current enemies list
