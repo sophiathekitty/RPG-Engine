@@ -451,6 +451,34 @@ namespace IngameScript
                     ceiling[i].Visible = true;
                 }
             }
+            public void RandomWalkNPCs()
+            {
+                foreach (NPC npc in NPCs)
+                {
+                    if(npc.TakeRandomStep()) PushNPC(npc);
+                }
+            }
+            string dirs = "urdl";
+
+            public void PushNPC(NPC npc)
+            {
+                if(!npc.randomWalk || !npc.Enabled) return;
+                Vector2 newPos = npc.MapPosition;
+                int dir = GridInfo.Random.Next(4);
+                npc.Direction = dirs[dir];
+                switch (dir)
+                {
+                    case 0: newPos.Y--; break;
+                    case 1: newPos.X++; break;
+                    case 2: newPos.Y++; break;
+                    case 3: newPos.X--; break;
+                }
+                if (IsGround((int)newPos.X, (int)newPos.Y) && newPos != gameData.playerSprite.MapPosition)
+                {
+                    npc.MapPosition = newPos;
+                    npc.Position = TilePosition((int)newPos.X, (int)newPos.Y);
+                }
+            }
             //float fontSize { get { return TileSize.X / (RasterSprite.PIXEL_TO_SCREEN_RATIO * TileSet.tileSize.X); } }
             //-----------------------------------------------------------------------
             // IScreenSpriteProvider

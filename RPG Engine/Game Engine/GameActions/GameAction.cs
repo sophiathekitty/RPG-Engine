@@ -96,7 +96,7 @@ namespace IngameScript
                         }
                         ifBlocks.Push(forBlock);
                     }
-                    else if (cmd.StartsWith("endfor;"))
+                    else if (cmd.StartsWith("endfor"))
                     {
                         //GridInfo.Echo("Ending for block");
                         ifBlocks.Pop();

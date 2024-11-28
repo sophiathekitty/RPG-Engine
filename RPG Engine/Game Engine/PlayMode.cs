@@ -159,7 +159,7 @@ namespace IngameScript
             public override void Main(string argument)
             {
                 string cmd = uiBuilder.Run();
-                if(cmd == "go")
+                if(cmd == "go") // go around map
                 {
                     Vector2 move = Vector2.Zero;
                     if (input.WPressed)
@@ -223,6 +223,15 @@ namespace IngameScript
                         map.CenterOn(player.MapPosition);
                         player.Position = map.TilePosition((int)player.MapPosition.X, (int)player.MapPosition.Y);
                     }
+                    else
+                    {
+                        if(move!= Vector2.Zero)
+                        {
+                            // see if there's an npc on the tile
+                            NPC npc = map.GetNPC(player.MapPosition + move);
+                            if(npc != null) map.PushNPC(npc);
+                        }
+                    }
                     // interact
                     if (input.SpacePressed)
                     {
@@ -240,8 +249,9 @@ namespace IngameScript
                             }
                         }
                     }
-
+                    map.RandomWalkNPCs();
                 }
+                // go done
                 base.Main(argument);
             }
         }

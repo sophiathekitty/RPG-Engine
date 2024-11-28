@@ -55,6 +55,10 @@ namespace IngameScript
             //-----------------------------------------------------------------------
             public string Run()
             {
+                foreach (GameUIVarDisplay varDisplay in _varDisplays)
+                {
+                    varDisplay.Update();
+                }
                 if (_interactables.Count > 0)
                 {
                     ILayoutInteractable interactable = _interactables.Peek();

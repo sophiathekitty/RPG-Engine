@@ -41,9 +41,12 @@ namespace IngameScript
                 string[] parts = command.Split(':');
                 string[] vars = parts[1].Split(',');
                 loopVar = new GameActionVariable(vars[0].Trim(), gameData, action);
-                startValue = int.Parse(vars[1].Trim());
-                endValue = int.Parse(vars[2].Trim());
-                stepValue = int.Parse(vars[3].Trim());
+                GameActionVariable _startValue = new GameActionVariable(vars[1].Trim(), gameData, action);
+                GameActionVariable _endValue = new GameActionVariable(vars[2].Trim(), gameData, action);
+                GameActionVariable _stepValue = new GameActionVariable(vars[3].Trim(), gameData, action);
+                startValue = _startValue.As<int>();
+                endValue = _endValue.As<int>();
+                stepValue = _stepValue.As<int>();
             }
             public override void Execute()
             {

@@ -34,7 +34,7 @@ namespace IngameScript
                 Vertical = vertical;
                 _variable = variable.ApplyAddressIndexes();
                 Items.Add(new LayoutText(label, Color.White, fontSize));
-                Items.Add(new LayoutText(variable.Value, Color.White, fontSize));
+                Items.Add(new LayoutText(_variable.Value, Color.White, fontSize));
             }
             public void Update()
             {

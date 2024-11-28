@@ -40,6 +40,16 @@ namespace IngameScript
             public string EnabledBool = ""; // name of bool to store if npc is enabled
             public bool randomWalk = false;
             public bool guardedSpace = false; // if true, player cannot walk through this npc (but it will do the NPCs action)
+            int randomWalkDelay = 10;
+            public bool TakeRandomStep()
+            {
+                if (randomWalk && randomWalkDelay-- < 0)
+                {
+                    randomWalkDelay = GridInfo.Random.Next(10, 200);
+                    return true;
+                }
+                return false;
+            }
             public bool Enabled 
             { 
                 get { return isEnabled; } 

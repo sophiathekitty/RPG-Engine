@@ -27,6 +27,7 @@ namespace IngameScript
         //-----------------------------------------------------------------------
         public class PlayerCharacter : Combatant
         {
+            public string Job;
             public Dictionary<string,string> Gear = new Dictionary<string, string>();
             //-----------------------------------------------------------------------
             // constructor
@@ -42,11 +43,16 @@ namespace IngameScript
                         string[] gearParts = subParts[1].Split('=');
                         Gear.Add(gearParts[0], gearParts[1]);
                     }
+                    else if (subParts[0] == "job")
+                    {
+                        Job = subParts[1];
+                    }
                 }
             }
             public PlayerCharacter(string name, PlayerClass playerClass) : base(name)
             {
                 GridInfo.Echo("PlayerCharacter: " + Name);
+                Job = playerClass.Name;
                 foreach (KeyValuePair<string, int> stat in playerClass.Stats)
                 {
                     Stats.Add(stat.Key, stat.Value);
@@ -64,7 +70,7 @@ namespace IngameScript
             //-----------------------------------------------------------------------
             public string Save()
             {
-                string data = Name;
+                string data = Name + "╔job:" + Job;
                 foreach (KeyValuePair<string, string> gear in Gear)
                 {
                     data += "╔gear:" + gear.Key + "=" + gear.Value;

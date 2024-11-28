@@ -49,12 +49,12 @@ namespace IngameScript
             }
             public GameActionVariable ApplyAddressIndexes()
             {
-                string address = this.address;
+                string adr = "@"+address;
                 foreach (string key in gameData.Ints.Keys)
                 {
-                    address = address.Replace("#" + key, gameData.Ints[key].ToString());
+                    adr = adr.Replace("#" + key, gameData.Ints[key].ToString());
                 }
-                return new GameActionVariable(address, gameData, action, value);
+                return new GameActionVariable(adr, gameData, action, value);
             }
             public string Value
             {
