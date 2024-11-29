@@ -10,8 +10,38 @@ anwyays.... this is all massively under construction lol.... at time of writing 
 
 ### Variables and Values
 
- * `value` - a simple value. (can't include `.`)
- * `Obj.key` - a simple variable. ex: `Bools.Chest1`, `Ints.partyGold`
+ * `value` - a simple value.
+ * `@Obj.key` - a simple variable. ex: `@Bools.Chest1`, `@Ints.partyGold`
+ * `@Obj.index.key` - for accessing lists. ex: `@Party.0.Stat.hp`
+ * `@Obj.#index.key` - dynamic index in a list. ex: `@Party.#i.Stat.hp`
+ * `@Obj.$string.key` - dynamic key. ex: `@Items.$ItemName.useAction`
+
+### Variable Tree
+
+ * Ints
+ * Bools
+ * Strings
+ * Inventory.`Item Name` (`@Inventory.$ItemName`)
+ * Inventory.Count
+ * Inventory.Keys.`index` (`@Inventory.Keys.#i`)
+ * Player.X
+ * Player.Y
+ * Player.Direction
+ * Player.SpriteId
+ * Player.Visible
+ * NPC.X
+ * NPC.Y
+ * NPC.Direction
+ * NPC.SpriteId
+ * NPC.Enabled
+ * Map.Visible
+ * GridInfo.`VarName`
+ * Party.Count
+ * Party.`index`.Stat.`key`
+ * Party.`index`.MaxStat.`key`
+ * Party.`index`.Status.`key`
+ * Party.`index`.Gear.`key`
+ * Items.`key`.`key`
 
 ### Commands
 
@@ -20,6 +50,12 @@ anwyays.... this is all massively under construction lol.... at time of writing 
  * `sub`:`Destination`=`Source1`[,`Source2`,`Source3`] - subtracts Sources from first source and stores in Destination. `add:Ints.damage=Ints.EnemyAttack,Ints.PlayerDef;` or subtracts Source to Destination. `add:Ints.partyGold=10;`
  * `mul`:`Destination`=`Source1`[,`Source2`] - multiplies Sources and stores in Destination. `add:Ints.damage=Ints.PlayerStr,Ints.WeaponAtk;` or multiplies Source with Destination. `add:Ints.partyGold=10;`
  * `div`:`Destination`=`Source1`[,`Source2`] - divides Sources and stores in Destination. `add:Ints.damage=Ints.PlayerStr,Ints.WeaponAtk;` or devides Source from Destination. `add:Ints.partyGold=10;`
+ * `if`:`VarA`==`VarB` - checks to see if the condition is met. can do ==, >=, >, <=, < (you can nest if statements)
+ * `else` - tells the script parser that the following commands are for when the if is false
+ * `endif` - tells the script parser that the if block has ended.
+ * `for`:`Iterator`,`Start`,`End`,`Step` - does a for loop from Start through End with at Step.... and will store the current value of the loop in the Iterator.  `for:@Ints.i,0,3,1;`
+ * `endfor` - ends the for loop block
+ * `run`:`Destination` - runs another action `run:TestAction;`
 
 ### Game UI Commands
  
