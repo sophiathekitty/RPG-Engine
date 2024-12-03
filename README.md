@@ -18,10 +18,10 @@ anwyays.... this is all massively under construction lol.... at time of writing 
 
 ### Variable Tree
 
- * Ints.`key`
+ * Ints.`key` (some objects can remap #`IntName` for a dynamic index)
  * Bools.`key`
- * Strings.`key`
- * Inventory.`Item Name` (`@Inventory.$ItemName`)
+ * Strings.`key` (some objects can remap $`StringName` for a dynamic key)
+ * Inventory.`Item Name` (`@Inventory.$ItemName`, `@Inventory.ItemName`)
  * Inventory.Count
  * Inventory.Keys.`index` (`@Inventory.Keys.#i`)
  * Player.X
