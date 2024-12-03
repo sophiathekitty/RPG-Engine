@@ -18,9 +18,9 @@ anwyays.... this is all massively under construction lol.... at time of writing 
 
 ### Variable Tree
 
- * Ints
- * Bools
- * Strings
+ * Ints.`key`
+ * Bools.`key`
+ * Strings.`key`
  * Inventory.`Item Name` (`@Inventory.$ItemName`)
  * Inventory.Count
  * Inventory.Keys.`index` (`@Inventory.Keys.#i`)
