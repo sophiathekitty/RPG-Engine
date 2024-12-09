@@ -69,11 +69,12 @@ namespace IngameScript
                     }
                 }
             }
-            public virtual void Execute() 
+            public virtual bool Execute()
             {
-                if(string.IsNullOrEmpty(cmd)) return;
+                if (string.IsNullOrEmpty(cmd)) return true;
                 //GridInfo.Echo("cmd:"+cmd);
-                if(cmd == "echo")
+                if(cmd == "end") return false;
+                if (cmd == "echo")
                 {
                     string echo = Destination.Value;
                     foreach(GameActionVariable v in Source)
@@ -81,6 +82,12 @@ namespace IngameScript
                         echo += " " + v.Value;
                     }
                     GridInfo.Echo(echo);
+                }
+                // run another action
+                else if (cmd == "run")
+                {
+                    if (gamedata.Actions.ContainsKey(Destination.Value)) gamedata.Actions[Destination.Value].Execute();
+                    else throw new Exception("Invalid run command");
                 }
                 // set command
                 else if (cmd == "set")
@@ -97,12 +104,12 @@ namespace IngameScript
                         {
                             total += v.As<int>();
                         }
-                        GridInfo.Echo("Adding: " + total);
+                        //GridInfo.Echo("Adding: " + total);
                         Destination.Set<int>(total);
                     }
                     else if (Source.Count == 1)
                     {
-                        GridInfo.Echo("Adding: " + Destination.As<int>() + " + " + Source[0].As<int>());
+                        //GridInfo.Echo("Adding: " + Destination.As<int>() + " + " + Source[0].As<int>());
                         Destination.Set<int>(Destination.As<int>() + Source[0].As<int>());
                     }
                     else throw new Exception("Invalid add command");
@@ -204,8 +211,11 @@ namespace IngameScript
                     if (Source.Count > 0)
                     {
                         string label = "";
+                        bool first = true;
                         foreach (GameActionVariable v in Source)
                         {
+                            if (first) first = false;
+                            else label += " ";
                             label += v.Value;
                         }
                         UIbuilder.AddMenuItem(label, Destination.Value);
@@ -310,6 +320,7 @@ namespace IngameScript
                 {
                     gamedata.EnemyList.Clear();
                 }
+                return true;
             }
         }
         //-----------------------------------------------------------------------

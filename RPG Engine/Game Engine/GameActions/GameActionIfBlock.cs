@@ -54,7 +54,7 @@ namespace IngameScript
                 VarA = new GameActionVariable(vars[0].Trim(), gameData,action);
                 VarB = new GameActionVariable(vars[vars.Length-1].Trim(), gameData,action);
             }
-            public override void Execute()
+            public override bool Execute()
             {
                 //GridInfo.Echo("GameActionIfBlock.Execute");
                 // compare the variables
@@ -89,16 +89,17 @@ namespace IngameScript
                 {
                     foreach (GameActionCommand action in actions)
                     {
-                        action.Execute();
+                        if (!action.Execute()) return false;
                     }
                 }
                 else
                 {
                     foreach (GameActionCommand action in elseActions)
                     {
-                        action.Execute();
+                        if (!action.Execute()) return false;
                     }
                 }
+                return true;
             }
         }
         //-----------------------------------------------------------------------

@@ -117,16 +117,18 @@ namespace IngameScript
             //-----------------------------------------------------------------------
             public void ShowDialog(string message, float fontSize, Vector2 size)
             {
-                GridInfo.Echo("Showing dialog");
+                //GridInfo.Echo("Showing dialog: "+message);
                 // calculate position based on size and screen size
                 Vector2 position = new Vector2((_screen.Size.X - size.X) / 2, (_screen.Size.Y - size.Y - 10));
                 foreach(string key in _gameData.Ints.Keys)
                 {
-                    message = message.Replace("#{" + key + "}", _gameData.Ints[key].ToString());
+                    //GridInfo.Echo("key: " + key + " value: " + _gameData.Ints[key]);
+                    message = message.Replace("#" + key, _gameData.Ints[key].ToString());
                 }
                 foreach (string key in _gameData.Strings.Keys)
                 {
-                    message = message.Replace("${" + key + "}", _gameData.Strings[key]);
+                    //GridInfo.Echo("key: ${" + key + "}");
+                    message = message.Replace("$" + key, _gameData.Strings[key]);
                 }
                 DialogWindow dialog = new DialogWindow(message, fontSize, position, size, _input);
                 dialog.ApplyLayout();

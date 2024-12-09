@@ -115,7 +115,7 @@ namespace IngameScript
                 //GridInfo.Echo("Executing action");
                 foreach (GameActionCommand cmd in commands)
                 {
-                    cmd.Execute();
+                    if(!cmd.Execute()) return;
                 }
             }
             public void Execute(NPC npc)

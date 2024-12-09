@@ -51,18 +51,18 @@ namespace IngameScript
             }
             public PlayerCharacter(string name, PlayerClass playerClass) : base(name)
             {
-                GridInfo.Echo("PlayerCharacter: " + Name);
+                //GridInfo.Echo("PlayerCharacter: " + Name);
                 Job = playerClass.Name;
                 foreach (KeyValuePair<string, int> stat in playerClass.Stats)
                 {
                     Stats.Add(stat.Key, stat.Value);
                     MaxStats.Add(stat.Key, stat.Value);
-                    GridInfo.Echo("stat: " + stat.Key + " = " + stat.Value);
+                    //GridInfo.Echo("stat: " + stat.Key + " = " + stat.Value);
                 }
                 foreach (string skill in playerClass.Skills)
                 {
                     Actions.Add(skill);
-                    GridInfo.Echo("skill: " + skill);
+                    //GridInfo.Echo("skill: " + skill);
                 }
             }
             //-----------------------------------------------------------------------

@@ -30,9 +30,9 @@ namespace IngameScript
         //-----------------------------------------------------------------------
         public class GameActionForLoop : GameActionIfBlock
         {
-            int endValue;
-            int startValue;
-            int stepValue;
+            GameActionVariable endValue;
+            GameActionVariable startValue;
+            GameActionVariable stepValue;
             GameActionVariable loopVar;
             NPC npc;
             public GameActionForLoop(string command, GameData gameData, GameUILayoutBuilder uiBuilder, GameAction action) : base("", gameData, uiBuilder,action)
@@ -41,29 +41,25 @@ namespace IngameScript
                 string[] parts = command.Split(':');
                 string[] vars = parts[1].Split(',');
                 loopVar = new GameActionVariable(vars[0].Trim(), gameData, action);
-                GameActionVariable _startValue = new GameActionVariable(vars[1].Trim(), gameData, action);
-                GameActionVariable _endValue = new GameActionVariable(vars[2].Trim(), gameData, action);
-                GameActionVariable _stepValue = new GameActionVariable(vars[3].Trim(), gameData, action);
-                startValue = _startValue.As<int>();
-                endValue = _endValue.As<int>();
-                stepValue = _stepValue.As<int>();
+                startValue = new GameActionVariable(vars[1].Trim(), gameData, action);
+                endValue = new GameActionVariable(vars[2].Trim(), gameData, action);
+                stepValue = new GameActionVariable(vars[3].Trim(), gameData, action);
             }
-            public override void Execute()
+            public override bool Execute()
             {
-                GridInfo.Echo("GameActionForLoop.Execute "+ startValue + " to " + endValue + " step " + stepValue);
                 // loop through the actions
-                for (int i = startValue; i <= endValue; i += stepValue)
+                int _startValue = startValue.As<int>();
+                int _endValue = endValue.As<int>();
+                int _stepValue = stepValue.As<int>();
+                for (int i = _startValue; i < _endValue; i += _stepValue)
                 {
                     loopVar.Set(i);
-                    GridInfo.Echo("Looping: " + i + " - " + actions.Count + " actions");
                     foreach (GameActionCommand action in actions)
                     {
-                        GridInfo.Echo("Executing action: " + action.cmd);
-                        action.Execute();
-                        GridInfo.Echo("Action executed");
+                        if (!action.Execute()) return false;
                     }
-                    GridInfo.Echo("End loop");
                 }
+                return true;
             }
         }
         //-----------------------------------------------------------------------

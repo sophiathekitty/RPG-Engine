@@ -30,22 +30,26 @@ namespace IngameScript
         {
             GameAction action; // the action that owns this variable
             GameData gameData; // where data is stored
-            string address; // address of the variable
+            public string address { get; private set; } // address of the variable
             string value; // value of the property
-            public GameActionVariable(string address, GameData gameData, GameAction action, string defaultValue = "")
+            public GameActionVariable(string address, GameData gameData, GameAction action, string defaultValue = "", bool debug = false)
             {
+                if(debug) GridInfo.Echo("GameActionVariable: " + address);
                 this.action = action;
                 this.gameData = gameData;
                 if(address.StartsWith("@"))
                 {
+                    if (debug) GridInfo.Echo("Is a Variable");
                     this.address = address.Substring(1);
                     value = defaultValue;
                 }
                 else
                 {
+                    if (debug) GridInfo.Echo("Is a Value");
                     value = address;
                     this.address = "";
                 }
+                if (debug) GridInfo.Echo("GameActionVariable: " + this.address + " = " + value);
             }
             public GameActionVariable ApplyAddressIndexes()
             {
@@ -53,6 +57,10 @@ namespace IngameScript
                 foreach (string key in gameData.Ints.Keys)
                 {
                     adr = adr.Replace("#" + key, gameData.Ints[key].ToString());
+                }
+                foreach (string key in gameData.Strings.Keys)
+                {
+                    adr = adr.Replace("$" + key, gameData.Strings[key]);
                 }
                 return new GameActionVariable(adr, gameData, action, value);
             }
@@ -71,20 +79,29 @@ namespace IngameScript
                         if(gameData.Inventory.ContainsKey(parts[1])) return gameData.Inventory[parts[1]].ToString();
                         else
                         {
-                            if (parts[1] == "Count") return gameData.Inventory.Count.ToString();
+                            if (parts[1] == "Count")
+                            {
+                                GridInfo.Echo("Inventory count: " + gameData.Inventory.Count);
+                                return gameData.Inventory.Count.ToString();
+                            }
                             else if (parts[1] == "Keys")
                             {
-                                if(parts.Length > 2)
+                                if (parts.Length > 2)
                                 {
                                     if (parts[2].StartsWith("#")) return gameData.Inventory.Keys.ToArray()[gameData.Ints[parts[2].Substring(1)]];
                                     int index = 0;
                                     if (int.TryParse(parts[2], out index))
                                     {
                                         return gameData.Inventory.Keys.ToArray()[index];
-                                    } 
+                                    }
                                     else if (gameData.Ints.ContainsKey(parts[2])) return gameData.Inventory.Keys.ToArray()[gameData.Ints[parts[2]]];
                                 }
                                 return gameData.Inventory.Keys.ToString();
+                            }
+                            else if (parts[1].StartsWith("$"))
+                            {
+                                string key = gameData.Strings[parts[1].Substring(1)];
+                                if (gameData.Inventory.ContainsKey(key)) return gameData.Inventory[key].ToString();
                             }
                         }
                         return "0";
@@ -145,6 +162,16 @@ namespace IngameScript
                             }
                         }
                     }
+                    else if (parts[0] == "items")
+                    {
+                        string key = parts[1];
+                        if(key.StartsWith("$")) key = gameData.Strings[key.Substring(1)];
+                        if(gameData.Strings.ContainsKey(key)) key = gameData.Strings[key];
+                        if (gameData.Items.ContainsKey(key))
+                        {
+                            if (gameData.Items[key].ContainsKey(parts[2])) return gameData.Items[key][parts[2]];
+                        }
+                    }
                     return value;
                 }
                 set 
@@ -166,8 +193,15 @@ namespace IngameScript
                         }
                         else if (parts[0] == "inventory")
                         {
-                            if (gameData.Inventory.ContainsKey(parts[1])) gameData.Inventory[parts[1]] = int.Parse(value);
-                            else if(parts[1] != "count" && parts[1] != "keys") gameData.Inventory.Add(parts[1], int.Parse(value));
+                            string key = parts[1];
+                            if (key.StartsWith("$")) key = gameData.Strings[key.Substring(1)];
+                            if (gameData.Inventory.ContainsKey(key)) gameData.Inventory[key] = int.Parse(value);
+                            else if (key != "Count" && key != "Keys")
+                            {
+                                //GridInfo.Echo("Adding inventory item: " + key + " = " + value);
+                                gameData.Inventory.Add(key, int.Parse(value));
+                                //GridInfo.Echo("Inventory count: " + gameData.Inventory.Count);
+                            }
                         }
                         else if (parts[0] == "strings")
                         {
