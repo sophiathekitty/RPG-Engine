@@ -21,7 +21,7 @@ anwyays.... this is all massively under construction lol.... at time of writing 
  * Ints.`key` (some objects can remap #`IntName` for a dynamic index)
  * Bools.`key`
  * Strings.`key` (some objects can remap $`StringName` for a dynamic key)
- * Inventory.`Item Name` (`@Inventory.$ItemName`, `@Inventory.ItemName`)
+ * Inventory.`key` (`@Inventory.$ItemName`, `@Inventory.ItemName`)
  * Inventory.Count
  * Inventory.Keys.`index` (`@Inventory.Keys.#i`)
  * Player.X
@@ -42,10 +42,12 @@ anwyays.... this is all massively under construction lol.... at time of writing 
  * Party.`index`.Status.`key`
  * Party.`index`.Gear.`key`
  * Items.`key`.`key`
+ * Skills.`key`.`key`
 
 ### Commands
 
  * `set`:`Destination`=`Source1` - sets the value of Source1 to Destination. ex: `set:Ints.partGold=100;`
+ * `str`:`Destination`=`Source1`,`Source2`,[...] - combines all the Sources together and stores them in Destination. `str:@Strings.ActionName=LearnSpell,@Ints.i` to get something like "LearnSpell0"
  * `add`:`Destination`=`Source1`[,`Source2`,`Source3`] - sums Sources and stores in Destination. `add:Ints.damage=Ints.PlayerStr,Ints.WeaponAtk;` or adds Source to Destination. `add:Ints.partyGold=10;`
  * `sub`:`Destination`=`Source1`[,`Source2`,`Source3`] - subtracts Sources from first source and stores in Destination. `add:Ints.damage=Ints.EnemyAttack,Ints.PlayerDef;` or subtracts Source to Destination. `add:Ints.partyGold=10;`
  * `mul`:`Destination`=`Source1`[,`Source2`] - multiplies Sources and stores in Destination. `add:Ints.damage=Ints.PlayerStr,Ints.WeaponAtk;` or multiplies Source with Destination. `add:Ints.partyGold=10;`
