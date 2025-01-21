@@ -1,4 +1,8 @@
 /* styles.css */
+@font-face {
+    font-family: 'Cream';
+    src: url(ZitCream.ttf) format('truetype');
+}
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -21,6 +25,7 @@ header img {
 header h1 {
     font-size: 2.5rem;
     margin-bottom: 0.5rem;
+    font-family: 'Cream', sans-serif;
 }
 
 header p {
