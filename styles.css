@@ -3,6 +3,14 @@
     font-family: 'Cream';
     src: url(ZitCream.ttf) format('truetype');
 }
+@font-face {
+    font-family: 'Frax';
+    src: url(DecadentaFrax.ttf) format('truetype');
+}
+@font-face {
+    font-family: 'Fantastic';
+    src: url(fantastic.ttf) format('truetype');
+}
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -27,8 +35,8 @@ header h1 {
     margin-bottom: 0.5rem;
 }
 header h1 span {
-    font-size: 1.5em;
-    text-shadow: #ff9e00 0 0 5px;
+    font-size: 1.75em;
+    text-shadow: 1px 0px 0px #DC4824, 1px 1px 0px #DC4824, 1px 2px 0px #DC4824, 1px 3px 0px #DC4824, 1px 4px 0px #DC4824, 1px 5px 0px #DC4824;
     font-family: 'Cream', sans-serif;
 }
 
@@ -42,7 +50,16 @@ main {
     max-width: 800px;
     margin: 0 auto;
 }
-
+a {
+    color: #804114;
+    text-decoration: none;
+}
+a:visited {
+    color: #564211;
+}
+a:hover {
+    color: #ff9e00;
+}
 section {
     margin-bottom: 2rem;
 }
@@ -52,7 +69,15 @@ h2 {
     border-bottom: 2px solid #ff9e00;
     padding-bottom: 0.3rem;
 }
-
+h2 span {
+    font-family: 'Frax', sans-serif;
+    font-size: 1.75em;
+    text-shadow: 2px 2px 0px #a45eed, 1px 1px 0px #a45eed, 0px 0px 0px #a45eed, -1px -1px 0px #79e3b7, -2px -2px 0px #79e3b7;
+}
+h2 span::before {
+    content: 'C';
+    font-family: 'fantastic', sans-serif;
+}
 ul {
     list-style-type: none;
     padding: 0;
@@ -100,7 +125,9 @@ footer a {
     color: #aaa;
     text-decoration: none;
 }
-
+footer a:visited {
+    color: #bd7500;
+}
 footer a#hidden-link {
     display: block;
     width: 1px;
