@@ -61,10 +61,10 @@ anwyays.... this is all massively under construction lol.... at time of writing 
 
 ### Game UI Commands
  
- * `say`:`Message`[=`fontsize`[,`x`,`y`]] - displays a dialog window with the message. optional fontsize and position. `say:Hello World;` or `say:Hellow World=10;` for fontsize of `0.1f`
+ * `say`:`Message`[=`fontsize`[,`x`,`y`]] - displays a dialog window with the message. optional fontsize and position. `say:Hello World;` or `say:Hellow World=10;` for fontsize of `0.1f`. Note: the dialog window is added and then executed after the game action is done executing. it does not hault execution of the game action. it is run as a separate task. once the dialog window is done it will return control to the active scene or if not in a scene to the player.
  * `startScene`:`GameAction` - starts a Game UI Scene with the name of the game action to run when no interactable elements are on screen.
- * `endScene` - removes the scene from the Game UI.
- * `addMenu`:`Header`=`x`,`y`,`width`,`height` - creates a menu with a header at x,y with a size of height,width.
+ * `endScene` - removes the scene from the Game UI. if not in dialog control is returned to player.
+ * `addMenu`:`Header`=`x`,`y`,`width`,`height` - creates a menu with a header at x,y with a size of height,width. menu will take over as active element until selection is made at which point it closes. the menu selection game actions should add a menu. have them set a state value so the scene loop can build the menu instead.
  * `addMenuItem`:`Game Action`=`multi`,`part`,`label` - adds an item to the menu with the action to call when it's selected and the display text. ex: `addMenuItem:UseHeal=Heal [,Ints.HealPotionCount,];`
  * `showMenu` - finalizes and shows the menu.
  * `addSprite`:`SpriteName`=`ScreenX`,`ScreenY`,`SpriteSheetIndex`,`SpriteSheetX`,`SpriteSheetY`,`SpriteWidth`,`SpriteHeight` - add a sprite to the screen.
