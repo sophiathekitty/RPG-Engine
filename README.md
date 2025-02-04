@@ -41,6 +41,8 @@ anwyays.... this is all massively under construction lol.... at time of writing 
  * Party.`index`.MaxStat.`key`
  * Party.`index`.Status.`key`
  * Party.`index`.Gear.`key`
+ * Party.`index`.Skills.`key`
+ * Party.`index`.Skills.Count
  * Items.`key`.`key`
  * Skills.`key`.`key`
 
