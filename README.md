@@ -21,7 +21,7 @@ anwyays.... this is all massively under construction lol.... at time of writing 
  * Ints.`key` (some objects can remap #`IntName` for a dynamic index)
  * Bools.`key`
  * Strings.`key` (some objects can remap $`StringName` for a dynamic key)
- * Inventory.`Item Name` (`@Inventory.$ItemName`, `@Inventory.ItemName`)
+ * Inventory.`key` (`@Inventory.$ItemName`, `@Inventory.ItemName`)
  * Inventory.Count
  * Inventory.Keys.`index` (`@Inventory.Keys.#i`)
  * Player.X
@@ -41,11 +41,15 @@ anwyays.... this is all massively under construction lol.... at time of writing 
  * Party.`index`.MaxStat.`key`
  * Party.`index`.Status.`key`
  * Party.`index`.Gear.`key`
+ * Party.`index`.Skills.`key`
+ * Party.`index`.Skills.Count
  * Items.`key`.`key`
+ * Skills.`key`.`key`
 
 ### Commands
 
  * `set`:`Destination`=`Source1` - sets the value of Source1 to Destination. ex: `set:Ints.partGold=100;`
+ * `str`:`Destination`=`Source1`,`Source2`,[...] - combines all the Sources together and stores them in Destination. `str:@Strings.ActionName=LearnSpell,@Ints.i` to get something like "LearnSpell0"
  * `add`:`Destination`=`Source1`[,`Source2`,`Source3`] - sums Sources and stores in Destination. `add:Ints.damage=Ints.PlayerStr,Ints.WeaponAtk;` or adds Source to Destination. `add:Ints.partyGold=10;`
  * `sub`:`Destination`=`Source1`[,`Source2`,`Source3`] - subtracts Sources from first source and stores in Destination. `add:Ints.damage=Ints.EnemyAttack,Ints.PlayerDef;` or subtracts Source to Destination. `add:Ints.partyGold=10;`
  * `mul`:`Destination`=`Source1`[,`Source2`] - multiplies Sources and stores in Destination. `add:Ints.damage=Ints.PlayerStr,Ints.WeaponAtk;` or multiplies Source with Destination. `add:Ints.partyGold=10;`
@@ -59,10 +63,10 @@ anwyays.... this is all massively under construction lol.... at time of writing 
 
 ### Game UI Commands
  
- * `say`:`Message`[=`fontsize`[,`x`,`y`]] - displays a dialog window with the message. optional fontsize and position. `say:Hello World;` or `say:Hellow World=10;` for fontsize of `0.1f`
+ * `say`:`Message`[=`fontsize`[,`x`,`y`]] - displays a dialog window with the message. optional fontsize and position. `say:Hello World;` or `say:Hellow World=10;` for fontsize of `0.1f`. Note: the dialog window is added and then executed after the game action is done executing. it does not hault execution of the game action. it is run as a separate task. once the dialog window is done it will return control to the active scene or if not in a scene to the player.
  * `startScene`:`GameAction` - starts a Game UI Scene with the name of the game action to run when no interactable elements are on screen.
- * `endScene` - removes the scene from the Game UI.
- * `addMenu`:`Header`=`x`,`y`,`width`,`height` - creates a menu with a header at x,y with a size of height,width.
+ * `endScene` - removes the scene from the Game UI. if not in dialog control is returned to player.
+ * `addMenu`:`Header`=`x`,`y`,`width`,`height` - creates a menu with a header at x,y with a size of height,width. menu will take over as active element until selection is made at which point it closes. the menu selection game actions should add a menu. have them set a state value so the scene loop can build the menu instead.
  * `addMenuItem`:`Game Action`=`multi`,`part`,`label` - adds an item to the menu with the action to call when it's selected and the display text. ex: `addMenuItem:UseHeal=Heal [,Ints.HealPotionCount,];`
  * `showMenu` - finalizes and shows the menu.
  * `addSprite`:`SpriteName`=`ScreenX`,`ScreenY`,`SpriteSheetIndex`,`SpriteSheetX`,`SpriteSheetY`,`SpriteWidth`,`SpriteHeight` - add a sprite to the screen.
