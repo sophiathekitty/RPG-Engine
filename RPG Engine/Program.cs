@@ -73,12 +73,17 @@ namespace IngameScript
                 if(playModeActive)
                 {
                     playModeActive = false;
+                    // see if this makes it reload nicely
+                    mapEditor = MapEditor.FindMainEditor();
                 }
                 else
                 {
                     playModeActive = true;
+                    // maybe just reload the playmode...
+                    playMode = PlayMode.FindMainPlayer();
                     // reset game....
                     playMode.LoadGame("FinalFantasy");
+
                 }
             }
             if(playModeActive)

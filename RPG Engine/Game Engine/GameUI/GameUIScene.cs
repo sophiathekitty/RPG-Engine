@@ -40,6 +40,7 @@ namespace IngameScript
             List<IScreenSpriteProvider> _sprites = new List<IScreenSpriteProvider>();
             Stack<ILayoutInteractable> _interactables = new Stack<ILayoutInteractable>();
             List<GameUIVarDisplay> _varDisplays = new List<GameUIVarDisplay>();
+            public Stack<LayoutArea> layoutAreas = new Stack<LayoutArea>();
             public string ButtonPrompt { get; set; }
 
             public Color ValueColor { get; set; }

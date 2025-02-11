@@ -40,82 +40,100 @@ namespace IngameScript
         //-----------------------------------------------------------------------
         public class GameAction
         {
+            string actionName;
             List<GameActionCommand> commands = new List<GameActionCommand>();
             public NPC npc;
-            public GameAction(string data, GameData gameData, GameUILayoutBuilder uiBuilder, NPC npc = null)
+            public GameAction(string name, string data, GameData gameData, GameUILayoutBuilder uiBuilder, NPC npc = null)
             {
                 this.npc = npc;
+                actionName = name;
                 Stack<GameActionIfBlock> ifBlocks = new Stack<GameActionIfBlock>();
                 string[] cmds = data.Split(';');
                 //bool elseBlock = false;
+                int cmdLineNum = 0;
                 foreach (string command in cmds)
                 {
                     string cmd = command.Trim();
-                    if (cmd.StartsWith("if:"))
+                    try
                     {
-                        //GridInfo.Echo("Creating if block");
-                        GameActionIfBlock ifBlock = new GameActionIfBlock(cmd, gameData, uiBuilder, this);
-                        if (ifBlocks.Count > 0)
+                        if (cmd.StartsWith("if:"))
                         {
-                            //GridInfo.Echo("Adding if block to parent");
-                            if (ifBlocks.Peek().AddingElseActions)  ifBlocks.Peek().elseActions.Add(ifBlock);
-                            else ifBlocks.Peek().actions.Add(ifBlock);
+                            //GridInfo.Echo("Creating if block");
+                            GameActionIfBlock ifBlock = new GameActionIfBlock(cmd, gameData, uiBuilder, this);
+                            if (ifBlocks.Count > 0)
+                            {
+                                //GridInfo.Echo("Adding if block to parent");
+                                if (ifBlocks.Peek().AddingElseActions) ifBlocks.Peek().elseActions.Add(ifBlock);
+                                else ifBlocks.Peek().actions.Add(ifBlock);
+                            }
+                            else
+                            {
+                                //GridInfo.Echo("1-Adding if block to commands");
+                                commands.Add(ifBlock);
+                            }
+                            ifBlocks.Push(ifBlock);
                         }
-                        else
+                        else if (cmd.StartsWith("else"))
                         {
-                            //GridInfo.Echo("1-Adding if block to commands");
-                            commands.Add(ifBlock);
+                            //GridInfo.Echo("3-Switching to Esle commands");
+                            ifBlocks.Peek().AddingElseActions = true;
                         }
-                        ifBlocks.Push(ifBlock);
-                    }
-                    else if(cmd.StartsWith("else"))
-                    {
-                        //GridInfo.Echo("3-Switching to Esle commands");
-                        ifBlocks.Peek().AddingElseActions = true;
-                    }
-                    else if(cmd.StartsWith("endif"))
-                    {
-                        //GridInfo.Echo("4-Ending if block");
-                        ifBlocks.Pop();
-                        //elseBlock = false;
-                    }
-                    else if (cmd.StartsWith("for:")) // for loop start
-                    {
-                        //GridInfo.Echo("Creating for block");
-                        GameActionForLoop forBlock = new GameActionForLoop(cmd, gameData, uiBuilder, this);
-                        if (ifBlocks.Count > 0)
+                        else if (cmd.StartsWith("endif"))
                         {
-                            //GridInfo.Echo("Adding for block to parent");
-                            if (ifBlocks.Peek().AddingElseActions) ifBlocks.Peek().elseActions.Add(forBlock);
-                            else ifBlocks.Peek().actions.Add(forBlock);
+                            //GridInfo.Echo("4-Ending if block");
+                            ifBlocks.Pop();
+                            //elseBlock = false;
                         }
-                        else
+                        else if (cmd.StartsWith("for:")) // for loop start
                         {
-                            //GridInfo.Echo("1-Adding for block to commands");
-                            commands.Add(forBlock);
+                            //GridInfo.Echo("Creating for block");
+                            GameActionForLoop forBlock = new GameActionForLoop(cmd, gameData, uiBuilder, this);
+                            if (ifBlocks.Count > 0)
+                            {
+                                //GridInfo.Echo("Adding for block to parent");
+                                if (ifBlocks.Peek().AddingElseActions) ifBlocks.Peek().elseActions.Add(forBlock);
+                                else ifBlocks.Peek().actions.Add(forBlock);
+                            }
+                            else
+                            {
+                                //GridInfo.Echo("1-Adding for block to commands");
+                                commands.Add(forBlock);
+                            }
+                            ifBlocks.Push(forBlock);
                         }
-                        ifBlocks.Push(forBlock);
+                        else if (cmd.StartsWith("endfor"))
+                        {
+                            //GridInfo.Echo("Ending for block");
+                            ifBlocks.Pop();
+                        }
+                        else if (ifBlocks.Count > 0)
+                        {
+                            //GridInfo.Echo("2-Adding action to if block");
+                            if (ifBlocks.Peek().AddingElseActions) ifBlocks.Peek().elseActions.Add(new GameActionCommand(cmd, gameData, uiBuilder, this));
+                            else ifBlocks.Peek().actions.Add(new GameActionCommand(cmd, gameData, uiBuilder, this));
+                        }
+                        else commands.Add(new GameActionCommand(cmd, gameData, uiBuilder, this));
                     }
-                    else if (cmd.StartsWith("endfor"))
+                    catch (Exception e)
                     {
-                        //GridInfo.Echo("Ending for block");
-                        ifBlocks.Pop();
+                        throw new Exception("ParseError: " + cmd + " at line " + cmdLineNum + " - " + e.Message);
                     }
-                    else if (ifBlocks.Count > 0)
-                    {
-                        //GridInfo.Echo("2-Adding action to if block");
-                        if (ifBlocks.Peek().AddingElseActions) ifBlocks.Peek().elseActions.Add(new GameActionCommand(cmd, gameData, uiBuilder, this));
-                        else ifBlocks.Peek().actions.Add(new GameActionCommand(cmd, gameData, uiBuilder, this));
-                    } 
-                    else commands.Add(new GameActionCommand(cmd, gameData, uiBuilder, this));
+                    cmdLineNum++;
                 }
             }
             public void Execute()
             {
                 //GridInfo.Echo("Executing action");
-                foreach (GameActionCommand cmd in commands)
+                try
                 {
-                    if(!cmd.Execute()) return;
+                    foreach (GameActionCommand cmd in commands)
+                    {
+                        if (!cmd.Execute()) return;
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw new Exception(actionName+": " + e.Message);
                 }
             }
             public void Execute(NPC npc)

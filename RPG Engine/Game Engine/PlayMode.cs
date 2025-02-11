@@ -249,6 +249,16 @@ namespace IngameScript
                             }
                         }
                     }
+                    // game menu
+                    else if (input.EPressed)
+                    {
+                        if (gameData.Actions.ContainsKey("GameMenu")) gameData.Actions["GameMenu"].Execute();
+                    }
+                    // pause menu
+                    else if (input.QPressed)
+                    {
+                        if (gameData.Actions.ContainsKey("PauseMenu")) gameData.Actions["PauseMenu"].Execute();
+                    }
                     map.RandomWalkNPCs();
                 }
                 // go done

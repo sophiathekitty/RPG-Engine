@@ -35,6 +35,7 @@ namespace IngameScript
                 _variable = variable.ApplyAddressIndexes();
                 Items.Add(new LayoutText(label, Color.White, fontSize));
                 Items.Add(new LayoutText(_variable.Value, Color.White, fontSize));
+                GetSizeFromParent = true;
             }
             public void Update()
             {

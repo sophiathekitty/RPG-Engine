@@ -62,25 +62,32 @@ namespace IngameScript
                 string b = VarB.Value;
                 bool result = false;
                 //GridInfo.Echo("Comparing: " + a + " " + Operator + " " + b);
+                if(!string.IsNullOrEmpty(a) && !string.IsNullOrEmpty(b))
+                {
+                    switch (Operator)
+                    {
+                        case ">=":
+                            result = Convert.ToDouble(a) >= Convert.ToDouble(b);
+                            break;
+                        case "<=":
+                            result = Convert.ToDouble(a) <= Convert.ToDouble(b);
+                            break;
+                        case ">":
+                            result = Convert.ToDouble(a) > Convert.ToDouble(b);
+                            break;
+                        case "<":
+                            result = Convert.ToDouble(a) < Convert.ToDouble(b);
+                            break;
+                    }
+                }
                 switch (Operator)
                 {
-                    case ">=":
-                        result = Convert.ToDouble(a) >= Convert.ToDouble(b);
-                        break;
-                    case "<=":
-                        result = Convert.ToDouble(a) <= Convert.ToDouble(b);
-                        break;
                     case "==":
                         result = a == b;
                         break;
                     case "!=":
                         result = a != b;
-                        break;
-                    case ">":
-                        result = Convert.ToDouble(a) > Convert.ToDouble(b);
-                        break;
-                    case "<":
-                        result = Convert.ToDouble(a) < Convert.ToDouble(b);
+                        //GridInfo.Echo("Comparing: '" + a + "' != '" + b + "' : " + result);
                         break;
                 }
                 //GridInfo.Echo("Result: " + result);

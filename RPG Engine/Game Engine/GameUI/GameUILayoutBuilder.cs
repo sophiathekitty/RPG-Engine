@@ -253,8 +253,30 @@ namespace IngameScript
                     if (_scene != null)
                     {
                         _scene.Add(area);
+                        _scene.layoutAreas.Push(area);
                     }
                     _screen.AddSprite(area, _layoutLayer);
+                }
+            }
+            public void RemoveArea(int count = 1)
+            {
+                GridInfo.Echo("Removing " + count + " areas");
+                for (int i = 0; i < count; i++)
+                {
+                    GridInfo.Echo("Removing area " + i);
+                    if (_scene != null)
+                    {
+                        GridInfo.Echo("Removing from scene");
+                        if(_scene.layoutAreas == null) GridInfo.Echo("LayoutAreas is null?");
+                        if (_scene.layoutAreas.Count > 0)
+                        {
+                            LayoutArea area = _scene.layoutAreas.Pop();
+                            if(area != null)
+                            {
+                                _screen.RemoveSprite(area);
+                            } else GridInfo.Echo("Area is null");
+                        }
+                    }
                 }
             }
         }
