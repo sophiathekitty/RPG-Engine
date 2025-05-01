@@ -77,6 +77,24 @@ namespace IngameScript
             public bool IsCounter(Vector2 position) { return IsCounter((int)position.X, (int)position.Y); }
             public bool IsGround(int x, int y) { return !IsWall(x, y) && !IsBoat(x, y) && !IsShip(x, y) && !IsCounter(x, y) && !NPCBlocksSpot(x, y); }
             public bool IsGround(Vector2 position) { return IsGround((int)position.X, (int)position.Y); }
+            public char TileLayer(Vector2 position)
+            {
+                return TileLayer((int)position.X, (int)position.Y);
+            }
+            public char TileLayer(int x, int y)
+            {
+                char layer = ' ';
+                // find the layer that contains the tile
+                foreach (KeyValuePair<char, string> kvp in tilesSet.layers)
+                {
+                    if (kvp.Value.Contains(map[y][x]))
+                    {
+                        layer = kvp.Key;
+                        break;
+                    }
+                }
+                return layer;
+            }
             public MapDoor IsDoor(int x, int y)
             {
                 foreach (MapDoor door in Doors)

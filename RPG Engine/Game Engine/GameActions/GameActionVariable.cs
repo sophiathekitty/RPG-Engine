@@ -136,6 +136,8 @@ namespace IngameScript
                         else if (parts[0] == "map")
                         {
                             if (parts[1] == "Visible") return gameData.map.Visible.ToString();
+                            else if (parts[1] == "id") return gameData.map.index.ToString();
+                            else if (parts[1] == "Layer") return gameData.map.TileLayer(gameData.playerPos).ToString();
                         }
                         else if (parts[0] == "gridinfo")
                         {
