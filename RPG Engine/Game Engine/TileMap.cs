@@ -37,15 +37,28 @@ namespace IngameScript
             {
                 // 0: game.Map.0.CustomData
                 // 1: game.Map.0.Text
+                // nevermind.... now it's...
+                // 0: game.Map.0.CustomData is the map data
+                // 1: game.Map.0.Text is the map's game actions
+                return GridDB.Get(game + ".Map." + index + ".CustomData");
+                /*
                 int i = index/2;
                 bool isData = index % 2 == 0;
                 return GridDB.Get(game + ".Map." + i + "." + (isData ? "CustomData" : "Text"));
+                */
+            }
+            public static string GetActionsDB(string game, int index)
+            {
+                return GridDB.Get(game + ".Map." + index + ".Text");
             }
             public static void SetMapDB(string game, int index, string data)
             {
+                GridDB.Set(game + ".Map." + index + ".CustomData", data, true);
+                /*
                 int i = index / 2;
                 bool isData = index % 2 == 0;
                 GridDB.Set(game + ".Map." + i + "." + (isData ? "CustomData" : "Text"), data,true);
+                */
             }
             public static int GetMapCount(string game)
             {
@@ -63,6 +76,7 @@ namespace IngameScript
             public CharacterSpriteLoader spriteSheet;
             public GameData gameData;
             public List<NPC> NPCs = new List<NPC>();
+            public Dictionary<string, GameAction> Actions = new Dictionary<string, GameAction>();
             //string tileSetAddress;
             public int tileSetIndex = 0;
             string[] map;
@@ -304,6 +318,28 @@ namespace IngameScript
                 }
                 foreach (NPC npc in NPCs){ _Screen.AddSprite(npc); npc.RotationOrScale = ground[0].RotationOrScale; }
                 ApplyViewportTiles();
+                // load map game actions
+                Actions.Clear();
+                string[] actions = GetActionsDB(game, index).Split('═');
+                GridInfo.Echo("GameData: loading " + actions.Length + " actions for map " + index + " in game " + game);
+                foreach (string a in actions)
+                {
+                    if (!a.Contains("╗")) continue;
+                    string[] aParts = a.Split('╗');
+                    if (aParts.Length == 2)
+                    {
+                        try
+                        {
+                            //GridInfo.Echo("GameData:loading action: " + aParts[0].Trim());
+                            if (Actions.ContainsKey(aParts[0].Trim())) throw new Exception("GameData: Duplicate action: " + aParts[0].Trim());
+                            Actions.Add(aParts[0].Trim(), new GameAction(aParts[0].Trim(), aParts[1].Trim(), gameData, gameData.uiBuilder));
+                        }
+                        catch (Exception e)
+                        {
+                            throw new Exception("Action: " + aParts[0].Trim() + " - " + e.Message);
+                        }
+                    }
+                }
             }
             public void Load(MapExit exit)
             {

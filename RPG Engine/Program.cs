@@ -30,6 +30,7 @@ namespace IngameScript
         PlayMode playMode;
         //TileSet tileSet;
         bool playModeActive = true;
+        bool needsToLoad = true;
         public Program()
         {
             Echo("RPG Engine: booting...");
@@ -48,7 +49,7 @@ namespace IngameScript
             {
                 Echo("PlayMode: not found!");
             }
-            playMode.LoadGame("FinalFantasy");
+            //playMode.LoadGame("FinalFantasy");
             Echo("PlayMode: loaded game!");
             Runtime.UpdateFrequency = UpdateFrequency.Update1;
             Echo("RPG Engine: booted!");
@@ -68,7 +69,13 @@ namespace IngameScript
                 seat.Main(argument);
             }
             */
-            if(argument == "PlayMode")
+            if (needsToLoad)
+            {
+                needsToLoad = false;
+                playMode.LoadGame("FinalFantasy");
+                return;
+            }
+            if (argument == "PlayMode")
             {
                 if(playModeActive)
                 {

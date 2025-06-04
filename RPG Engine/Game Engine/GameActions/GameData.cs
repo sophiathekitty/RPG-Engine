@@ -56,6 +56,7 @@ namespace IngameScript
             //public NPC npc;
             public TileMap map;
             public Stack<MapExit> ExitStack = new Stack<MapExit>();
+            public GameUILayoutBuilder uiBuilder;
             //-----------------------------------------------------------------------
             // constructor
             //-----------------------------------------------------------------------
@@ -63,7 +64,7 @@ namespace IngameScript
             {
                 try
                 {
-
+                    this.uiBuilder = uiBuilder;
                     GridInfo.Echo("GameData: Loading...");
                     if (uiBuilder != null) uiBuilder._gameData = this;
                     gameName = game;

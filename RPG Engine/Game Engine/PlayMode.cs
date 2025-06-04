@@ -238,14 +238,17 @@ namespace IngameScript
                         NPC npc = map.GetNPC(InteractPos);
                         if (npc != null)
                         {
-                            if (gameData.Actions.ContainsKey(npc.InteractAction)) gameData.Actions[npc.InteractAction].Execute(npc);
+                            if(gameData.map.Actions.ContainsKey(npc.InteractAction)) gameData.map.Actions[npc.InteractAction].Execute(npc);
+                            else if (gameData.Actions.ContainsKey(npc.InteractAction)) gameData.Actions[npc.InteractAction].Execute(npc);
                         }
                         else if (map.IsCounter(InteractPos))
                         {
                             NPC counter = map.GetNPC(CounterInteractPos);
                             if (counter != null)
                             {
-                                if (gameData.Actions.ContainsKey(counter.InteractAction)) gameData.Actions[counter.InteractAction].Execute(counter);
+                                if(gameData.map.Actions.ContainsKey(counter.InteractAction)) gameData.map.Actions[counter.InteractAction].Execute(counter);
+                                else if (gameData.Actions.ContainsKey(counter.InteractAction)) gameData.Actions[counter.InteractAction].Execute(counter);
+                                //if (gameData.Actions.ContainsKey(counter.InteractAction)) gameData.Actions[counter.InteractAction].Execute(counter);
                             }
                         }
                     }

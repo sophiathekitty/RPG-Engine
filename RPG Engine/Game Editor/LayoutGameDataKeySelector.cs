@@ -42,7 +42,10 @@ namespace IngameScript
                     {
                         case KeyType.Bool:      return gameData.Bools.Keys.ToList()[index];
                         case KeyType.Int:       return gameData.Ints.Keys.ToList()[index];
-                        case KeyType.Action:    return gameData.Actions.Keys.ToList()[index];
+                        case KeyType.Action:
+                            if (index < gameData.map.Actions.Count)
+                                return gameData.map.Actions.Keys.ToList()[index];
+                            return gameData.Actions.Keys.ToList()[index];
                         case KeyType.String:    return gameData.Strings.Keys.ToList()[index];
                     }
                     return "";
@@ -53,7 +56,13 @@ namespace IngameScript
                     {
                         case KeyType.Bool:      Value = gameData.Bools.Keys.ToList().IndexOf(value); break;
                         case KeyType.Int:       Value = gameData.Ints.Keys.ToList().IndexOf(value); break;
-                        case KeyType.Action:    Value = gameData.Actions.Keys.ToList().IndexOf(value); break;
+                        case KeyType.Action:    
+                            int v = gameData.map.Actions.Keys.ToList().IndexOf(value);
+                            if (v < 0) // if not found, try the old actions
+                                Value = gameData.Actions.Keys.ToList().IndexOf(value) + gameData.map.Actions.Count;
+                            else
+                                Value = v;
+                            break;
                         case KeyType.String:    Value = gameData.Strings.Keys.ToList().IndexOf(value); break;
                     }
                 }
@@ -77,7 +86,12 @@ namespace IngameScript
                     {
                         case KeyType.Bool:      Items[1].Text = gameData.Bools.Keys.ToList()[index]; break;
                         case KeyType.Int:       Items[1].Text = gameData.Ints.Keys.ToList()[index]; break;
-                        case KeyType.Action:    Items[1].Text = gameData.Actions.Keys.ToList()[index]; break;
+                        case KeyType.Action:
+                            if (index < gameData.map.Actions.Count)
+                                Items[1].Text = gameData.map.Actions.Keys.ToList()[index];
+                            else
+                                Items[1].Text = gameData.Actions.Keys.ToList()[index-gameData.map.Actions.Count];
+                            break;
                         case KeyType.String:    Items[1].Text = gameData.Strings.Keys.ToList()[index]; break;
                     }
 
@@ -88,13 +102,13 @@ namespace IngameScript
                 set { }
                 get 
                 { 
-                    GridInfo.Echo("MaxValue:?");
+                    //GridInfo.Echo("MaxValue:?");
                     if(gameData == null ) return 0;
                     switch (Type)
                     {
                         case KeyType.Bool:      return gameData.Bools.Count;
                         case KeyType.Int:       return gameData.Ints.Count;
-                        case KeyType.Action:    return gameData.Actions.Count;
+                        case KeyType.Action:    return gameData.Actions.Count + gameData.map.Actions.Count;
                         case KeyType.String:    return gameData.Strings.Count;
                     }
                     return 0;

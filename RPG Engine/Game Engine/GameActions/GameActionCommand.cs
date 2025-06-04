@@ -91,7 +91,8 @@ namespace IngameScript
                     else if (cmd == "run")
                     {
                         GridInfo.Echo("Running: " + Destination.Value);
-                        if (gamedata.Actions.ContainsKey(Destination.Value)) gamedata.Actions[Destination.Value].Execute();
+                        if(gamedata.map.Actions.ContainsKey(Destination.Value)) gamedata.map.Actions[Destination.Value].Execute();
+                        else if (gamedata.Actions.ContainsKey(Destination.Value)) gamedata.Actions[Destination.Value].Execute();
                         else throw new Exception("Invalid run command: "+Destination.Value);
                     }
                     // set command
