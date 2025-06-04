@@ -56,12 +56,14 @@ namespace IngameScript
             //-----------------------------------------------------------------------
             public string Run()
             {
+                //GridInfo.Echo("Running scene: " + MainAction);
                 foreach (GameUIVarDisplay varDisplay in _varDisplays)
                 {
                     varDisplay.Update();
                 }
                 if (_interactables.Count > 0)
                 {
+                    //GridInfo.Echo("Running interactable: " + _interactables.Peek().GetType().Name);
                     ILayoutInteractable interactable = _interactables.Peek();
                     string result = interactable.Run();
                     if (result == "done")
@@ -72,6 +74,10 @@ namespace IngameScript
                     }
                     return result;
 
+                }
+                else if (_gameData.map.Actions.ContainsKey(MainAction))
+                {
+                    _gameData.map.Actions[MainAction].Execute(_npc);
                 }
                 else if (_gameData.Actions.ContainsKey(MainAction))
                 {

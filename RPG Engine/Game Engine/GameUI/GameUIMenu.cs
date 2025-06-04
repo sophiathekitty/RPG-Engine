@@ -61,10 +61,9 @@ namespace IngameScript
                 string action = base.Run();
                 if (actions.ContainsKey(action))
                 {
-                    if (gameData != null && gameData.Actions.ContainsKey(actions[action]))
-                    {
-                        gameData.Actions[actions[action]].Execute(npc);
-                    }
+                    if(gameData == null) return "done"; // no game data, so just return done
+                    if (gameData.map.Actions.ContainsKey(actions[action])) gameData.map.Actions[actions[action]].Execute(npc);
+                    else if (gameData.Actions.ContainsKey(actions[action])) gameData.Actions[actions[action]].Execute(npc);
                     return "done";
                 }
                 return action;

@@ -212,7 +212,8 @@ namespace IngameScript
                                 GridInfo.Echo("Player at guarded space");
                                 map.CenterOn(player.MapPosition);
                                 player.Position = map.TilePosition((int)player.MapPosition.X, (int)player.MapPosition.Y);
-                                if (gameData.Actions.ContainsKey(guardedTile.InteractAction)) gameData.Actions[guardedTile.InteractAction].Execute(guardedTile);
+                                if (gameData.map.Actions.ContainsKey(guardedTile.InteractAction)) gameData.map.Actions[guardedTile.InteractAction].Execute(guardedTile);
+                                else if (gameData.Actions.ContainsKey(guardedTile.InteractAction)) gameData.Actions[guardedTile.InteractAction].Execute(guardedTile);
                             }
                             else
                             {
