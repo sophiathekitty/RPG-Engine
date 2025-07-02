@@ -49,6 +49,7 @@ anwyays.... this is all massively under construction lol.... at time of writing 
 ### Commands
 
  * `set`:`Destination`=`Source1` - sets the value of Source1 to Destination. ex: `set:Ints.partGold=100;`
+ * `setrand`:`Destination`=`Source1`[,`Source2`] - sets a random int to the Destination. if only one source value previded will use that as the max (0 - Source1). if two provided will use that range(Source1 - Source2)
  * `str`:`Destination`=`Source1`,`Source2`,[...] - combines all the Sources together and stores them in Destination. `str:@Strings.ActionName=LearnSpell,@Ints.i` to get something like "LearnSpell0"
  * `add`:`Destination`=`Source1`[,`Source2`,`Source3`] - sums Sources and stores in Destination. `add:Ints.damage=Ints.PlayerStr,Ints.WeaponAtk;` or adds Source to Destination. `add:Ints.partyGold=10;`
  * `sub`:`Destination`=`Source1`[,`Source2`,`Source3`] - subtracts Sources from first source and stores in Destination. `add:Ints.damage=Ints.EnemyAttack,Ints.PlayerDef;` or subtracts Source to Destination. `add:Ints.partyGold=10;`
@@ -83,4 +84,5 @@ anwyays.... this is all massively under construction lol.... at time of writing 
  * `clearParty` - clear's the party list
  * `addParty`:`name`=`job` - adds a party member with a job name to get their stats
  * `removeParty`[:`index`] - removes the last party member (or at the optional index)
+ * `addenemy`:`name`[=`ScreenX`,`ScreenY`] - adds an enemy to the enemy list with the ScreenX and ScreenY added to their stats for positioning on screen.
  * `clearEnemies` - clear the current enemies list
