@@ -98,16 +98,30 @@ namespace IngameScript
             public char TileLayer(int x, int y)
             {
                 char layer = ' ';
+                char tile = TileChar(x,y);
                 // find the layer that contains the tile
-                foreach (KeyValuePair<char, string> kvp in tilesSet.layers)
+                //GridInfo.Echo(tilesSet.layers.Keys.Count.ToString() + " || " + string.Join(",", tilesSet.layers.Keys));
+                //GridInfo.Echo("TileMap.TileLayer: "+x+","+y);
+                foreach (char l in tilesSet.layers.Keys)
                 {
-                    if (kvp.Value.Contains(map[y][x]))
+                    //GridInfo.Echo("TileMap.TileLayer: Checking layer " + l + " for tile " + tile);
+                    if (tilesSet.layers[l].Contains(tile))
                     {
-                        layer = kvp.Key;
+                        //GridInfo.Echo("TileMap.TileLayer: Found layer " + l + " for tile " + tile);
+                        layer = l;
                         break;
                     }
                 }
                 return layer;
+            }
+            public char TileChar(Vector2 position)
+            {
+                return TileChar((int)position.X, (int)position.Y);
+            }
+            public char TileChar(int x, int y)
+            {
+                if (IsOnMap(x, y)) return map[y][x];
+                return ' ';
             }
             public MapDoor IsDoor(int x, int y)
             {

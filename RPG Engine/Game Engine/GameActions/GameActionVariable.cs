@@ -137,7 +137,8 @@ namespace IngameScript
                         {
                             if (parts[1] == "Visible") return gameData.map.Visible.ToString();
                             else if (parts[1] == "id") return gameData.map.index.ToString();
-                            else if (parts[1] == "Layer") return gameData.map.TileLayer(gameData.playerPos).ToString();
+                            else if (parts[1] == "Layer") return gameData.map.TileLayer(gameData.playerSprite.X,gameData.playerSprite.Y).ToString();
+                            else throw new Exception("Unknown map property: " + parts[1]);
                         }
                         else if (parts[0] == "gridinfo")
                         {
@@ -215,6 +216,35 @@ namespace IngameScript
                                 //GridInfo.Echo("Skill var: " + var);
                                 if (gameData.Skills[key].ContainsKey(var)) return gameData.Skills[key][var];
                                 //else return "";
+                            }
+                        }
+                        else if (parts[0] == "enemies")
+                        {
+                            //@enemies.#0.Name
+                            if (parts[1] == "Count")
+                            {
+                                //GridInfo.Echo("Enemy count: " + gameData.EnemyList.Count);
+                                return gameData.EnemyList.Count.ToString();
+                            }
+                            int index = 0;
+                            if (parts[1].StartsWith("#")) index = gameData.Ints[parts[1].Substring(1)];
+                            else int.TryParse(parts[1], out index);
+                            if (index < gameData.EnemyList.Count)
+                            {
+                                if (parts[2] == "Name") return gameData.EnemyList[index].Name;
+                                else if (parts[2] == "Stat")
+                                {
+                                    if (gameData.EnemyList[index].Stats.ContainsKey(parts[3])) return gameData.EnemyList[index].Stats[parts[3]].ToString();
+                                }
+                                else if (parts[2] == "MaxStat")
+                                {
+                                    if (gameData.EnemyList[index].MaxStats.ContainsKey(parts[3])) return gameData.EnemyList[index].MaxStats[parts[3]].ToString();
+                                }
+                                else if (parts[2] == "Status" && parts.Length > 3) return gameData.EnemyList[index].Status.Contains(parts[3]).ToString();
+                                else if (parts[2] == "Action")
+                                {
+                                    if (gameData.EnemyList[index].Actions.Count > 0) return gameData.EnemyList[index].Actions[0];
+                                }
                             }
                         }
                     }
@@ -339,6 +369,32 @@ namespace IngameScript
                                 else
                                 {
                                     throw new Exception("Missing Party: " + parts[1] + " : " + parts[2]);
+                                }
+                            }
+                            else if (parts[0] == "enemies")
+                            {
+                                //GridInfo.Echo("Setting Enemy: " + parts[1] + " = " + value);
+                                int index = 0;
+                                if (parts[1].StartsWith("#")) index = gameData.Ints[parts[1].Substring(1)];
+                                else int.TryParse(parts[1], out index);
+                                if (index < gameData.EnemyList.Count)
+                                {
+                                    if (parts[2] == "Name") gameData.EnemyList[index].Name = value;
+                                    else if (parts[2] == "Stat")
+                                    {
+                                        if (gameData.EnemyList[index].Stats.ContainsKey(parts[3])) gameData.EnemyList[index].Stats[parts[3]] = double.Parse(value);
+                                    }
+                                    else if (parts[2] == "MaxStat")
+                                    {
+                                        if (gameData.EnemyList[index].MaxStats.ContainsKey(parts[3])) gameData.EnemyList[index].MaxStats[parts[3]] = int.Parse(value);
+                                    }
+                                    else if (parts[2] == "Status")
+                                    {
+                                        bool status = bool.Parse(value);
+                                        bool contains = gameData.EnemyList[index].Status.Contains(parts[3]);
+                                        if (status && !contains) gameData.EnemyList[index].Status.Add(parts[3]);
+                                        else if (!status && contains) gameData.EnemyList[index].Status.Remove(parts[3]);
+                                    }
                                 }
                             }
                             else

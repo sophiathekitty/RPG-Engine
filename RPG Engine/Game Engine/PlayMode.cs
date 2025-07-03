@@ -217,7 +217,8 @@ namespace IngameScript
                             }
                             else
                             {
-                                if (gameData.Actions.ContainsKey("PlayerStep")) gameData.Actions["PlayerStep"].Execute();
+                                if (gameData.map.Actions.ContainsKey("Step")) gameData.map.Actions["Step"].Execute();
+                                else if (gameData.Actions.ContainsKey("Step")) gameData.Actions["Step"].Execute();
                             }
                         }
                         //GridInfo.Echo("Centering on player");

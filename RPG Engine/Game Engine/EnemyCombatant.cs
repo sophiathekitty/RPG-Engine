@@ -41,6 +41,16 @@ namespace IngameScript
                     else if (subParts[0] == "drop") Drops.Add(subParts[1]);
                 }
             }
+            public EnemyCombatant(EnemyCombatant enemy) : base(enemy.Name)
+            {
+                // copy enemy data to new enemy instance
+                Stats = new Dictionary<string, double>(enemy.Stats);
+                Status = new List<string>(enemy.Status);
+                MaxStats = new Dictionary<string, int>(enemy.MaxStats);
+                Actions = new List<string>(enemy.Actions);
+                Drops = new List<string>(enemy.Drops);
+
+            }
         }
         //-----------------------------------------------------------------------
     }

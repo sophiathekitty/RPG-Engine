@@ -65,12 +65,13 @@ namespace IngameScript
                         // get the tile data and add it to the dictionary
                         if (i > max) break;
                         string sprite = getPixels(x, y, (int)tileSize.X, (int)tileSize.Y);
-                        sprite = sprite.Replace(RasterSprite.IGNORE.ToString(), RasterSprite.INVISIBLE);
+                        sprite = sprite.Replace(IGNORE.ToString(), INVISIBLE);
                         tiles.Add(i, sprite);
                         char m = mask[y / (int)tileSize.Y][x / (int)tileSize.X];
                         if(!layers.ContainsKey(m)) layers.Add(m, "");
                         layers[m] += i;
                         i++;
+                        GridInfo.Echo(m.ToString());
                     }
                 }
                 Data = "";

@@ -91,14 +91,30 @@ namespace IngameScript
                     else if (cmd == "run")
                     {
                         GridInfo.Echo("Running: " + Destination.Value);
-                        if(gamedata.map.Actions.ContainsKey(Destination.Value)) gamedata.map.Actions[Destination.Value].Execute();
+                        if (gamedata.map.Actions.ContainsKey(Destination.Value)) gamedata.map.Actions[Destination.Value].Execute();
                         else if (gamedata.Actions.ContainsKey(Destination.Value)) gamedata.Actions[Destination.Value].Execute();
-                        else throw new Exception("Invalid run action: "+Destination.Value);
+                        else throw new Exception("Invalid run action: " + Destination.Value);
                     }
                     // set command
                     else if (cmd == "set")
                     {
                         Destination.Value = Source[0].Value;
+                    }
+                    // set random number
+                    else if(cmd == "setrand")
+                    {
+                        if (Source.Count > 0)
+                        {
+                            // if only one source min is 0 and max is Source[0].As<int>()
+                            int min = 0, max = Source[0].As<int>();
+                            if (Source.Count > 1)
+                            {
+                                min = Source[0].As<int>();
+                                max = Source[1].As<int>();
+                            }
+                            Destination.Set<int>(GridInfo.RandomInt(min, max));
+                        }
+                        else throw new Exception("Invalid setrand command");
                     }
                     // str command
                     else if (cmd == "str")
@@ -346,6 +362,25 @@ namespace IngameScript
                         {
                             gamedata.CharacterList.RemoveAt(Destination.As<int>());
                         }
+                    }
+                    else if (cmd == "addenemy")
+                    {
+                        if (Source.Count > 0)
+                        {
+                            if (gamedata.EnemyDefenitions.ContainsKey(Destination.Value))
+                            {
+                                EnemyCombatant enemy = new EnemyCombatant(gamedata.EnemyDefenitions[Destination.Value]);
+                                gamedata.EnemyList.Add(enemy);
+                                // if they provide position data to use when adding to the screen.
+                                if (Source.Count > 1)
+                                {
+                                    enemy.Stats["ScreenX"] = Source[0].As<int>();
+                                    enemy.Stats["ScreenY"] = Source[1].As<int>();
+                                }
+                            }
+                            else throw new Exception("Invalid enemy: " + Destination.Value);
+                        }
+                        else throw new Exception("Invalid addenemy command");
                     }
                     // clear enemies
                     else if (cmd == "clearenemies")

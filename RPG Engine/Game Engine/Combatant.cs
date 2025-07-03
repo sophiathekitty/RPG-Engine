@@ -40,6 +40,7 @@ namespace IngameScript
                 string[] parts = data.Split('╔');
                 Name = parts[0];
                 //GridInfo.Echo("Combatant: " + Name);
+                if(parts.Length < 2) return; // no stats or actions
                 foreach (string part in parts)
                 {
                     string[] subParts = part.Trim().Split(':');
