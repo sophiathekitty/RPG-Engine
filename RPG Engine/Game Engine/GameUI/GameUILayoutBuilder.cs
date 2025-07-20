@@ -189,8 +189,11 @@ namespace IngameScript
             }
             public void RemoveSprite(string name)
             {
-                _screen.RemoveSprite(Sprites[name]);
-                Sprites.Remove(name);
+                if (Sprites.ContainsKey(name))
+                {
+                    _screen.RemoveSprite(Sprites[name]);
+                    Sprites.Remove(name);
+                }
             }
             //-----------------------------------------------------------------------
             // scene management
