@@ -185,6 +185,7 @@ namespace IngameScript
             public void ReplaceSprite(string name, int sheetIndex, int spriteX, int spriteY, int spriteWidth, int spriteHeight)
             {
                 if (spriteSheet.Index != sheetIndex) spriteSheet.Index = sheetIndex;
+                //GridInfo.Echo("Replacing sprite " + name + " with sheet " + sheetIndex + " at " + spriteX + "," + spriteY + " size " + spriteWidth + "x" + spriteHeight);
                 Sprites[name].Data = spriteSheet.getPixels(spriteX, spriteY, spriteWidth, spriteHeight);
             }
             public void RemoveSprite(string name)
@@ -263,13 +264,13 @@ namespace IngameScript
             }
             public void RemoveArea(int count = 1)
             {
-                GridInfo.Echo("Removing " + count + " areas");
+                //GridInfo.Echo("Removing " + count + " areas");
                 for (int i = 0; i < count; i++)
                 {
-                    GridInfo.Echo("Removing area " + i);
+                    //GridInfo.Echo("Removing area " + i);
                     if (_scene != null)
                     {
-                        GridInfo.Echo("Removing from scene");
+                        //GridInfo.Echo("Removing from scene");
                         if(_scene.layoutAreas == null) GridInfo.Echo("LayoutAreas is null?");
                         if (_scene.layoutAreas.Count > 0)
                         {

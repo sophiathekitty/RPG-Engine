@@ -65,7 +65,7 @@ namespace IngameScript
                 try
                 {
                     this.uiBuilder = uiBuilder;
-                    GridInfo.Echo("GameData: Loading...");
+                    //GridInfo.Echo("GameData: Loading...");
                     if (uiBuilder != null) uiBuilder._gameData = this;
                     gameName = game;
                     string Data = GridDB.Get(gameName + ".GameData.0.CustomData");

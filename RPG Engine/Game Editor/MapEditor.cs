@@ -96,11 +96,11 @@ namespace IngameScript
             string game = "FinalFantasy";
             public MapEditor(IMyTextSurface drawingSurface, GameInput gameInput, IMySoundBlock musicBlock, IMySoundBlock fxBlock) : base(drawingSurface, gameInput, musicBlock, fxBlock)
             {
-                GridInfo.Echo("Map Editor");
+                //GridInfo.Echo("Map Editor");
                 BackgroundColor = new Color(0, 10, 20);
                 spriteSheet = new CharacterSpriteLoader(GridDB.Get(game + ".Sprites.0.CustomData"));
                 gameData = new GameData(game, null);
-                GridInfo.Echo("Creating TileMap");
+                //GridInfo.Echo("Creating TileMap");
                 tileMap = new TileMap(new Vector2(60,30), new Vector2(24,24), game, spriteSheet, gameData);
                 tilePreview = new ScreenSprite(ScreenSprite.ScreenSpriteAnchor.TopLeft, new Vector2(10, 10), 0.1f, Vector2.Zero, Color.White, "Monospace", "",TextAlignment.LEFT, SpriteType.TEXT);
                 tileLayer = new ScreenSprite(ScreenSprite.ScreenSpriteAnchor.TopLeft, new Vector2(56, 58), 0.5f, Vector2.Zero, Color.White, "Monospace", "", TextAlignment.RIGHT, SpriteType.TEXT);
@@ -118,7 +118,7 @@ namespace IngameScript
                 cursor.Visible = false;
                 AddSprite(cursor,4);
                 // mape info
-                GridInfo.Echo("Creating Map Info");
+                //GridInfo.Echo("Creating Map Info");
                 mapInfoDisplay = new LayoutArea(new Vector2(0, 200), new Vector2(60, 30), new Vector2(5, 5));
                 mapInfoSize = new LayoutText("Map: 32x24", Color.White, 0.25f);
                 mapInfoCursorPosition = new LayoutText("Cur: 0,0", Color.White, 0.25f);
@@ -132,34 +132,34 @@ namespace IngameScript
                 mapInfoDisplay.ApplyLayout();
                 AddSprite(mapInfoDisplay);
                 // map menu
-                GridInfo.Echo("Creating Main Menu");
+                //GridInfo.Echo("Creating Main Menu");
                 mainMenu = new MapEditorMainMenu(new Vector2(0, 80), new Vector2(60, 120), new Vector2(5, 5), input);
                 mainMenu.ApplyLayout();
                 mainMenu.SelectedIndex = 0;
                 AddSprite(mainMenu);
                 // input prompt
-                GridInfo.Echo("Creating Input Prompt");
+                //GridInfo.Echo("Creating Input Prompt");
                 inputPrompt = new ScreenSprite(ScreenSprite.ScreenSpriteAnchor.TopRight, new Vector2(-5, 5), 0.45f, new Vector2(60, 30), Color.White, "Monospace", mainMenu.ButtonPrompt, TextAlignment.RIGHT, SpriteType.TEXT);
                 AddSprite(inputPrompt);
                 // load map selecter
-                GridInfo.Echo("Creating Load Map Selecter");
+                //GridInfo.Echo("Creating Load Map Selecter");
                 loadMapSelecter = new LoadMapSelecter(new Vector2(100, 100), new Vector2(100, 120), new Vector2(5, 5), input, 10);
                 loadMapSelecter.ApplyLayout();
                 // create map form
-                GridInfo.Echo("Creating Create Map Form");
+                //GridInfo.Echo("Creating Create Map Form");
                 createMapForm = new CreateMapForm(input, game);
                 createMapForm.ApplyLayout();
                 // map options form
-                GridInfo.Echo("Creating Map Options Form");
+                //GridInfo.Echo("Creating Map Options Form");
                 mapOptionsForm = new MapOptionsForm(input, game);
                 mapOptionsForm.ApplyLayout();
                 // door info form
-                GridInfo.Echo("Creating Door Info Form");
+                //GridInfo.Echo("Creating Door Info Form");
                 doorInfoForm = new DoorInfoForm(input, game);
                 doorInfoForm.ApplyLayout();
                 // npc info form
-                GridInfo.Echo("Creating NPC Sprite Sheet");
-                GridInfo.Echo("Creating NPC Options");
+                //GridInfo.Echo("Creating NPC Sprite Sheet");
+                //GridInfo.Echo("Creating NPC Options");
                 npcOptions = new NPCOptions(input, spriteSheet, gameData);
                 npcOptions.ApplyLayout();
             }
@@ -371,7 +371,7 @@ namespace IngameScript
             void HideDoorsOverlay()
             {
                 foreach (MapCursor door in doors) door.Visible = false;
-                GridInfo.Echo("doors hidden???");
+                //GridInfo.Echo("doors hidden???");
             }
             //-----------------------------------------------------------------------
             // door editing

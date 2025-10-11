@@ -175,6 +175,30 @@ namespace IngameScript
                                     if (gameData.CharacterList[index].Gear.ContainsKey(parts[3])) return gameData.CharacterList[index].Gear[parts[3]];
                                     else return "NONE";
                                 }
+                                else if (parts[2] == "GearStat")
+                                {
+                                    // calculate requested stat from gear and player stats.
+                                    string stat = parts[3];
+                                    double total = 0;
+                                    if (gameData.CharacterList[index].Stats.ContainsKey(stat)) total += gameData.CharacterList[index].Stats[stat];
+                                    // go through gear and add any stats
+                                    foreach (string gearKey in gameData.CharacterList[index].Gear.Keys)
+                                    {
+                                        string gearItem = gameData.CharacterList[index].Gear[gearKey];
+                                        if (gameData.Items.ContainsKey(gearItem))
+                                        {
+                                            if (gameData.Items[gearItem].ContainsKey(stat))
+                                            {
+                                                double gearStat = 0;
+                                                if (double.TryParse(gameData.Items[gearItem][stat], out gearStat))
+                                                {
+                                                    total += gearStat;
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                }
                                 else if (parts[2] == "Skills")
                                 {
                                     if (parts.Length > 3)
@@ -296,10 +320,18 @@ namespace IngameScript
                                 else if (parts[1] == "Y") gameData.playerSprite.Y = int.Parse(value);
                                 else if (parts[1] == "Direction") gameData.playerSprite.Direction = value[0];
                                 else if (parts[1] == "SpriteId") gameData.playerSprite.SpriteIndex = int.Parse(value);
-                                else if (parts[1] == "Visible") gameData.playerSprite.Visible = bool.Parse(value);
+                                else if (parts[1] == "Visible")
+                                {
+                                    gameData.playerSprite.Visible = bool.Parse(value);
+                                    if (gameData.playerSprite.Visible)
+                                    {
+                                        gameData.map.CenterOn(gameData.playerSprite.X, gameData.playerSprite.Y);
+                                    }
+                                }
                             }
                             else if (parts[0] == "npc" && action.npc != null)
                             {
+                                //GridInfo.Echo("Setting NPC: " + action.npc);
                                 if (parts[1] == "X") action.npc.X = int.Parse(value);
                                 else if (parts[1] == "Y") action.npc.Y = int.Parse(value);
                                 else if (parts[1] == "Direction") action.npc.Direction = value[0];

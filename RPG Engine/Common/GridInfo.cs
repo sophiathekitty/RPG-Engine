@@ -152,7 +152,7 @@ namespace IngameScript
                 string[] data = message.As<string>().Split('║');
                 if (data.Length == 2)
                 {
-                    GridInfo.Echo("GridInfo-VarFound! " + data[0] + ": " + data[1]);
+                    //GridInfo.Echo("GridInfo-VarFound! " + data[0] + ": " + data[1]);
                     SetVar(data[0], data[1], false);
                     return true;
                 }
@@ -306,7 +306,7 @@ namespace IngameScript
                 RunCount++;
                 if (updateSource == UpdateType.IGC)
                 {
-                    GridInfo.Echo("IGC message???");
+                    //GridInfo.Echo("IGC message???");
                     List<MyIGCMessage> messages = CheckMessages();
                     for (int i = 0; i < messages.Count; i++)
                     {

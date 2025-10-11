@@ -61,7 +61,7 @@ namespace IngameScript
             public static string Get(string show, string scene, int index, bool custom_data)
             {
                 if (Database.ContainsKey(show) && Database[show].ContainsKey(scene) && Database[show][scene].Count > index) return custom_data ? Database[show][scene][index].CustomData : Database[show][scene][index].GetText();
-                GridInfo.Echo("GridDB.Get: " + show + "." + scene + "." + index + " not found");
+                //GridInfo.Echo("GridDB.Get: " + show + "." + scene + "." + index + " not found");
                 return "";
             }
             public static string Get(string address)
@@ -107,7 +107,7 @@ namespace IngameScript
                 IMyTextPanel panel = GetUnused();
                 if(panel == null)
                 {
-                    GridInfo.Echo("GridDB.Add: No unused panels available");
+                    //GridInfo.Echo("GridDB.Add: No unused panels available");
                     throw new Exception("GridDB.Add: No unused panels available");
                 }
                 panel.CustomData = data;

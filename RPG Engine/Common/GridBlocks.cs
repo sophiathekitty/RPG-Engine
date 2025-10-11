@@ -56,6 +56,8 @@ namespace IngameScript
                         surfaceProviders.Add(sound as IMyTextSurfaceProvider);
                     }
                 }
+                // sort the text panels by name
+                textPanels.Sort((a, b) => a.CustomName.CompareTo(b.CustomName));
             }
         }
         //-----------------------------------------------------------------------

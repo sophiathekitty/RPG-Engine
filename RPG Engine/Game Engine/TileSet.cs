@@ -71,7 +71,7 @@ namespace IngameScript
                         if(!layers.ContainsKey(m)) layers.Add(m, "");
                         layers[m] += i;
                         i++;
-                        GridInfo.Echo(m.ToString());
+                        //GridInfo.Echo(m.ToString());
                     }
                 }
                 Data = "";

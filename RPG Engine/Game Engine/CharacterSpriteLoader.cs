@@ -29,7 +29,7 @@ namespace IngameScript
             //---------------------------------------------------------------------------
             public CharacterSpriteLoader(string spriteSheet) : base(Vector2.Zero,0.1f,Vector2.Zero, spriteSheet)
             {
-                GridInfo.Echo("Loading sprite sheet");
+                //GridInfo.Echo("Loading sprite sheet");
             }
             public int SpriteCount { get { return (int)(Size.Y / 16); } }
             //---------------------------------------------------------------------------

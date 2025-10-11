@@ -335,7 +335,7 @@ namespace IngameScript
                 // load map game actions
                 Actions.Clear();
                 string[] actions = GetActionsDB(game, index).Split('═');
-                GridInfo.Echo("GameData: loading " + actions.Length + " actions for map " + index + " in game " + game);
+                //GridInfo.Echo("GameData: loading " + actions.Length + " actions for map " + index + " in game " + game);
                 foreach (string a in actions)
                 {
                     if (!a.Contains("╗")) continue;

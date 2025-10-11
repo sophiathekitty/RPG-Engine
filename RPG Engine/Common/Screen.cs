@@ -448,7 +448,17 @@ namespace IngameScript
                 string pixels = "";
                 for (int y1 = y; y1 < y + height; y1++)
                 {
-                    pixels += Data.Substring((int)(y1 * (Size.X + 1) + x), width);
+                    try
+                    {
+                        pixels += Data.Substring((int)(y1 * (Size.X + 1) + x), width);
+                    }
+                    catch
+                    {
+                        float a = y1 * (Size.X + 1) + x;
+                        float b = a + width;
+                        int length = Data.Length;
+                        GridInfo.Echo("ERROR: getPixels:  " + b.ToString() + " >= " + length.ToString());
+                    }
                     /*
                     for (int x1 = x; x1 < x + width; x1++)
                     {

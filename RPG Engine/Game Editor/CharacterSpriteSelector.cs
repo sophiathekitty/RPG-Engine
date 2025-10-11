@@ -109,7 +109,7 @@ namespace IngameScript
             //---------------------------------------------------------------------------
             public CharacterSpriteSelector(Vector2 position, float scale, Vector2 size, CharacterSpriteLoader spriteLoader, GameInput input)
             {
-                GridInfo.Echo("CharacterSpriteSelector");
+                //GridInfo.Echo("CharacterSpriteSelector");
                 this.spriteLoader = spriteLoader;
                 sprite = new RasterSprite(position, scale, size, spriteLoader.LoadSprite(0, 'd'));
                 border = new MapCursor();

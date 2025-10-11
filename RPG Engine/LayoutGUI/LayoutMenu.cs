@@ -118,7 +118,7 @@ namespace IngameScript
                         }
                         else if (Items[SelectedIndex] is ILayoutInteractable)
                         {
-                            GridInfo.Echo("run menu: interactable");
+                            //GridInfo.Echo("run menu: interactable");
                             editingIndex = SelectedIndex;
                             ButtonPrompt = ((ILayoutInteractable)Items[editingIndex]).ButtonPrompt;
                             Items[SelectedIndex].Color = EditingColor;

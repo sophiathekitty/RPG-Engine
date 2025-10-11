@@ -76,31 +76,31 @@ namespace IngameScript
             public NPC(string data, CharacterSpriteLoader spriteSheet, GameData gd) : base(Vector2.Zero, 1, Vector2.Zero, "")
             {
                 gameData = gd;
-                GridInfo.Echo("Loading NPC: " + data);
+                //GridInfo.Echo("Loading NPC: " + data);
                 string[] parts = data.Split(';');
                 string[] pos = parts[1].Split(',');
-                GridInfo.Echo("parts: " + parts.Length + " id: " + parts[0] + " pos: " + pos[0] + "," + pos[1] + " dir: " + pos[2]);
+                //GridInfo.Echo("parts: " + parts.Length + " id: " + parts[0] + " pos: " + pos[0] + "," + pos[1] + " dir: " + pos[2]);
                 spriteID = int.Parse(parts[0]);
-                GridInfo.Echo("spriteID: " + spriteID);
+                //GridInfo.Echo("spriteID: " + spriteID);
                 sprites = spriteSheet.LoadSpriteSet(spriteID);
                 spriteLoader = spriteSheet;
-                GridInfo.Echo("sprites: " + sprites.Count);
+                //GridInfo.Echo("sprites: " + sprites.Count);
                 MapPosition = new Vector2(float.Parse(pos[0]), float.Parse(pos[1]));
-                GridInfo.Echo("MapPosition: " + MapPosition);
+                //GridInfo.Echo("MapPosition: " + MapPosition);
                 Direction = pos[2][0];
-                GridInfo.Echo("Direction: " + Direction);
+                //GridInfo.Echo("Direction: " + Direction);
                 randomWalk = bool.Parse(parts[2]);
                 guardedSpace = bool.Parse(parts[3]);
                 EnabledBool = parts[4];
-                GridInfo.Echo("EnabledBool: " + EnabledBool);
+                //GridInfo.Echo("EnabledBool: " + EnabledBool);
                 if(gd == null) GridInfo.Echo("GameData is null");
                 if (EnabledBool != "" && gd.Bools.ContainsKey(EnabledBool))
                 {
-                    GridInfo.Echo("Setting Enabled?");
+                    //GridInfo.Echo("Setting Enabled?");
                     Enabled = gd.Bools[EnabledBool];
                 }
                 //else Enabled = true;
-                GridInfo.Echo("Enabled: " + Enabled);
+                //GridInfo.Echo("Enabled: " + Enabled);
                 InteractAction = parts[5];
             }
             //---------------------------------------------------------------------------

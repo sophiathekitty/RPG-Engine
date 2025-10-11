@@ -72,7 +72,7 @@ namespace IngameScript
                 get { return index; } 
                 set 
                 { 
-                    GridInfo.Echo("Value: " + value);
+                    //GridInfo.Echo("Value: " + value);
                     index = (int)value;
                     if(Items.Count < 2 || gameData == null) return;
                     if (index <= -1)

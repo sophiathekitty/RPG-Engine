@@ -43,7 +43,7 @@ namespace IngameScript
                 }
                 set
                 {
-                    GridInfo.Echo("Setting color: " + value);
+                    //GridInfo.Echo("Setting color: " + value);
                     foreach (ILayoutItem sprite in extras)
                     {
                         sprite.Color = value;

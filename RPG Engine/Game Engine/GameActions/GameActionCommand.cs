@@ -17,6 +17,7 @@ using VRage.Game.ModAPI.Ingame;
 using VRage.Game.ModAPI.Ingame.Utilities;
 using VRage.Game.ObjectBuilders.Definitions;
 using VRageMath;
+using static IngameScript.Program;
 
 namespace IngameScript
 {
@@ -32,12 +33,14 @@ namespace IngameScript
             List<GameActionVariable> Source = new List<GameActionVariable>();
             GameUILayoutBuilder UIbuilder;
             NPC npc;
+            GameAction action;
             GameData gamedata;
 
             public GameActionCommand(string command, GameData gameData, GameUILayoutBuilder uiBuilder, GameAction action)
             {
                 this.gamedata = gameData;
                 this.npc = action.npc;
+                this.action = action;
                 UIbuilder = uiBuilder;
                 // split the command on ':' limit to 2 parts
                 string[] parts = command.Split(new[] { ':' }, 2);
@@ -90,7 +93,7 @@ namespace IngameScript
                     // run another action
                     else if (cmd == "run")
                     {
-                        GridInfo.Echo("Running: " + Destination.Value);
+                        //GridInfo.Echo("Running: " + Destination.Value);
                         if (gamedata.map.Actions.ContainsKey(Destination.Value)) gamedata.map.Actions[Destination.Value].Execute();
                         else if (gamedata.Actions.ContainsKey(Destination.Value)) gamedata.Actions[Destination.Value].Execute();
                         else throw new Exception("Invalid run action: " + Destination.Value);
@@ -124,7 +127,8 @@ namespace IngameScript
                             string str = "";
                             foreach (GameActionVariable v in Source)
                             {
-                                str += v.Value;
+                                if (v.Value.StartsWith("_")) str += " " + v.Value.Substring(1);
+                                else str += v.Value;
                             }
                             //GridInfo.Echo("Adding: " + total);
                             Destination.Value = str;
@@ -231,7 +235,7 @@ namespace IngameScript
                     // start a UI Scene
                     else if (cmd == "startscene")
                     {
-                        UIbuilder.StartScene(Destination.Value, npc);
+                        UIbuilder.StartScene(Destination.Value, action.npc);
                     }
                     // end a UI Scene
                     else if (cmd == "endscene")
@@ -386,6 +390,15 @@ namespace IngameScript
                     else if (cmd == "clearenemies")
                     {
                         gamedata.EnemyList.Clear();
+                    }
+                    else if (cmd == "loadmap")
+                    {
+                        MapExit exit = new MapExit(Destination.As<int>(), Source[0].As<int>(), Source[1].As<int>());
+                        gamedata.map.Load(exit);
+                        gamedata.playerSprite.MapPosition = new Vector2(exit.X, exit.Y);
+                        gamedata.map.CenterOn(gamedata.playerSprite.MapPosition);
+                        gamedata.playerSprite.Position = gamedata.map.TilePosition(exit.X, exit.Y);
+                        //GridInfo.Echo("Loaded map: " + exit.Id + " at " + exit.X + "," + exit.Y);
                     }
                     return true;
                 }
