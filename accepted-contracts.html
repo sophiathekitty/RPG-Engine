@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accepted Contracts - Grindstone Municipal Building</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/contracts.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="contracts-header">
+        <div class="container">
+            <div class="office-logo">
+                <div class="logo-icon">🏛️</div>
+                <div class="logo-text">
+                    <h1>Grindstone Municipal Building</h1>
+                    <p>Accepted Contracts Dashboard</p>
+                </div>
+            </div>
+            <nav class="main-nav">
+                <a href="contracts.html" class="nav-link">Back to Contracts Office</a>
+                <a href="#active" class="nav-link active" onclick="showAcceptedSection('active')">Active Contracts</a>
+                <a href="#completed" class="nav-link" onclick="showAcceptedSection('completed')">Completed</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Status Bar -->
+    <section class="status-bar">
+        <div class="container">
+            <div class="status-info">
+                <div class="status-item">
+                    <span class="status-icon">🔄</span>
+                    <span id="active-count">0</span>
+                    <span>Active Contracts</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-icon">✅</span>
+                    <span id="completed-count">0</span>
+                    <span>Completed</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-icon">💰</span>
+                    <span id="total-earnings">0</span>
+                    <span>Total Earnings (SC)</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Active Contracts Section -->
+            <section id="active-section" class="content-section active">
+                <div class="section-header">
+                    <h2>Active Contracts</h2>
+                    <p>Track your current contract progress and deadlines.</p>
+                </div>
+
+                <div class="contracts-grid" id="active-contracts-grid">
+                    <!-- Active contracts will be dynamically loaded -->
+                </div>
+            </section>
+
+            <!-- Completed Contracts Section -->
+            <section id="completed-section" class="content-section">
+                <div class="section-header">
+                    <h2>Completed Contracts</h2>
+                    <p>Review your contract history and achievements.</p>
+                </div>
+
+                <div class="contracts-grid" id="completed-contracts-grid">
+                    <!-- Completed contracts will be dynamically loaded -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Contract Detail Modal -->
+    <div id="contract-detail-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-detail-title">Contract Details</h3>
+                <span class="close-btn" onclick="closeDetailModal()">&times;</span>
+            </div>
+            <div class="modal-body" id="modal-detail-body">
+                <!-- Contract details will be populated here -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeDetailModal()">Close</button>
+                <button class="btn-primary" id="complete-contract-btn" onclick="completeContract()" style="display: none;">Mark Complete</button>
+                <button class="btn-secondary" id="abandon-contract-btn" onclick="abandonContract()" style="display: none;">Abandon Contract</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="contracts-footer">
+        <div class="container">
+            <div class="footer-links">
+                <a href="index.html">Return to Landing Page</a>
+                <a href="contracts.html">Back to Contracts Office</a>
+                <a href="https://sophiathekitty.github.io/KingWashLaundromat/downtown-contracts/" target="_blank">Downtown Contracts Office</a>
+            </div>
+            <p>&copy; 2077 Grindstone Municipal Building - Contract Tracking System</p>
+        </div>
+    </footer>
+
+    <script src="js/accepted-contracts.js"></script>
+</body>
+</html>

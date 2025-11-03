@@ -3,142 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grindstone Contracts Office</title>
-    <link rel="stylesheet" href="styles.css">
-    <style>
-        body {
-            background-color: #20232a;
-            color: #e1e1e1;
-            font-family: "Segoe UI", sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-        header {
-            background-color: #1b1e24;
-            padding: 20px;
-            text-align: center;
-            border-bottom: 2px solid #444;
-        }
-        header h1 {
-            font-size: 2em;
-            color: #f39c12;
-        }
-        header p {
-            font-size: 1em;
-            margin-top: 10px;
-            color: #ccc;
-        }
-        main {
-            padding: 20px;
-            max-width: 800px;
-            margin: 0 auto;
-            background-color: #2c3038;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-        h2 {
-            font-size: 1.5em;
-            color: #f1c40f;
-            margin-bottom: 10px;
-        }
-        .contract {
-            padding: 15px;
-            background-color: #1b1e24;
-            border: 1px solid #444;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-        .contract h3 {
-            color: #e67e22;
-            margin-top: 0;
-        }
-        .contract p {
-            margin: 5px 0;
-            color: #ddd;
-        }
-        .btn-container {
-            text-align: center;
-            margin-top: 20px;
-        }
-        .btn {
-            padding: 10px 20px;
-            background-color: #e67e22;
-            color: #fff;
-            text-decoration: none;
-            border-radius: 5px;
-            font-weight: bold;
-            margin: 5px;
-        }
-        .btn:hover {
-            background-color: #d35400;
-        }
-        footer {
-            text-align: center;
-            margin-top: 20px;
-            color: #aaa;
-        }
-        footer a, footer a:visited {
-            color: #f39c12 !important;
-            text-decoration: none;
-        }
-        footer a:hover {
-            text-decoration: underline;
-        }
-    </style>
+    <title>Grindstone Municipal Building Contracts Office</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/contracts.css">
 </head>
 <body>
-    <header>
-        <h1>Grindstone Contracts Office</h1>
-        <p>Official Business. Definitely Not Hijacked by the Wurst AI.</p>
+    <!-- Header -->
+    <header class="contracts-header">
+        <div class="container">
+            <div class="office-logo">
+                <div class="logo-icon">🏛️</div>
+                <div class="logo-text">
+                    <h1>Grindstone Municipal Building</h1>
+                    <p>Contracts Office - Professional Services & Opportunities</p>
+                </div>
+            </div>
+            <nav class="main-nav">
+                <a href="#contracts" class="nav-link active" onclick="showSection('contracts')">Contracts</a>
+                <a href="#jobs" class="nav-link" onclick="showSection('jobs')">Jobs</a>
+                <a href="accepted-contracts.html" class="nav-link">Accepted Contracts</a>
+            </nav>
+        </div>
     </header>
-    <main>
-        <section class="contract">
-            <h2>Available Contract</h2>
-            <span id="contract_spn">
-                <h3>Hauling Contract</h3>
-                <p><strong>Payment:</strong> 500,000 SC</p>
-                <p><strong>Reputation Reward:</strong> 0</p>
-                <p><strong>Fail Reputation Penalty:</strong> None</p>
-                <p><strong>Collateral:</strong> 10,000</p>
-                <p><strong>Distance:</strong> 1470 m</p>
-                <p><strong>Duration:</strong> 30 min</p>
-                <p><strong>Description:</strong> A priority package is to be delivered to a client of ours, and we are looking for the right person for the job. You will pay a mandatory collateral upon accepting this contract. Failing to complete the contract within the time limit will result in our client being quite unhappy with our services, and your collateral will be lost. We are sure you are up to the task.</p>
-                </span>
-        </section>
-        <div class="btn-container">
-            <a href="#" class="btn" id="refresh_btn">Refresh</a>
-            <a href="#" class="btn" id="accept_btn">Accept</a>
+
+    <!-- Status Bar -->
+    <section class="status-bar">
+        <div class="container">
+            <div class="status-info">
+                <div class="status-item">
+                    <span class="status-icon">📋</span>
+                    <span id="active-contracts-count">0</span>
+                    <span>Active Contracts</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-icon">💼</span>
+                    <span id="job-openings-count">0</span>
+                    <span>Job Openings</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-icon">✅</span>
+                    <span id="accepted-contracts-count">0</span>
+                    <span>Accepted Contracts</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Contracts Section -->
+            <section id="contracts-section" class="content-section active">
+                <div class="section-header">
+                    <h2>Available Contracts</h2>
+                    <div class="contract-filters">
+                        <button class="filter-btn active" onclick="filterContracts('all')">All</button>
+                        <button class="filter-btn" onclick="filterContracts('hauling')">Hauling</button>
+                        <button class="filter-btn" onclick="filterContracts('delivery')">Delivery</button>
+                        <button class="filter-btn" onclick="filterContracts('repair')">Repair</button>
+                        <button class="filter-btn" onclick="filterContracts('municipal')">Municipal</button>
+                    </div>
+                </div>
+
+                <div class="contracts-grid" id="contracts-grid">
+                    <!-- Contracts will be dynamically loaded -->
+                </div>
+            </section>
+
+            <!-- Jobs Section -->
+            <section id="jobs-section" class="content-section">
+                <div class="section-header">
+                    <h2>Job Opportunities</h2>
+                    <div class="job-controls">
+                        <div class="job-filters">
+                            <select id="job-filter" onchange="filterJobs()">
+                                <option value="all">All Categories</option>
+                                <option value="retail">Retail</option>
+                                <option value="food-service">Food Service</option>
+                                <option value="maintenance">Maintenance</option>
+                                <option value="administrative">Administrative</option>
+                                <option value="medical">Medical</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="jobs-grid" id="jobs-grid">
+                    <!-- Jobs will be dynamically loaded -->
+                </div>
+            </section>
+
         </div>
     </main>
-    <footer>
-        <p>&copy; 2024 Grindstone Contracts Office - Authorized Use Only</p>
-        <a href="index.html">Return to Landing Page</a>
-    </footer>
-    <script>
-        const contract_spn = document.getElementById('contract_spn');
-        const refresh_btn = document.getElementById('refresh_btn');
-        const accept_btn = document.getElementById('accept_btn');
 
-        refresh_btn.addEventListener('click', () => {
-            // show the contract details
-            contract_spn.innerHTML = `
-                <h3>Hauling Contract</h3>
-                <p><strong>Payment:</strong> 500,000 SC</p>
-                <p><strong>Reputation Reward:</strong> 0</p>
-                <p><strong>Fail Reputation Penalty:</strong> None</p>
-                <p><strong>Collateral:</strong> 10,000</p>
-                <p><strong>Distance:</strong> 1470 m</p>
-                <p><strong>Duration:</strong> 30 min</p>
-                <p><strong>Description:</strong> A priority package is to be delivered to a client of ours, and we are looking for the right person for the job. You will pay a mandatory collateral upon accepting this contract. Failing to complete the contract within the time limit will result in our client being quite unhappy with our services, and your collateral will be lost. We are sure you are up to the task.
-            `;
-        });
-        accept_btn.addEventListener('click', () => {
-            // hide the contract details
-            contract_spn.innerHTML = `
-                <h3>Contract Accepted</h3>
-                <p>Good luck with your delivery!</p>
-            `;
-        });
-    </script>
+    <!-- Contract Modal -->
+    <div id="contract-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-contract-title">Contract Details</h3>
+                <span class="close-btn" onclick="closeContractModal()">&times;</span>
+            </div>
+            <div class="modal-body" id="modal-contract-body">
+                <!-- Contract details will be populated here -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeContractModal()">Close</button>
+                <button class="btn-primary" id="accept-contract-btn" onclick="acceptContract()">Accept Contract</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Assistant Chatbot -->
+    <div id="ai-assistant" class="ai-assistant">
+        <div class="ai-header" onclick="toggleAssistant()">
+            <div class="ai-avatar">🤖</div>
+            <div class="ai-info">
+                <div class="ai-name">Contract Assistant</div>
+                <div class="ai-status" id="ai-status">Click to chat</div>
+            </div>
+            <div class="ai-toggle" id="ai-toggle">▲</div>
+        </div>
+        <div class="ai-chat" id="ai-chat">
+            <div class="ai-messages" id="ai-messages">
+                <div class="ai-message bot-message">
+                    <div class="message-content">
+                        Hello! I'm your Contract Assistant. I can help you understand different contract types, job categories, and answer questions about our services. Try asking me about "hauling contracts" or "medical jobs"!
+                    </div>
+                    <div class="message-time">Just now</div>
+                </div>
+            </div>
+            <div class="ai-input-area">
+                <input type="text" id="ai-input" placeholder="Ask me about contracts, jobs, or services..." onkeypress="handleAIInput(event)">
+                <button onclick="sendMessage()" class="ai-send-btn">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="contracts-footer">
+        <div class="container">
+            <div class="footer-links">
+                <a href="index.html">Return to Landing Page</a>
+                <a href="accepted-contracts.html">View Accepted Contracts</a>
+                <a href="https://sophiathekitty.github.io/KingWashLaundromat/downtown-contracts/" target="_blank">Downtown Contracts Office</a>
+            </div>
+            <p>&copy; 2077 Grindstone Municipal Building - Official Contracts Office</p>
+        </div>
+    </footer>
+
+    <script src="js/contracts.js"></script>
 </body>
 </html>

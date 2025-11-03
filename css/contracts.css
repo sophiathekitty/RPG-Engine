@@ -1,0 +1,780 @@
+/* Contracts Office Styling */
+
+:root {
+    --primary-blue: #3498db;
+    --primary-dark: #2980b9;
+    --background-dark: #1a1a1a;
+    --background-medium: #2c2c2c;
+    --background-light: #3a3a3a;
+    --text-primary: #ffffff;
+    --text-secondary: #cccccc;
+    --text-muted: #999999;
+    --accent-orange: #e67e22;
+    --accent-green: #27ae60;
+    --accent-red: #e74c3c;
+    --accent-yellow: #f1c40f;
+}
+
+body {
+    background: linear-gradient(135deg, var(--background-dark), var(--background-medium));
+    color: var(--text-primary);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Header Styles */
+.contracts-header {
+    background: linear-gradient(135deg, var(--background-dark), var(--primary-dark));
+    padding: 1.5rem 0;
+    border-bottom: 3px solid var(--primary-blue);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.office-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.logo-icon {
+    font-size: 3rem;
+}
+
+.logo-text h1 {
+    margin: 0;
+    font-size: 2.5rem;
+    color: var(--accent-yellow);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.logo-text p {
+    margin: 0.5rem 0 0 0;
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+}
+
+.main-nav {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+}
+
+.nav-link {
+    color: var(--text-primary);
+    text-decoration: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.nav-link:visited {
+    color: var(--text-primary);
+}
+
+.nav-link:hover,
+.nav-link.active {
+    background: var(--primary-blue);
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* Status Bar */
+.status-bar {
+    background: var(--background-medium);
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--background-light);
+}
+
+.status-info {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    flex-wrap: wrap;
+}
+
+.status-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.status-icon {
+    font-size: 1.5rem;
+}
+
+.status-item span:nth-child(2) {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--accent-yellow);
+}
+
+.status-item span:last-child {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+/* Main Content */
+.main-content {
+    padding: 2rem 0;
+    min-height: 60vh;
+}
+
+.content-section {
+    display: none;
+}
+
+.content-section.active {
+    display: block;
+}
+
+.section-header {
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.section-header h2 {
+    color: var(--accent-yellow);
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+/* Contract Filters */
+.contract-filters {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    background: var(--background-light);
+    color: var(--text-secondary);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.filter-btn:hover,
+.filter-btn.active {
+    background: var(--primary-blue);
+    color: white;
+}
+
+/* Contract Cards */
+.contracts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.contract-card {
+    background: var(--background-light);
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.contract-card:hover {
+    border-color: var(--primary-blue);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 20px rgba(52, 152, 219, 0.3);
+}
+
+.contract-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.contract-title {
+    color: var(--accent-orange);
+    font-size: 1.3rem;
+    margin: 0;
+}
+
+.contract-type {
+    padding: 0.3rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.contract-type.hauling {
+    background: var(--accent-orange);
+    color: white;
+}
+
+.contract-type.delivery {
+    background: var(--accent-green);
+    color: white;
+}
+
+.contract-type.repair {
+    background: var(--accent-yellow);
+    color: black;
+}
+
+.contract-type.municipal {
+    background: var(--primary-blue);
+    color: white;
+}
+
+.contract-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    margin: 1rem 0;
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.payment-amount {
+    color: var(--accent-green);
+    font-weight: bold;
+}
+
+.contract-description {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.4;
+    margin-top: 1rem;
+}
+
+/* Job Styles */
+.job-controls {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.job-filters select {
+    background: var(--background-light);
+    color: var(--text-primary);
+    border: 1px solid var(--background-medium);
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+}
+
+.jobs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.job-card {
+    background: var(--background-light);
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.job-card:hover {
+    border-color: var(--accent-green);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 20px rgba(39, 174, 96, 0.3);
+}
+
+.job-header {
+    margin-bottom: 1rem;
+}
+
+.job-title {
+    color: var(--accent-green);
+    font-size: 1.3rem;
+    margin: 0 0 0.5rem 0;
+}
+
+.job-company {
+    color: var(--accent-yellow);
+    font-weight: bold;
+}
+
+.job-category {
+    background: var(--background-medium);
+    color: var(--text-secondary);
+    padding: 0.3rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    text-transform: capitalize;
+    display: inline-block;
+    margin-bottom: 1rem;
+}
+
+.job-salary {
+    color: var(--accent-green);
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+}
+
+.job-description {
+    color: var(--text-secondary);
+    line-height: 1.4;
+    margin-bottom: 1rem;
+}
+
+.job-requirements {
+    margin: 1rem 0;
+}
+
+.job-requirements h4 {
+    color: var(--accent-orange);
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.job-requirements p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.job-contact {
+    background: var(--background-medium);
+    padding: 0.8rem;
+    border-radius: 8px;
+    margin: 1rem 0;
+    color: var(--text-secondary);
+}
+
+.job-posted {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    text-align: right;
+}
+
+/* Accepted Contracts */
+.accepted-contracts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.accepted-contract-card {
+    background: var(--background-light);
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 2px solid var(--accent-green);
+    box-shadow: 0 3px 15px rgba(39, 174, 96, 0.2);
+}
+
+.accepted-contract-card .contract-title {
+    color: var(--accent-green);
+}
+
+.contract-progress {
+    margin-top: 1rem;
+}
+
+.progress-bar {
+    background: var(--background-medium);
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 0.5rem 0;
+}
+
+.progress-fill {
+    background: var(--accent-green);
+    height: 100%;
+    transition: width 0.3s ease;
+}
+
+.progress-text {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal.show {
+    display: flex;
+}
+
+.modal-content {
+    background: var(--background-light);
+    border-radius: 12px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--background-medium);
+}
+
+.modal-header h3 {
+    color: var(--accent-yellow);
+    margin: 0;
+}
+
+.close-btn {
+    font-size: 2rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    line-height: 1;
+}
+
+.close-btn:hover {
+    color: var(--text-primary);
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    padding: 1.5rem;
+    border-top: 1px solid var(--background-medium);
+}
+
+.btn-primary,
+.btn-secondary {
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background: var(--primary-blue);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--primary-dark);
+}
+
+.btn-secondary {
+    background: var(--background-medium);
+    color: var(--text-secondary);
+}
+
+.btn-secondary:hover {
+    background: var(--background-dark);
+}
+
+/* Footer */
+.contracts-footer {
+    background: var(--background-dark);
+    border-top: 3px solid var(--primary-blue);
+    padding: 2rem 0;
+    text-align: center;
+    margin-top: 3rem;
+}
+
+.footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.footer-links a {
+    color: var(--primary-blue);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+    color: var(--accent-yellow);
+}
+
+.contracts-footer p {
+    color: var(--text-muted);
+    margin: 0;
+}
+
+/* AI Assistant Chatbot */
+.ai-assistant {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 350px;
+    max-width: calc(100vw - 40px);
+    background: var(--background-light);
+    border: 2px solid var(--primary-blue);
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    font-family: inherit;
+}
+
+.ai-header {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    background: linear-gradient(135deg, var(--primary-blue), var(--primary-dark));
+    border-radius: 13px 13px 0 0;
+    cursor: pointer;
+    user-select: none;
+}
+
+.ai-avatar {
+    font-size: 2rem;
+    margin-right: 0.8rem;
+}
+
+.ai-info {
+    flex: 1;
+}
+
+.ai-name {
+    color: white;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.ai-status {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
+}
+
+.ai-toggle {
+    color: white;
+    font-size: 1.2rem;
+    transition: transform 0.3s ease;
+}
+
+.ai-toggle.expanded {
+    transform: rotate(180deg);
+}
+
+.ai-chat {
+    display: none;
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+}
+
+.ai-chat.expanded {
+    display: flex;
+}
+
+.ai-messages {
+    flex: 1;
+    padding: 1rem;
+    overflow-y: auto;
+    max-height: 320px;
+}
+
+.ai-message {
+    margin-bottom: 1rem;
+    animation: fadeInMessage 0.3s ease;
+}
+
+@keyframes fadeInMessage {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.bot-message .message-content {
+    background: var(--background-medium);
+    color: var(--text-primary);
+    padding: 0.8rem 1rem;
+    border-radius: 15px 15px 15px 5px;
+    border-left: 3px solid var(--primary-blue);
+}
+
+.user-message {
+    text-align: right;
+}
+
+.user-message .message-content {
+    background: var(--primary-blue);
+    color: white;
+    padding: 0.8rem 1rem;
+    border-radius: 15px 15px 5px 15px;
+    display: inline-block;
+    max-width: 80%;
+}
+
+.message-time {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-top: 0.3rem;
+    padding: 0 1rem;
+}
+
+.user-message .message-time {
+    text-align: right;
+}
+
+.ai-input-area {
+    display: flex;
+    padding: 1rem;
+    border-top: 1px solid var(--background-medium);
+    gap: 0.5rem;
+}
+
+.ai-input-area input {
+    flex: 1;
+    padding: 0.8rem;
+    border: 1px solid var(--background-medium);
+    border-radius: 20px;
+    background: var(--background-dark);
+    color: var(--text-primary);
+    font-size: 0.9rem;
+}
+
+.ai-input-area input:focus {
+    outline: none;
+    border-color: var(--primary-blue);
+}
+
+.ai-input-area input::placeholder {
+    color: var(--text-muted);
+}
+
+.ai-send-btn {
+    background: var(--primary-blue);
+    color: white;
+    border: none;
+    padding: 0.8rem 1.2rem;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s ease;
+}
+
+.ai-send-btn:hover {
+    background: var(--primary-dark);
+}
+
+.ai-typing {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-muted);
+    font-style: italic;
+    padding: 0.5rem 1rem;
+}
+
+.ai-typing-dots {
+    display: flex;
+    gap: 0.2rem;
+}
+
+.ai-typing-dots span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--text-muted);
+    animation: typingDot 1.4s infinite ease-in-out;
+}
+
+.ai-typing-dots span:nth-child(1) { animation-delay: 0s; }
+.ai-typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+.ai-typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typingDot {
+    0%, 60%, 100% { transform: scale(1); opacity: 0.3; }
+    30% { transform: scale(1.2); opacity: 1; }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 15px;
+    }
+    
+    .office-logo {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .logo-text h1 {
+        font-size: 2rem;
+    }
+    
+    .main-nav {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .status-info {
+        gap: 1.5rem;
+    }
+    
+    .contracts-grid,
+    .jobs-grid,
+    .accepted-contracts-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .contract-info {
+        grid-template-columns: 1fr;
+    }
+    
+    .footer-links {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .ai-assistant {
+        width: calc(100vw - 20px);
+        right: 10px;
+        bottom: 10px;
+    }
+    
+    .ai-chat {
+        height: 300px;
+    }
+    
+    .ai-messages {
+        max-height: 220px;
+    }
+}

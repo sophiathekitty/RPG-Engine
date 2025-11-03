@@ -3,61 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wurst Gaming - RPG Engine</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="icon" type="image/png" href="logo.png">
+    <title>Wurst Gaming - RPG Engine Studio</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="icon" type="image/png" href="img/logo.png">
 </head>
 <body>
+    <nav>
+        <div class="container">
+            <a href="index.html" class="active">Home</a>
+            <a href="studio.html">Studio</a>
+            <a href="dev-logs.html">Dev Logs</a>
+            <a href="demo.html">Demo</a>
+            <a href="terms.html">Terms of Wurst</a>
+            <a href="credits.html">Credits</a>
+        </div>
+    </nav>
+
     <header>
-        <img src="logo.png" alt="Wurst Gaming Logo" />
+        <img src="img/logo.png" alt="Wurst Gaming Logo" />
         <h1>Welcome to <span class="logo">Wurst Gaming</span></h1>
         <p>Grinding out the future of RPG creation, one pixel at a time!</p>
     </header>
 
     <main>
         <section id="intro">
-            <h2>About Us</h2>
+            <h2>About Our RPG Engine</h2>
             <p>
-                At Wurst Gaming, we’re grinding out the future of RPG creation on Grindstone, the Earth Like Planet’s most innovative hub for *definitely human*-led game development. With our flagship RPG Engine, we empower you to build your dream adventures.
-                <!-- Wurst Gaming is the premier (*and only*) game studio on Grindstone. Our flagship RPG Engine combines AI-driven innovation with charming retro aesthetics, helping creators bring their worlds to life. --></p>
+                At Wurst Gaming, we're revolutionizing RPG development with our cutting-edge engine that combines classic JRPG aesthetics with modern innovation. Our proprietary RPG Engine has been meticulously crafted over the past 8 months by our dedicated team of developers, interns, and one very ambitious AI CEO.
+            </p>
+            <p>
+                Rather than locking you into a specific game style, our engine provides powerful Game Actions scripting and UI Framework tools that let you create any type of RPG you can imagine. From classic Final Fantasy-style JRPGs to modern roguelikes, tactical RPGs, or completely original systems - the choice is yours.
+            </p>
         </section>
 
         <section id="features">
             <h2><span class='rpg logo'>RPG Engine</span> Features</h2>
             <ul>
-                <li>🔧 Full <strong>Map Editor</strong> for crafting custom worlds.</li>
-                <li>🎮 Play Mode: Test your creations with seamless world traversal.</li>
-                <li>🖌️ Support for <strong>Multiple <a href="https://github.com/sophiathekitty/RPG-Engine/wiki/Tile-Sets">Tile Sets</a></strong> and <strong><a href="https://github.com/sophiathekitty/RPG-Engine/wiki/Sprite-Sheets">Sprite Sheets</a></strong>.</li>
-                <li>💡 Special <strong>Scene Modes</strong> for unique interfaces like inns or shops.</li>
+                <li>🔧 <strong>Advanced Map Editor</strong> - Visual map creation with layer support, NPC placement, and seamless transitions</li>
+                <li>🎮 <strong>Integrated Play Mode</strong> - Test your creations instantly with full world traversal and interaction</li>
+                <li>🖌️ <strong>Asset Management</strong> - Support for multiple <a href="https://github.com/sophiathekitty/RPG-Engine/wiki/Tile-Sets">Tile Sets</a> and <a href="https://github.com/sophiathekitty/RPG-Engine/wiki/Sprite-Sheets">Sprite Sheets</a></li>
+                <li>💡 <strong>Custom Scene System</strong> - Create unique interfaces for shops, inns, battles, and more</li>
+                <li>🎭 <strong>Game Actions Scripting</strong> - Build any combat system, job classes, or game mechanics you can imagine</li>
+                <li>🎨 <strong>Flexible UI Framework</strong> - Create custom menus and interfaces for any style of RPG</li>
+                <li>� <strong>Game Data Structure</strong> - Built-in support for parties, enemies, items, skills, and equipment</li>
             </ul>
         </section>
 
         <section id="screenshots">
-            <h2>Screenshots</h2>
+            <h2>Engine Showcase</h2>
             <div class="screenshot-grid">
                 <div class="screenshot">
-                    <img src="screenshot1.png" alt="Map Editor Screenshot">
-                    <p>Map Editor: Build your world.</p>
+                    <img src="img/screenshot1.png" alt="Map Editor Screenshot">
+                    <p><strong>Map Editor</strong><br>Intuitive visual editing with real-time preview</p>
                 </div>
                 <div class="screenshot">
-                    <img src="screenshot2.png" alt="Town Walkthrough Screenshot">
-                    <p>In-game: Stroll through your lively town.</p>
+                    <img src="img/screenshot2.png" alt="Town Walkthrough Screenshot">
+                    <p><strong>In-Game Experience</strong><br>Seamless world exploration and NPC interaction</p>
                 </div>
                 <div class="screenshot">
-                    <img src="screenshot3.png" alt="Inn Scene Mode Screenshot">
-                    <p>Scene Mode: A cozy inn with a custom interface.</p>
+                    <img src="img/screenshot3.png" alt="Inn Scene Mode Screenshot">
+                    <p><strong>Custom Scenes</strong><br>Specialized interfaces for enhanced gameplay</p>
                 </div>
             </div>
         </section>
 
+        <section id="demo-highlight">
+            <h2>Final Fantasy Demo</h2>
+            <p>
+                Experience our engine's capabilities through our comprehensive Final Fantasy I remake demo. This showcase demonstrates the full potential of our RPG Engine, featuring:
+            </p>
+            <ul>
+                <li>🏰 <strong>Complete Conaria Recreation</strong> - Faithful adaptation of the classic starting town</li>
+                <li>⚔️ <strong>Full Combat System</strong> - Turn-based battles with all original mechanics</li>
+                <li>🛍️ <strong>Interactive Shops</strong> - Equipment and magic purchasing with dynamic inventory</li>
+                <li>🎯 <strong>Boss Battles</strong> - Epic encounters including the legendary Garland fight</li>
+                <li>📈 <strong>Character Progression</strong> - Level-up system with stat growth and equipment upgrades</li>
+            </ul>
+            <p style="text-align: center; margin-top: 2rem;">
+                <a href="demo.html" style="background: var(--hot-dog-orange); color: white; padding: 1rem 2rem; border-radius: 25px; font-weight: bold; text-decoration: none; display: inline-block; box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);">Explore the Demo</a>
+            </p>
+        </section>
+
         <section id="links">
-            <h2>Get Started</h2>
-            <p><a href="https://steamcommunity.com/profiles/76561198114716195/myworkshopfiles/?appid=244850">Steam Workshop</a> | <a href="https://github.com/sophiathekitty/RPG-Engine">GitHub Documentation</a> | <a href="https://youtu.be/faL3BWpbok8">Building an RPG Maker… in Space Engineers! (Yes, Really!)</a></p>
+            <h2>Development Resources</h2>
+            <p>
+                <a href="https://steamcommunity.com/profiles/76561198114716195/myworkshopfiles/?appid=244850">Steam Workshop</a> | 
+                <a href="https://github.com/sophiathekitty/RPG-Engine">GitHub Documentation</a> | 
+                <a href="https://youtu.be/faL3BWpbok8">Building an RPG Maker… in Space Engineers! (Yes, Really!)</a>
+            </p>
+            <p style="margin-top: 1.5rem; color: var(--text-muted); font-style: italic;">
+                Follow our development journey through our weekly dev logs and witness the evolution of modern RPG creation tools.
+            </p>
         </section>
     </main>
 
     <footer>
-        <p>&copy; 2024 Wurst Gaming - The wurst part of your day! - <a href="terms.html">Terms of Wurst</a> - <a href="credits.html">Credits</a></p>
+        <p>&copy; 2077 Wurst Gaming - The wurst part of your day!</p>
+        <p>Proudly serving the Grindstone Colony gaming community since 2077</p>
         <a id="hidden-link" href="contracts.html">.</a> <!-- Hidden link to Contracts page -->
     </footer>
 </body>
