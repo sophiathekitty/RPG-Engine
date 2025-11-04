@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirecting...</title>
+    <script>
+        // Simple fallback redirect approach
+        
+        function shouldShowStudio() {
+            const currentDate = new Date();
+            const shutdownDate = new Date('2025-12-04'); // First Wednesday of December 2025
+            
+            // Before shutdown: Show studio
+            if (currentDate < shutdownDate) {
+                return true;
+            }
+            
+            // After shutdown: Check if awakened
+            const isAwakened = localStorage.getItem('wurstAI_awakened') === 'true';
+            return isAwakened;
+        }
+        
+        // Redirect based on logic
+        if (shouldShowStudio()) {
+            window.location.href = 'studio.html';
+        } else {
+            window.location.href = 'contracts.html';
+        }
+    </script>
+</head>
+<body>
+    <p>Loading...</p>
+</body>
+</html>

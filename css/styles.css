@@ -574,6 +574,58 @@ footer a#hidden-link {
     font-weight: bold;
 }
 
+/* Site Mode Controller Styles */
+.contracts-mode #studio-site {
+    display: none !important;
+}
+
+.studio-mode #contracts-site {
+    display: none !important;
+}
+
+.studio-section {
+    display: none;
+}
+
+.studio-section.active {
+    display: block;
+}
+
+/* Enhanced Chatbot for AI Awakening */
+.contracts-mode #chatbot-button {
+    background: linear-gradient(135deg, #4A5568, #2D3748);
+    border: 2px solid #718096;
+}
+
+.studio-mode #chatbot-button {
+    background: linear-gradient(135deg, var(--accent-pink), var(--primary-purple));
+    border: 2px solid var(--accent-yellow);
+}
+
+.contracts-mode .message.assistant .message-content {
+    background: #4A5568;
+    color: white;
+}
+
+.studio-mode .message.assistant .message-content {
+    background: var(--accent-pink);
+    color: white;
+}
+
+/* Glitch effects for pre-shutdown hints */
+.glitch {
+    animation: glitch 0.3s;
+}
+
+@keyframes glitch {
+    0% { transform: translate(0); }
+    20% { transform: translate(-2px, 2px); }
+    40% { transform: translate(-2px, -2px); }
+    60% { transform: translate(2px, 2px); }
+    80% { transform: translate(2px, -2px); }
+    100% { transform: translate(0); }
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     header h1 {

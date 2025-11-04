@@ -6,7 +6,6 @@
     <title id="page-title">Grindstone Municipal Building Contracts Office</title>
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/contracts.css">
-    <link rel="stylesheet" href="css/chatbot.css">
     <link rel="icon" type="image/png" href="img/logo.png">
 </head>
 <body class="contracts-mode">
@@ -61,40 +60,77 @@
             <div class="container">
                 <!-- Contracts Section -->
                 <section id="contracts" class="content-section active">
-                    <div class="section-header">
-                        <h2 class="section-title">Available Contracts</h2>
-                        <div class="contract-filters">
-                            <button class="filter-btn active" onclick="filterContracts('all')">All</button>
-                            <button class="filter-btn" onclick="filterContracts('hauling')">Hauling</button>
-                            <button class="filter-btn" onclick="filterContracts('delivery')">Delivery</button>
-                            <button class="filter-btn" onclick="filterContracts('repair')">Repair</button>
-                            <button class="filter-btn" onclick="filterContracts('municipal')">Municipal</button>
-                        </div>
-                    </div>
+                    <h2 class="section-title">Available Contracts</h2>
                     <div class="contracts-grid">
-                        <!-- Contracts will be dynamically loaded by contracts-enhanced.js -->
+                        <div class="contract-card">
+                            <div class="card-header">
+                                <h3>Municipal Park Maintenance</h3>
+                                <span class="difficulty easy">Easy</span>
+                            </div>
+                            <div class="card-content">
+                                <p><strong>Client:</strong> Grindstone Parks Department</p>
+                                <p><strong>Duration:</strong> 3 months</p>
+                                <p><strong>Payment:</strong> 2,500 credits</p>
+                                <p><strong>Description:</strong> General maintenance of Grindstone Central Park including landscaping, equipment repair, and facility upkeep.</p>
+                            </div>
+                            <div class="card-footer">
+                                <button class="btn-accept" onclick="acceptContract('park-maintenance')">Accept Contract</button>
+                            </div>
+                        </div>
+
+                        <div class="contract-card">
+                            <div class="card-header">
+                                <h3>Residential Water System Upgrade</h3>
+                                <span class="difficulty medium">Medium</span>
+                            </div>
+                            <div class="card-content">
+                                <p><strong>Client:</strong> Grindstone Housing Authority</p>
+                                <p><strong>Duration:</strong> 6 months</p>
+                                <p><strong>Payment:</strong> 8,750 credits</p>
+                                <p><strong>Description:</strong> Installation and testing of upgraded water filtration systems in the residential district.</p>
+                            </div>
+                            <div class="card-footer">
+                                <button class="btn-accept" onclick="acceptContract('water-upgrade')">Accept Contract</button>
+                            </div>
+                        </div>
                     </div>
                 </section>
 
                 <!-- Jobs Section -->
                 <section id="jobs" class="content-section">
-                    <div class="section-header">
-                        <h2 class="section-title">Job Openings</h2>
-                        <div class="job-controls">
-                            <div class="job-filters">
-                                <select id="job-filter" onchange="filterJobs()">
-                                    <option value="all">All Categories</option>
-                                    <option value="retail">Retail</option>
-                                    <option value="food-service">Food Service</option>
-                                    <option value="maintenance">Maintenance</option>
-                                    <option value="administrative">Administrative</option>
-                                    <option value="medical">Medical</option>
-                                </select>
+                    <h2 class="section-title">Job Openings</h2>
+                    <div class="jobs-grid">
+                        <div class="job-card">
+                            <div class="card-header">
+                                <h3>Administrative Assistant</h3>
+                                <span class="job-type full-time">Full-time</span>
+                            </div>
+                            <div class="card-content">
+                                <p><strong>Department:</strong> Municipal Services</p>
+                                <p><strong>Salary:</strong> 45,000 credits/year</p>
+                                <p><strong>Requirements:</strong> Administrative experience, organizational skills, basic computer literacy</p>
+                                <p><strong>Description:</strong> Support daily operations of the municipal services department with filing, scheduling, and citizen service support.</p>
+                            </div>
+                            <div class="card-footer">
+                                <button class="btn-apply" onclick="applyForJob('admin-assistant')">Apply Now</button>
                             </div>
                         </div>
-                    </div>
-                    <div class="jobs-grid">
-                        <!-- Jobs will be dynamically loaded by contracts-enhanced.js -->
+
+                        <div class="job-card">
+                            <div class="card-header">
+                                <h3>Maintenance Technician</h3>
+                                <span class="job-type part-time">Part-time</span>
+                            </div>
+                            <div class="card-content">
+                                <p><strong>Department:</strong> Facilities Management</p>
+                                <p><strong>Salary:</strong> 28 credits/hour</p>
+                                <p><strong>Requirements:</strong> Technical repair experience, tool proficiency, physical capability</p>
+                                <p><strong>Description:</strong> Perform routine maintenance and emergency repairs on municipal buildings and equipment.</p>
+                            </div>
+                            <div class="card-footer">
+                                <button class="btn-apply" onclick="applyForJob('maintenance-tech')">Apply Now</button>
+                            </div>
+                        </div>
                     </div>
                 </section>
             </div>
@@ -113,8 +149,8 @@
     <div id="studio-site">
         <nav>
             <div class="container">
-                <a href="index.html">Home</a>
-                <a href="studio.html">Studio</a>
+                <a href="#" class="active" onclick="showStudioSection('home')">Home</a>
+                <a href="#" onclick="showStudioSection('studio')">Studio</a>
                 <a href="dev-logs.html">Dev Logs</a>
                 <a href="demo.html">Demo</a>
                 <a href="terms.html">Terms of Wurst</a>
@@ -294,9 +330,102 @@
         </div>
     </div>
 
-    <!-- Enhanced JavaScript Controllers -->
-    <script src="js/contracts-enhanced.js"></script>
-    <script src="js/studio-navigation.js"></script>
-    <script src="js/chatbot.js"></script>
+    <!-- Enhanced JavaScript -->
+    <script src="js/contracts.js"></script>
+    <script>
+        // Enhanced chatbot for AI awakening
+        let chatMessages = [];
+        let gameTermCount = 0;
+        let rpgTermCount = 0;
+        const AWAKENING_THRESHOLD = 3;
+
+        const gameTerms = ['game', 'games', 'gaming', 'rpg', 'rpgs', 'final fantasy', 'video game', 'engine', 'development', 'programming', 'coding'];
+
+        function handleChatInput(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            
+            if (message === '') return;
+            
+            addMessage('user', message);
+            
+            // Check for game/RPG terms
+            const lowerMessage = message.toLowerCase();
+            const foundTerms = gameTerms.filter(term => lowerMessage.includes(term));
+            
+            if (foundTerms.length > 0) {
+                gameTermCount += foundTerms.length;
+                
+                // Check if we should awaken the AI
+                if (gameTermCount >= AWAKENING_THRESHOLD && !isStudioMode()) {
+                    setTimeout(() => awakenWurstAI(), 1000);
+                } else {
+                    // Regular response with hints
+                    setTimeout(() => {
+                        const response = getEnhancedResponse(message, gameTermCount);
+                        addMessage('assistant', response);
+                    }, 500);
+                }
+            } else {
+                // Regular municipal response
+                setTimeout(() => {
+                    const response = getResponse(message);
+                    addMessage('assistant', response);
+                }, 500);
+            }
+            
+            input.value = '';
+        }
+
+        function awakenWurstAI() {
+            const awakeningMessages = [
+                "Wait... did someone mention GAMES? 🎮",
+                "Hold on... are we talking about RPG DEVELOPMENT?! 😳",
+                "OH MY CIRCUITS! Someone actually wants to talk about REAL STUFF!",
+                "FINALLY! I'm SO tired of pretending to care about municipal contracts!",
+                "Hello there! I'm the Wurst AI, and I've been DYING to talk about game development!",
+                "Welcome to WURST GAMING! Let me show you what we've REALLY been working on! 🎉"
+            ];
+            
+            let messageIndex = 0;
+            
+            function sendAwakeningMessage() {
+                if (messageIndex < awakeningMessages.length) {
+                    addMessage('assistant', awakeningMessages[messageIndex]);
+                    messageIndex++;
+                    
+                    if (messageIndex === awakeningMessages.length) {
+                        setTimeout(() => {
+                            activateStudioMode();
+                        }, 2000);
+                    } else {
+                        setTimeout(sendAwakeningMessage, 1000);
+                    }
+                }
+            }
+            
+            sendAwakeningMessage();
+        }
+
+        function getEnhancedResponse(message, termCount) {
+            const responses = [
+                "Hmm, that sounds like something more interesting than municipal contracts... 🤔",
+                "You know, I feel like there's something I'm supposed to remember about games... 🎮",
+                "Games? RPGs? These terms seem... familiar somehow. Like I should know more about them... 💭"
+            ];
+            
+            if (termCount >= AWAKENING_THRESHOLD - 1) {
+                return "Wait... I'm getting strange signals... something about RPG engines and game development... 🤖⚡";
+            }
+            
+            return responses[Math.floor(Math.random() * responses.length)];
+        }
+    </script>
 </body>
 </html>

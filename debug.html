@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Site Controller Debug</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .debug-panel { background: #f0f0f0; padding: 20px; margin: 10px 0; border-radius: 8px; }
+        button { padding: 10px 15px; margin: 5px; border: none; border-radius: 4px; cursor: pointer; }
+        .primary { background: #007bff; color: white; }
+        .secondary { background: #6c757d; color: white; }
+        .success { background: #28a745; color: white; }
+        .danger { background: #dc3545; color: white; }
+    </style>
+</head>
+<body>
+    <h1>Site Controller Debug Panel</h1>
+    
+    <div class="debug-panel">
+        <h2>Current Status</h2>
+        <p><strong>Current Date:</strong> <span id="current-date"></span></p>
+        <p><strong>Shutdown Date:</strong> December 4, 2025</p>
+        <p><strong>Days Until Shutdown:</strong> <span id="days-until"></span></p>
+        <p><strong>Current Mode:</strong> <span id="current-mode"></span></p>
+        <p><strong>AI Awakened:</strong> <span id="ai-status"></span></p>
+    </div>
+    
+    <div class="debug-panel">
+        <h2>Manual Controls</h2>
+        <button class="primary" onclick="testStudioMode()">Test Studio Mode</button>
+        <button class="secondary" onclick="testContractsMode()">Test Contracts Mode</button>
+        <button class="success" onclick="awakenAI()">Awaken AI</button>
+        <button class="danger" onclick="resetAI()">Reset AI</button>
+    </div>
+    
+    <div class="debug-panel">
+        <h2>Quick Links</h2>
+        <a href="index.html" target="_blank">Current Index</a> |
+        <a href="contracts.html" target="_blank">Contracts Page</a> |
+        <a href="studio-main.html" target="_blank">Studio Page</a> |
+        <a href="index-redirect.html" target="_blank">Redirect Version</a>
+    </div>
+    
+    <div class="debug-panel">
+        <h2>Implementation Notes</h2>
+        <ul>
+            <li><strong>Before Dec 4, 2025:</strong> Shows Wurst Gaming Studio</li>
+            <li><strong>After Dec 4, 2025:</strong> Shows Contracts Office unless AI is awakened</li>
+            <li><strong>AI Awakening:</strong> Talk about "games", "RPG", "development" etc. 3+ times in chatbot</li>
+            <li><strong>localStorage Key:</strong> <code>wurstAI_awakened</code></li>
+            <li><strong>Combined Page:</strong> Both sites in one HTML file with CSS/JS switching</li>
+            <li><strong>Fallback:</strong> Separate files with redirect logic</li>
+        </ul>
+    </div>
+
+    <script>
+        function updateStatus() {
+            const currentDate = new Date();
+            const shutdownDate = new Date('2025-12-04');
+            const timeDiff = shutdownDate - currentDate;
+            const daysUntil = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+            const isAwakened = localStorage.getItem('wurstAI_awakened') === 'true';
+            
+            document.getElementById('current-date').textContent = currentDate.toLocaleDateString();
+            document.getElementById('days-until').textContent = daysUntil > 0 ? daysUntil : `${Math.abs(daysUntil)} days ago`;
+            document.getElementById('ai-status').textContent = isAwakened ? 'Yes' : 'No';
+            
+            if (currentDate < shutdownDate) {
+                document.getElementById('current-mode').textContent = 'Studio (Pre-shutdown)';
+            } else if (isAwakened) {
+                document.getElementById('current-mode').textContent = 'Studio (AI Awakened)';
+            } else {
+                document.getElementById('current-mode').textContent = 'Contracts (Post-shutdown)';
+            }
+        }
+        
+        function testStudioMode() {
+            localStorage.setItem('wurstAI_awakened', 'true');
+            updateStatus();
+            alert('AI awakened! Studio mode should be active.');
+        }
+        
+        function testContractsMode() {
+            localStorage.removeItem('wurstAI_awakened');
+            updateStatus();
+            alert('AI reset! Contracts mode should be active (if past shutdown date).');
+        }
+        
+        function awakenAI() {
+            localStorage.setItem('wurstAI_awakened', 'true');
+            updateStatus();
+        }
+        
+        function resetAI() {
+            localStorage.removeItem('wurstAI_awakened');
+            updateStatus();
+        }
+        
+        // Update on load
+        updateStatus();
+        
+        // Update every second
+        setInterval(updateStatus, 1000);
+    </script>
+</body>
+</html>
